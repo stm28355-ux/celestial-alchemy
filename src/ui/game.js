@@ -3,7 +3,7 @@
 import { createState, drop, landing, isCleared } from '../core/rules.js';
 import { size } from '../core/shape.js';
 import { material } from '../core/materials.js';
-import { draw, layout, drawMini } from './render.js';
+import { draw, layout, drawMini, SPAWN_GAP } from './render.js';
 
 const FALL_MS = 55; // 1マス落ちるのにかける時間
 const FLASH_MS = 380; // 溶けるときの光
@@ -72,7 +72,6 @@ export class Game {
     if (!this.current() || this.anim) return;
     this.r = (this.r + dir + 4) % 4;
     this.clampX();
-    this.renderHand();
     this.render();
   }
 
@@ -125,7 +124,7 @@ export class Game {
     const { h } = size(cells);
     const topY = Math.min(...place.cells.map(c => c[1]));
     work.push({ id: place.id, mat: place.mat, cells: place.cells.map(c => [...c]), fixed: false });
-    const dist = topY + h;
+    const dist = topY + h + SPAWN_GAP;
     steps.push({ pieces: snapshot(work), move: new Set([place.id]), dist, dur: Math.max(120, dist * FALL_MS * 0.6) });
     for (let i = 1; i < events.length; i++) {
       const e = events[i];
@@ -298,8 +297,7 @@ export class Game {
       btn.disabled = used;
       btn.title = `${i + 1}：${material(h.mat).name}`;
       const cv = document.createElement('canvas');
-      const item = this.state.hand.find(x => x.orig === i);
-      drawMini(cv, i === this.sel && item ? item.rots[this.r] : h.cells, h.mat, 16, used);
+      drawMini(cv, h.cells, h.mat, 16, used);
       const label = document.createElement('span');
       label.textContent = `${i + 1} ${material(h.mat).short}`;
       btn.append(cv, label);

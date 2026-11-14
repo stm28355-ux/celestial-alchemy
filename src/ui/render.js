@@ -21,16 +21,20 @@ const INSIDE_FREE = '#f1e6cf';
 const RUNE = '#c8a46a';
 const EDGE = 'rgba(40, 28, 18, 0.75)';
 
+// 落とす前のピースと器の口の間に空ける高さ（マス数）。くっついて見えないように。
+export const SPAWN_GAP = 0.7;
+
 // 盤面の置き場所（マスの大きさと、盤の左上）。spawnRows は盤の上に空けておく行の数（落とす前のピース用）。
 export function layout(stage, spawnRows, cell) {
   const frame = Math.round(cell * 0.35);
+  const top = Math.round((spawnRows + SPAWN_GAP) * cell + cell * 0.15);
   return {
     cell,
     frame,
     left: frame,
-    top: spawnRows * cell + Math.round(cell * 0.2),
+    top,
     width: stage.W * cell + frame * 2,
-    height: (spawnRows + stage.H) * cell + Math.round(cell * 0.2) + frame,
+    height: top + stage.H * cell + frame,
   };
 }
 
@@ -40,11 +44,14 @@ export function draw(ctx, L, view) {
   const c = L.cell;
   ctx.clearRect(0, 0, L.width, L.height);
 
-  // 器の外枠（左右と底）
+  // 器の外枠（左右と底）と、口のふち
   ctx.fillStyle = WOOD;
   ctx.fillRect(0, L.top, L.frame, stage.H * c + L.frame);
   ctx.fillRect(L.left + stage.W * c, L.top, L.frame, stage.H * c + L.frame);
   ctx.fillRect(0, L.top + stage.H * c, L.width, L.frame);
+  ctx.fillStyle = WOOD_DARK;
+  ctx.fillRect(0, L.top - 3, L.frame, 3);
+  ctx.fillRect(L.left + stage.W * c, L.top - 3, L.frame, 3);
 
   // 器の中：空きマス・目標マス・壁
   for (let y = 0; y < stage.H; y++) {
@@ -68,6 +75,16 @@ export function draw(ctx, L, view) {
     }
   }
 
+  // 落とす前のピースから着地点の影まで、薄い帯で列を示す
+  if (view.preview && view.ghost && !view.invalid) {
+    const xs = view.preview.cells.map(([x]) => x);
+    const x0 = Math.min(...xs), x1 = Math.max(...xs) + 1;
+    const yTop = L.top - SPAWN_GAP * c;
+    const yBottom = L.top + Math.min(...view.ghost.cells.map(([, y]) => y)) * c;
+    ctx.fillStyle = 'rgba(217, 130, 43, 0.08)';
+    ctx.fillRect(L.left + x0 * c, yTop, (x1 - x0) * c, yBottom - yTop);
+  }
+
   // ピース
   for (const p of view.pieces) {
     const lift = view.lift?.get(p.id) ?? 0;
@@ -77,8 +94,8 @@ export function draw(ctx, L, view) {
   // 着地点の影
   if (view.ghost) drawPiece(ctx, L, view.ghost.cells, view.ghost.mat, { ghost: true });
 
-  // 落とす前のピース（盤の上）
-  if (view.preview) drawPiece(ctx, L, view.preview.cells, view.preview.mat, { invalid: view.invalid });
+  // 落とす前のピース（器の口から少し上に浮かせる）
+  if (view.preview) drawPiece(ctx, L, view.preview.cells, view.preview.mat, { invalid: view.invalid, lift: SPAWN_GAP });
 }
 
 function drawRune(ctx, px, py, c, t) {
