@@ -1,3 +1,5 @@
+import { drawIcon } from './icons.js';
+
 // 盤面の描画（試作の見た目。フェーズ9で作り直す）。
 // 素材の色は企画まとめの「素材の色とアイコン」に合わせる。アイコンの代わりに、いまは短い呼び名の1文字を書く。
 
@@ -38,7 +40,7 @@ export function layout(stage, spawnRows, cell) {
   };
 }
 
-// view: { stage, pieces, lift: Map(id → 上にずらすマス数), flash: Set(id), ghost, preview, invalid }
+// view: { stage, pieces, lift: Map(id → 上にずらすマス数), flash: Set(id), ghost, preview, invalid, icons }
 export function draw(ctx, L, view) {
   const { stage } = view;
   const c = L.cell;
@@ -88,14 +90,14 @@ export function draw(ctx, L, view) {
   // ピース
   for (const p of view.pieces) {
     const lift = view.lift?.get(p.id) ?? 0;
-    drawPiece(ctx, L, p.cells, p.mat, { lift, fixed: p.fixed, flash: view.flash?.has(p.id) ? view.flashAlpha ?? 0.7 : 0 });
+    drawPiece(ctx, L, p.cells, p.mat, { lift, fixed: p.fixed, flash: view.flash?.has(p.id) ? view.flashAlpha ?? 0.7 : 0, icons: view.icons });
   }
 
   // 着地点の影
   if (view.ghost) drawPiece(ctx, L, view.ghost.cells, view.ghost.mat, { ghost: true });
 
   // 落とす前のピース（器の口から少し上に浮かせる）
-  if (view.preview) drawPiece(ctx, L, view.preview.cells, view.preview.mat, { invalid: view.invalid, lift: SPAWN_GAP });
+  if (view.preview) drawPiece(ctx, L, view.preview.cells, view.preview.mat, { invalid: view.invalid, lift: SPAWN_GAP, icons: view.icons });
 }
 
 function drawRune(ctx, px, py, c, t) {
@@ -114,7 +116,8 @@ function drawRune(ctx, px, py, c, t) {
 }
 
 // cells は盤のマス座標（y が負なら盤の上）。lift は上にずらすマス数（落ちていく途中の見せ方）。
-export function drawPiece(ctx, L, cells, mat, { lift = 0, fixed = false, flash = 0, ghost = false, invalid = false } = {}) {
+// icons: true で、1文字の代わりにアイコン（試し描き）を描く。
+export function drawPiece(ctx, L, cells, mat, { lift = 0, fixed = false, flash = 0, ghost = false, invalid = false, icons = false } = {}) {
   const c = L.cell;
   const look = LOOK[mat];
   const set = new Set(cells.map(([x, y]) => `${x},${y}`));
@@ -125,7 +128,11 @@ export function drawPiece(ctx, L, cells, mat, { lift = 0, fixed = false, flash =
     const [px, py] = pos(x, y);
     ctx.fillStyle = invalid ? '#d9534f' : look.fill;
     ctx.fillRect(px, py, c, c);
-    if (!ghost) {
+    if (!ghost && icons && !invalid) {
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.14)';
+      ctx.fillRect(px + 2, py + 2, c - 4, c * 0.16);
+      drawIcon(ctx, mat, px, py, c);
+    } else if (!ghost) {
       ctx.fillStyle = 'rgba(255, 255, 255, 0.16)';
       ctx.fillRect(px + 2, py + 2, c - 4, c * 0.22);
       ctx.fillStyle = invalid ? '#fff' : look.ink;
