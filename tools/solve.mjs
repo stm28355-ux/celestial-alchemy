@@ -1,15 +1,22 @@
-// npm run solve stages/xxx.txt [さらにファイルやフォルダ]
+// npm run solve stages/xxx.txt [さらにファイルやフォルダ] [--show 数]
+// --show を付けると、クリアしたときの盤面ごとに、答えの手順と盤面を出す（数の分まで）。
 // ステージが解けるか、解がいくつあるか、反応を使わずに解けるか、狙いの手順で解けるかを出す。
 
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { parseStage } from '../src/core/stage.js';
-import { solve, checkSolution } from '../src/core/solver.js';
+import { solve, checkSolution, boardText } from '../src/core/solver.js';
 import { initialProblems } from '../src/core/rules.js';
 import { material } from '../src/core/materials.js';
 import { rotate, shapeText } from '../src/core/shape.js';
 
-const args = process.argv.slice(2);
+let args = process.argv.slice(2);
+let show = 0;
+const si = args.indexOf('--show');
+if (si >= 0) {
+  show = Number(args[si + 1]) || 3;
+  args = args.filter((_, i) => i !== si && i !== si + 1);
+}
 if (args.length === 0) {
   console.log('使い方：npm run solve stages/xxx.txt（フォルダも指定できる）');
   process.exit(1);
@@ -30,7 +37,7 @@ for (const file of await expand(args)) {
   for (const p of initialProblems(stage)) console.log(`  注意：${p}`);
 
   const t0 = Date.now();
-  const r = solve(stage);
+  const r = solve(stage, { examples: show });
   const ms = Date.now() - t0;
   console.log(`  解ける：${r.solvable ? 'はい' : 'いいえ'}${r.truncated ? '（探しきれていない）' : ''}`);
   console.log(`  クリアできる道筋：${r.paths}（反応を使わない道筋：${r.pathsNoReaction}）`);
@@ -39,6 +46,10 @@ for (const file of await expand(args)) {
     console.log(`  最初の1手の候補：${r.firstMoves.length}`);
     for (const m of r.firstMoves.slice(0, 5)) console.log(`    ${moveText(stage, m)}（道筋 ${m.paths}）`);
   }
+  r.examples.forEach((ex, n) => {
+    console.log(`  答え${n + 1}：${ex.moves.map(m => moveText(stage, m) + (m.reacted ? ` 反応${m.reacted}` : '')).join(' → ')}`);
+    for (const row of boardText(ex.state)) console.log(`      ${row}`);
+  });
   if (stage.solution.length) {
     const c = checkSolution(stage);
     if (!c.ok) console.log(`  狙いの手順：${c.step + 1}手目で失敗（${c.reason}）`);

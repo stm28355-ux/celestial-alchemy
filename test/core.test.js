@@ -187,6 +187,20 @@ test('ソルバー：行き止まりの見切りは、答えを取りこぼさ�
   assert.ok(solvable > 10, `解けるものが少なすぎる：${solvable}`);
 });
 
+test('試作の10問：読めて、最初の盤面に問題がなく、狙いの手順でクリアできる', async () => {
+  const dir = new URL('../stages/proto/', import.meta.url);
+  const names = JSON.parse(await readFile(new URL('list.json', dir), 'utf8'));
+  assert.equal(names.length, 10);
+  for (const name of names) {
+    const st = parseStage(await readFile(new URL(name, dir), 'utf8'));
+    assert.deepEqual(initialProblems(st), [], name);
+    const c = checkSolution(st);
+    assert.ok(c.ok && c.cleared, `${name}：狙いの手順でクリアできない`);
+    // 6問目から先（溶ける）は、9問目（溶かさない）を除いて、反応を使わないと解けない
+    if (name >= '06' && !name.startsWith('09')) assert.equal(solve(st).pathsNoReaction, 0, name);
+  }
+});
+
 test('ソルバー：解けないステージ', () => {
   const st = stage(['terrain:', '  +++', 'hand:', '  lead ##']);
   assert.equal(solve(st).solvable, false);

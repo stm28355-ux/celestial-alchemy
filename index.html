@@ -3,17 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Celestial Alchemy</title>
-  <style>
-    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #fff8ec; color: #4a3b2a; font-family: system-ui, sans-serif; }
-    main { text-align: center; padding: 16px; }
-    h1 { font-size: 28px; margin: 0 0 8px; }
-  </style>
+  <title>Celestial Alchemy（試作）</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main>
-    <h1>Celestial Alchemy</h1>
-    <p>準備中です。</p>
+  <header>
+    <h1>Celestial Alchemy <small>試作</small></h1>
+    <nav id="stages" aria-label="ステージ"></nav>
+  </header>
+
+  <main id="game">
+    <section class="info">
+      <h2 id="stage-title"></h2>
+      <p id="stage-request" class="request"></p>
+      <ul id="stage-rules" class="rules"></ul>
+    </section>
+
+    <section class="play">
+      <div class="board-wrap"><canvas id="board" aria-label="器"></canvas></div>
+      <p id="message" class="message" role="status"></p>
+    </section>
+
+    <section class="side">
+      <h3>手持ち <small>（好きな順に使える）</small></h3>
+      <div id="hand" class="hand"></div>
+      <div class="buttons">
+        <button id="btn-rotate">回す ↻</button>
+        <button id="btn-drop" class="primary">落とす ↓</button>
+        <button id="btn-undo">一手戻す</button>
+        <button id="btn-reset">やり直し</button>
+      </div>
+      <details class="help" open>
+        <summary>操作</summary>
+        <ul>
+          <li>マウス：動かして列を選ぶ／クリックで落とす／右クリックかホイールで回す</li>
+          <li>キー：← → 列　↑ か R 回す　↓ か Space 落とす　Z 一手戻す　1〜9 ピースを選ぶ</li>
+          <li>指：触った列に合わせ、同じ所をもう一度触ると落とす</li>
+          <li>動いている途中にクリックすると、最後まで飛ばす</li>
+        </ul>
+      </details>
+    </section>
   </main>
+
+  <dialog id="clear">
+    <p class="clear-title">調合成功！</p>
+    <p id="clear-text"></p>
+    <div class="buttons">
+      <button id="btn-again">もう一度</button>
+      <button id="btn-next" class="primary">次の依頼へ</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="src/main.js"></script>
 </body>
 </html>

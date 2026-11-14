@@ -16,7 +16,10 @@ export function solve(stage, opts) {
 }
 
 // prune: false で行き止まりの見切りを止める（見切りが答えを取りこぼしていないかのテスト用）。
-export function solveState(root, { maxNodes = 2_000_000, prune: usePrune = true } = {}) {
+// examples: 答えの例をいくつ返すか（クリアしたときの盤面ごとに1つ）。
+// feature: 1手で起きたこと（events）を受け取り、狙いの気付きを使ったかを返す関数。
+//   渡すと pathsWithoutFeature（その気付きを一度も使わない道筋の数）も数える。0 なら気付きが必要。
+export function solveState(root, { maxNodes = 2_000_000, prune: usePrune = true, examples = 0, feature = null } = {}) {
   const prune = usePrune && canPrune(root);
   const memo = new Map();
   const cleared = new Set();
@@ -29,17 +32,17 @@ export function solveState(root, { maxNodes = 2_000_000, prune: usePrune = true 
     if (known) return known;
     if (++nodes > maxNodes) {
       truncated = true;
-      return { total: 0, noReact: 0 };
+      return { total: 0, noReact: 0, noFeat: 0 };
     }
     let res;
     if (prune && deadEnd(s)) {
-      res = { total: 0, noReact: 0 };
+      res = { total: 0, noReact: 0, noFeat: 0 };
     } else if (s.hand.length === 0) {
       const ok = isCleared(s);
       if (ok) cleared.add(key);
-      res = { total: ok ? 1 : 0, noReact: ok ? 1 : 0 };
+      res = { total: ok ? 1 : 0, noReact: ok ? 1 : 0, noFeat: ok ? 1 : 0 };
     } else {
-      let total = 0, noReact = 0;
+      let total = 0, noReact = 0, noFeat = 0;
       const occ = occupancy(s);
       for (const m of moves(s)) {
         const d = drop(s, m.hand, m.r, m.x, occ);
@@ -47,8 +50,9 @@ export function solveState(root, { maxNodes = 2_000_000, prune: usePrune = true 
         const c = count(d.state);
         total += c.total;
         if (!d.events.some(e => e.type === 'react')) noReact += c.noReact;
+        if (feature && !feature(d.events)) noFeat += c.noFeat;
       }
-      res = { total, noReact };
+      res = { total, noReact, noFeat };
     }
     memo.set(key, res);
     return res;
@@ -64,11 +68,37 @@ export function solveState(root, { maxNodes = 2_000_000, prune: usePrune = true 
       if (c.total > 0) firstMoves.push({ ...m, mat: root.hand[m.hand].mat, orig: root.hand[m.hand].orig, paths: c.total });
     }
   }
+  // 答えの例：クリアしたときの盤面ごとに、そこへ行く手順を1つずつ（examples 個まで）。
+  const exampleList = [];
+  if (examples > 0 && top.total > 0) {
+    const visited = new Set();
+    const walk = (s, path) => {
+      if (exampleList.length >= examples) return;
+      const key = stateKey(s);
+      if (visited.has(key)) return;
+      visited.add(key);
+      if (s.hand.length === 0) {
+        if (isCleared(s)) exampleList.push({ moves: path, state: s });
+        return;
+      }
+      const occ = occupancy(s);
+      for (const m of moves(s)) {
+        const d = drop(s, m.hand, m.r, m.x, occ);
+        if (!d.ok || !(memo.get(stateKey(d.state))?.total > 0)) continue;
+        const reacted = d.events.filter(e => e.type === 'react').length;
+        walk(d.state, [...path, { orig: s.hand[m.hand].orig, mat: s.hand[m.hand].mat, r: m.r, x: m.x, reacted }]);
+      }
+    };
+    walk(root, []);
+  }
+
   return {
     solvable: top.total > 0,
     paths: top.total,
     pathsNoReaction: top.noReact,
+    pathsWithoutFeature: feature ? top.noFeat : null,
     finalStates: cleared.size,
+    examples: exampleList,
     firstMoves,
     nodes,
     truncated,
@@ -148,6 +178,23 @@ export function moves(s) {
   return out;
 }
 
+// 盤面を文字で描く（ソルバーの報告用）。# 壁、+ 空いた目標、. 空いた空きマス、素材は1文字。
+const MAT_LETTER = { lead: 'L', gold: 'G', fire: 'F', ice: 'I', water: 'W', vine: 'V', slime: 'S', sand: 'D', horn: 'H', stone: 'P' };
+export function boardText(s) {
+  const occ = occupancy(s);
+  const rows = [];
+  for (let y = 0; y < s.H; y++) {
+    let row = '';
+    for (let x = 0; x < s.W; x++) {
+      const o = occ[y * s.W + x];
+      const t = s.terrain[y][x];
+      row += o ? MAT_LETTER[s.pieces[o - 1].mat] : t;
+    }
+    rows.push(row);
+  }
+  return rows;
+}
+
 // 狙いの手順（stage.solution）をそのまま打って、どうなるかを返す。
 export function checkSolution(stage) {
   let s = createState(stage);
@@ -163,3 +210,18 @@ export function checkSolution(stage) {
   }
   return { ok: true, cleared: isCleared(s), reactions, state: s };
 }
+
+// よく使う「気付き」の判定（ステージを作るときに feature へ渡す）。
+export const FEATURES = {
+  // 反応のあと、ピースが落ちた（仮の床が抜けて、上の物がまとめて落ちる）
+  fallAfterReact: events => {
+    const i = events.findIndex(e => e.type === 'react');
+    return i >= 0 && events.slice(i + 1).some(e => e.type === 'fall');
+  },
+  // 1手のうちに反応が2回以上（連鎖）
+  chain: events => events.filter(e => e.type === 'react').length >= 2,
+  // 反応が起きた
+  react: events => events.some(e => e.type === 'react'),
+  // 動かないピース（枠側の氷）が溶けた
+  frameMelt: events => events.some(e => e.type === 'react' && e.removed.some(r => r.fixed)),
+};

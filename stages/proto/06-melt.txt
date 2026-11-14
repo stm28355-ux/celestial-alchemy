@@ -1,0 +1,18 @@
+# 試作6（溶ける）：手持ちが器より多い。火種に触れた鱗は溶けて消える。
+format: 1
+id: proto-06
+title: 溶ける鱗
+request: 火の番人が、サラマンダーの火種を試してほしいと言っている。
+terrain:
+  ++++
+  ++++
+hand:
+  lead ##/#.
+  ice ###
+  lead ##./.##
+  fire #
+solution:
+  2 r0 x0
+  4 r0 x0
+  3 r0 x0
+  1 r1 x2

@@ -159,7 +159,7 @@ export function react(s) {
   s.pieces = s.pieces.filter((_, i) => !remove.has(i));
   return {
     type: 'react',
-    removed: removed.map(p => ({ id: p.id, mat: p.mat, cells: p.cells.map(c => [...c]), why: 'melt' })),
+    removed: removed.map(p => ({ id: p.id, mat: p.mat, fixed: p.fixed, cells: p.cells.map(c => [...c]), why: 'melt' })),
   };
 }
 

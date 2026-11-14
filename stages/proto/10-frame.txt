@@ -1,0 +1,29 @@
+# 試作10（枠側の氷）：器の底は鱗でできている。溶かすと、下にもう1段ある。
+format: 1
+id: proto-10
+title: 器の底
+request: 学院の先生が、古い器の底を調べてほしいと言っている。
+terrain:
+  ++++
+  ++++
+  ++++
+  ++++
+pieces:
+  ....
+  ....
+  aaaa
+  ....
+legend:
+  a: ice fixed
+hand:
+  lead ##./.##
+  lead ###
+  fire #
+  lead #./#./##
+  lead ##./.##
+solution:
+  3 r0 x1
+  2 r1 x0
+  1 r0 x1
+  5 r0 x0
+  4 r2 x2

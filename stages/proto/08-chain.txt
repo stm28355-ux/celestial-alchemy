@@ -1,0 +1,31 @@
+# 試作8（溶ける）：2段の連鎖。溶かして落ちた火種が、隣の鱗も溶かす。上の鉛も落ちる。
+format: 1
+id: proto-08
+title: 落ちる火種
+request: 氷室の番人が、床に張った鱗を全部どけてほしいと言っている。
+terrain:
+  ++++
+  ++++
+  ++++
+  ++++
+pieces:
+  ....
+  ....
+  .c..
+  abb.
+legend:
+  a: ice
+  b: ice
+  c: lead
+hand:
+  lead ####
+  lead ##/#.
+  fire #
+  lead ###
+  lead ####
+solution:
+  3 r0 x0
+  2 r2 x2
+  4 r0 x0
+  1 r0 x0
+  5 r0 x0
