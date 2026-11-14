@@ -1,0 +1,10 @@
+{
+  "name": "celestial-alchemy",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "serve": "node tools/serve.mjs",
+    "solve": "node tools/solve.mjs"
+  }
+}
