@@ -1,0 +1,248 @@
+[
+ {
+  "id": "new-001",
+  "theme": "連鎖",
+  "bits": 17,
+  "text": "format: 1\nid: new-001\ntitle: 時計塔の番人の飾り板\nrequest: 時計塔の番人が、飾り板を作ってほしいと言っている。\nterrain:\n  .++++\n  .++++\n  ++xx.\n  x+++x\nhand:\n  ice ##/#.\n  lead ##./.##\n  lead .#/.#/##\n  fire #\n  ice ##/#.\n  ice #\nsolution:\n  1 r0 x2\n  2 r0 x0\n  4 r0 x3\n  3 r1 x1\n  5 r1 x3\n  6 r0 x2\n"
+ },
+ {
+  "id": "new-002",
+  "theme": "連鎖",
+  "bits": 16.5,
+  "text": "format: 1\nid: new-002\ntitle: 旅の吟遊詩人の飾り板\nrequest: 旅の吟遊詩人が、飾り板を作ってほしいと言っている。\nterrain:\n  ++x.x\n  ++++x\n  x++x.\n  +x###\nhand:\n  fire #\n  lead ##/#.\n  ice #/#\n  ice #/#\n  ice ###\nsolution:\n  1 r0 x0\n  3 r0 x0\n  4 r1 x1\n  5 r0 x1\n  2 r0 x0\n"
+ },
+ {
+  "id": "new-003",
+  "theme": "連鎖",
+  "bits": 16.5,
+  "text": "format: 1\nid: new-003\ntitle: 時計塔の番人の踏み台\nrequest: 時計塔の番人が、踏み台を作ってほしいと言っている。\nterrain:\n  .+.+++\n  x+x.++\n  +++x+.\nhand:\n  ice #\n  ice ##\n  lead ##./.##\n  fire ##\n  lead #./#./##\nsolution:\n  1 r0 x0\n  2 r1 x3\n  3 r1 x4\n  4 r0 x3\n  5 r0 x1\n"
+ },
+ {
+  "id": "new-004",
+  "theme": "連鎖",
+  "bits": 16.5,
+  "text": "format: 1\nid: new-004\ntitle: 旅の吟遊詩人の仕切り板\nrequest: 旅の吟遊詩人が、仕切り板を作ってほしいと言っている。\nterrain:\n  +++x..\n  +xx+x.\n  +x++.+\nhand:\n  ice #\n  ice #/#\n  ice ##/#.\n  fire #\n  lead ###\nsolution:\n  1 r0 x4\n  2 r0 x0\n  3 r2 x2\n  4 r0 x5\n  5 r0 x0\n"
+ },
+ {
+  "id": "new-005",
+  "theme": "連鎖",
+  "bits": 16.3,
+  "text": "format: 1\nid: new-005\ntitle: 時計塔の番人の踏み台\nrequest: 時計塔の番人が、踏み台を作ってほしいと言っている。\nterrain:\n  xxx++x\n  .++x++\n  +++++.\nhand:\n  ice ##\n  ice ##\n  lead ##/##\n  fire #\n  lead ##./.##\n  ice ##\nsolution:\n  1 r0 x0\n  2 r0 x0\n  4 r0 x0\n  3 r0 x1\n  6 r0 x3\n  5 r0 x3\n"
+ },
+ {
+  "id": "new-006",
+  "theme": "連鎖",
+  "bits": 16.2,
+  "text": "format: 1\nid: new-006\ntitle: 時計塔の番人の重し\nrequest: 時計塔の番人が、重しを作ってほしいと言っている。\nterrain:\n  ..x+\n  .+++\n  x++.\n  ++x+\nhand:\n  ice ###\n  fire #\n  ice #\n  ice ##/#.\n  lead #./#./##\nsolution:\n  1 r0 x0\n  2 r0 x3\n  3 r0 x0\n  4 r0 x1\n  5 r3 x1\n"
+ },
+ {
+  "id": "new-007",
+  "theme": "連鎖",
+  "bits": 16.2,
+  "text": "format: 1\nid: new-007\ntitle: 時計塔の番人の踏み台\nrequest: 時計塔の番人が、踏み台を作ってほしいと言っている。\nterrain:\n  x+++++\n  ++x+++\n  ++x+xx\nhand:\n  ice #/#\n  ice #\n  ice ###\n  lead ###\n  lead .##/##.\n  fire #\nsolution:\n  1 r1 x0\n  2 r0 x2\n  5 r0 x0\n  6 r0 x3\n  4 r0 x3\n  3 r0 x3\n"
+ },
+ {
+  "id": "new-008",
+  "theme": "枠の氷",
+  "bits": 16.4,
+  "text": "format: 1\nid: new-008\ntitle: 山あいの鍛冶屋の箱の底板\nrequest: 山あいの鍛冶屋が、箱の底板を作ってほしいと言っている。\nterrain:\n  .+++.\n  .+++.\n  .+++.\n  ..++.\n  +x+++\npieces:\n  .....\n  .....\n  .....\n  .....\n  .a...\nlegend:\n  a: ice fixed\nhand:\n  lead ####\n  lead #\n  lead #./#./##\n  lead ##./.##\n  fire #\n  lead #\nsolution:\n  2 r0 x4\n  3 r0 x2\n  1 r1 x3\n  4 r1 x1\n  5 r0 x0\n  6 r0 x1\n"
+ },
+ {
+  "id": "new-009",
+  "theme": "枠の氷",
+  "bits": 16.3,
+  "text": "format: 1\nid: new-009\ntitle: 王立図書館の司書の仕切り板\nrequest: 王立図書館の司書が、仕切り板を作ってほしいと言っている。\nterrain:\n  ..++..\n  +.+++.\n  +.++++\n  ++.+++\n  +..+++\npieces:\n  ......\n  ......\n  ......\n  ......\n  .a....\nlegend:\n  a: ice fixed\nhand:\n  lead .#/.#/##\n  fire #\n  lead #./#./##\n  lead ####\n  lead ####\n  lead ###\nsolution:\n  2 r0 x0\n  3 r0 x0\n  4 r1 x3\n  1 r2 x2\n  5 r1 x4\n  6 r1 x5\n"
+ },
+ {
+  "id": "new-010",
+  "theme": "枠の氷",
+  "bits": 16,
+  "text": "format: 1\nid: new-010\ntitle: 王立図書館の司書の箱の底板\nrequest: 王立図書館の司書が、箱の底板を作ってほしいと言っている。\nterrain:\n  .+++.\n  ...+.\n  +.++.\n  +x+.+\npieces:\n  .....\n  .....\n  .....\n  .a...\nlegend:\n  a: ice fixed\nhand:\n  lead #\n  lead #\n  fire #\n  lead ###\n  lead ##./.##\nsolution:\n  1 r0 x4\n  3 r0 x0\n  2 r0 x0\n  5 r1 x2\n  4 r0 x1\n"
+ },
+ {
+  "id": "new-011",
+  "theme": "枠の氷",
+  "bits": 16,
+  "text": "format: 1\nid: new-011\ntitle: 山あいの鍛冶屋の型板\nrequest: 山あいの鍛冶屋が、型板を作ってほしいと言っている。\nterrain:\n  .++.+.\n  +++++.\n  ++.++.\n  +x+++.\npieces:\n  ......\n  ......\n  ......\n  .a....\nlegend:\n  a: ice fixed\nhand:\n  lead ###/.#.\n  fire #\n  lead ##./.##\n  lead ##/##\n  lead ###\nsolution:\n  1 r2 x2\n  2 r0 x0\n  4 r0 x0\n  3 r0 x1\n  5 r1 x4\n"
+ },
+ {
+  "id": "new-012",
+  "theme": "金と星砂",
+  "bits": 17.4,
+  "text": "format: 1\nid: new-012\ntitle: 温室の番人の錘\nrequest: 温室の番人が、錘を作ってほしいと言っている。\nterrain:\n  ++G..\n  +GGG.\n  +G..+\n  GG.L+\nhand:\n  lead #./##\n  stone #\n  lead #./##\n  sand ###\n  lead ###/.#.\nsolution:\n  1 r3 x0\n  3 r3 x3\n  4 r1 x0\n  5 r2 x1\n  2 r0 x1\n"
+ },
+ {
+  "id": "new-013",
+  "theme": "金と星砂",
+  "bits": 17.3,
+  "text": "format: 1\nid: new-013\ntitle: 修道院の写本係の仕切り板\nrequest: 修道院の写本係が、仕切り板を作ってほしいと言っている。\nterrain:\n  G.G++.\n  G.GGG.\n  GGG...\n  GGG+.+\nhand:\n  lead ####\n  sand ###\n  lead .#/.#/##\n  lead ##/##\n  stone #\nsolution:\n  1 r1 x0\n  4 r0 x1\n  5 r0 x3\n  3 r1 x2\n  2 r0 x3\n"
+ },
+ {
+  "id": "new-014",
+  "theme": "金と星砂",
+  "bits": 17.2,
+  "text": "format: 1\nid: new-014\ntitle: 温室の番人の箱の底板\nrequest: 温室の番人が、箱の底板を作ってほしいと言っている。\nterrain:\n  .GGG+\n  GGGGG\n  GG...\n  G++++\nhand:\n  lead ###\n  lead ##./.##\n  sand ####\n  stone #\n  lead ###/.#.\nsolution:\n  1 r1 x0\n  3 r0 x1\n  5 r3 x1\n  2 r0 x2\n  4 r0 x4\n"
+ },
+ {
+  "id": "new-015",
+  "theme": "金と星砂",
+  "bits": 17.1,
+  "text": "format: 1\nid: new-015\ntitle: 修道院の写本係の留め金\nrequest: 修道院の写本係が、留め金を作ってほしいと言っている。\nterrain:\n  .GGG\n  .GGG\n  +G+G\n  +.G.\n  GGG.\nhand:\n  lead ###/.#.\n  lead #./#./##\n  lead #./#./##\n  sand ##\n  stone #\nsolution:\n  2 r3 x0\n  4 r1 x0\n  5 r0 x2\n  1 r3 x1\n  3 r2 x2\n"
+ },
+ {
+  "id": "new-016",
+  "theme": "金と星砂",
+  "bits": 17,
+  "text": "format: 1\nid: new-016\ntitle: 温室の番人の文鎮\nrequest: 温室の番人が、文鎮を作ってほしいと言っている。\nterrain:\n  .++GG\n  .GGGG\n  .GG.+\n  #.G##\nhand:\n  lead #\n  stone #\n  sand ##\n  lead .##/##.\n  lead #./#./##\nsolution:\n  2 r0 x4\n  4 r1 x1\n  5 r3 x2\n  1 r0 x3\n  3 r0 x1\n"
+ },
+ {
+  "id": "new-017",
+  "theme": "金と星砂",
+  "bits": 16.7,
+  "text": "format: 1\nid: new-017\ntitle: 修道院の写本係の飾り板\nrequest: 修道院の写本係が、飾り板を作ってほしいと言っている。\nterrain:\n  .+GGG\n  GGGG.\n  GGGG.\n  ++...\nhand:\n  lead #./##\n  lead #./#./##\n  sand ##\n  stone #\n  lead #./#./##\nsolution:\n  3 r0 x0\n  2 r3 x1\n  1 r1 x0\n  4 r0 x1\n  5 r1 x2\n"
+ },
+ {
+  "id": "new-018",
+  "theme": "金と星砂",
+  "bits": 16.6,
+  "text": "format: 1\nid: new-018\ntitle: 修道院の写本係の飾り板\nrequest: 修道院の写本係が、飾り板を作ってほしいと言っている。\nterrain:\n  L+LLL\n  .LLL.\n  .LLL+\n  +..++\nhand:\n  stone #\n  lead .#/.#/##\n  sand ##/#.\n  lead .##/##.\n  lead ###\nsolution:\n  1 r0 x0\n  3 r1 x3\n  2 r1 x1\n  4 r0 x2\n  5 r0 x0\n"
+ },
+ {
+  "id": "new-019",
+  "theme": "金と星砂",
+  "bits": 16.5,
+  "text": "format: 1\nid: new-019\ntitle: 温室の番人の鋳型\nrequest: 温室の番人が、鋳型を作ってほしいと言っている。\nterrain:\n  GG.G\n  .GGG\n  .+GG\n  .+G.\n  .++.\nhand:\n  sand ###\n  lead .#/.#/##\n  lead ##./.##\n  stone #\n  lead #\nsolution:\n  1 r1 x1\n  4 r0 x2\n  5 r0 x2\n  2 r0 x2\n  3 r0 x0\n"
+ },
+ {
+  "id": "new-020",
+  "theme": "金と星砂",
+  "bits": 16.4,
+  "text": "format: 1\nid: new-020\ntitle: 橋の番人の台座\nrequest: 橋の番人が、台座を作ってほしいと言っている。\nterrain:\n  +GG.\n  GG..\n  G...\n  GG..\n  GGG.\nhand:\n  lead ##/##\n  stone #\n  lead #\n  lead ##\n  lead ##/#.\nsolution:\n  1 r0 x0\n  3 r0 x2\n  5 r0 x0\n  2 r0 x0\n  4 r0 x1\n"
+ },
+ {
+  "id": "new-021",
+  "theme": "金と星砂",
+  "bits": 16.4,
+  "text": "format: 1\nid: new-021\ntitle: 橋の番人の飾り板\nrequest: 橋の番人が、飾り板を作ってほしいと言っている。\nterrain:\n  GGG.G\n  ..G+G\n  ..GGG\n  .GGGG\n  ...G.\nhand:\n  lead .#/.#/##\n  stone #\n  lead .#/.#/##\n  lead .#/.#/##\n  lead ##\nsolution:\n  1 r3 x1\n  3 r3 x2\n  2 r0 x3\n  4 r3 x0\n  5 r1 x4\n"
+ },
+ {
+  "id": "new-022",
+  "theme": "金と星砂",
+  "bits": 16.2,
+  "text": "format: 1\nid: new-022\ntitle: 温室の番人の蓋\nrequest: 温室の番人が、蓋を作ってほしいと言っている。\nterrain:\n  ..+.L.\n  .L+.+L\n  .LL+LL\nhand:\n  lead #./##\n  sand ##\n  stone #\n  lead ##/##\n  lead #\nsolution:\n  1 r0 x1\n  2 r0 x2\n  3 r0 x2\n  4 r0 x4\n  5 r0 x4\n"
+ },
+ {
+  "id": "new-023",
+  "theme": "金と星砂",
+  "bits": 16.2,
+  "text": "format: 1\nid: new-023\ntitle: 温室の番人の踏み台\nrequest: 温室の番人が、踏み台を作ってほしいと言っている。\nterrain:\n  G.GGG.\n  G.G...\n  GGG.L+\n  .+G.#.\nhand:\n  lead ###\n  lead ##\n  lead #./#./##\n  stone #\n  lead ###\nsolution:\n  1 r1 x2\n  2 r0 x4\n  4 r0 x1\n  3 r0 x0\n  5 r0 x2\n"
+ },
+ {
+  "id": "new-024",
+  "theme": "金と星砂",
+  "bits": 16.1,
+  "text": "format: 1\nid: new-024\ntitle: 修道院の写本係の文鎮\nrequest: 修道院の写本係が、文鎮を作ってほしいと言っている。\nterrain:\n  ..LLL\n  .+++.\n  L+L.+\n  LLL+#\nhand:\n  lead #./##\n  lead ##/#.\n  sand #./##\n  lead ###/.#.\n  stone #\nsolution:\n  1 r0 x0\n  2 r3 x2\n  3 r0 x1\n  5 r0 x4\n  4 r0 x2\n"
+ },
+ {
+  "id": "new-025",
+  "theme": "金と星砂",
+  "bits": 16.1,
+  "text": "format: 1\nid: new-025\ntitle: 温室の番人の型板\nrequest: 温室の番人が、型板を作ってほしいと言っている。\nterrain:\n  .+.+..\n  .+.GGG\n  .+GGGG\n  #+#.GG\nhand:\n  lead ##./.##\n  lead #\n  sand ####\n  stone #\n  lead .#/.#/##\nsolution:\n  1 r0 x3\n  2 r0 x2\n  3 r1 x1\n  5 r3 x3\n  4 r0 x3\n"
+ },
+ {
+  "id": "new-026",
+  "theme": "金と星砂",
+  "bits": 16,
+  "text": "format: 1\nid: new-026\ntitle: 温室の番人の台座\nrequest: 温室の番人が、台座を作ってほしいと言っている。\nterrain:\n  ..GG\n  .GG.\n  G++.\n  GG+.\nhand:\n  stone #\n  lead #\n  sand ##\n  lead #./##\n  lead ##/#.\nsolution:\n  3 r1 x2\n  4 r0 x0\n  1 r0 x1\n  2 r0 x1\n  5 r0 x2\n"
+ },
+ {
+  "id": "new-027",
+  "theme": "金と星砂",
+  "bits": 16,
+  "text": "format: 1\nid: new-027\ntitle: 温室の番人の文鎮\nrequest: 温室の番人が、文鎮を作ってほしいと言っている。\nterrain:\n  .LL.+\n  +.L.+\n  LLLL+\n  .+L++\nhand:\n  sand ###\n  lead ##/#.\n  lead #./#./##\n  stone #\n  lead .##/##.\nsolution:\n  1 r1 x4\n  2 r2 x2\n  4 r0 x4\n  5 r1 x0\n  3 r2 x1\n"
+ },
+ {
+  "id": "new-028",
+  "theme": "金",
+  "bits": 16.8,
+  "text": "format: 1\nid: new-028\ntitle: 雑貨屋の店主の留め金\nrequest: 雑貨屋の店主が、留め金を作ってほしいと言っている。\nterrain:\n  .+G.\n  GGG.\n  GGG.\n  .GG+\n  .GG+\nhand:\n  ice #/#\n  lead ####\n  stone #\n  lead #./#./##\n  lead #./##\nsolution:\n  1 r0 x3\n  4 r0 x1\n  2 r1 x2\n  5 r1 x0\n  3 r0 x1\n"
+ },
+ {
+  "id": "new-029",
+  "theme": "金",
+  "bits": 16.7,
+  "text": "format: 1\nid: new-029\ntitle: 橋の番人の飾り板\nrequest: 橋の番人が、飾り板を作ってほしいと言っている。\nterrain:\n  +++..\n  ..G.+\n  GGGGG\n  GGG..\n  #.G#.\nhand:\n  lead .#/.#/##\n  ice ###\n  lead ##\n  stone #\n  lead .#/.#/##\nsolution:\n  1 r3 x0\n  3 r0 x0\n  5 r1 x2\n  2 r0 x0\n  4 r0 x4\n"
+ },
+ {
+  "id": "new-030",
+  "theme": "金",
+  "bits": 16.6,
+  "text": "format: 1\nid: new-030\ntitle: 雑貨屋の店主の文鎮\nrequest: 雑貨屋の店主が、文鎮を作ってほしいと言っている。\nterrain:\n  ....+\n  GGGGG\n  G.G.+\n  GGG.+\n  G.G.+\nhand:\n  stone #\n  lead ####\n  lead ####\n  lead ###/.#.\n  ice ###\nsolution:\n  2 r1 x0\n  4 r1 x1\n  5 r1 x4\n  3 r0 x1\n  1 r0 x4\n"
+ },
+ {
+  "id": "new-031",
+  "theme": "金",
+  "bits": 16.5,
+  "text": "format: 1\nid: new-031\ntitle: 橋の番人の型板\nrequest: 橋の番人が、型板を作ってほしいと言っている。\nterrain:\n  LL.GG.\n  LL..GG\n  .+..GG\n  .++GG.\nhand:\n  lead ##./.##\n  lead ##/##\n  stone #\n  ice ##\n  lead .##/##.\nsolution:\n  3 r0 x2\n  4 r1 x1\n  2 r0 x0\n  5 r0 x3\n  1 r0 x3\n"
+ },
+ {
+  "id": "new-032",
+  "theme": "金",
+  "bits": 16.5,
+  "text": "format: 1\nid: new-032\ntitle: 橋の番人の留め金\nrequest: 橋の番人が、留め金を作ってほしいと言っている。\nterrain:\n  ...+\n  GGGG\n  GGGG\n  ++.G\n  .GGG\nhand:\n  lead #\n  lead ##/#.\n  stone #\n  ice #/#\n  lead ##/##\n  lead ##/##\nsolution:\n  1 r0 x1\n  2 r2 x2\n  4 r1 x0\n  5 r0 x0\n  6 r0 x2\n  3 r0 x3\n"
+ },
+ {
+  "id": "new-033",
+  "theme": "金",
+  "bits": 16.4,
+  "text": "format: 1\nid: new-033\ntitle: 雑貨屋の店主の台座\nrequest: 雑貨屋の店主が、台座を作ってほしいと言っている。\nterrain:\n  ..L.\n  ..+L\n  .G+L\n  .++L\nhand:\n  stone #\n  lead #\n  lead #\n  ice ##\n  lead #./#./##\nsolution:\n  1 r0 x1\n  2 r0 x1\n  4 r1 x2\n  5 r2 x2\n  3 r0 x2\n"
+ },
+ {
+  "id": "new-034",
+  "theme": "金",
+  "bits": 16.3,
+  "text": "format: 1\nid: new-034\ntitle: 橋の番人の鋳型\nrequest: 橋の番人が、鋳型を作ってほしいと言っている。\nterrain:\n  .+++\n  GG.+\n  GGGG\n  GGGG\n  .GGG\nhand:\n  lead ##./.##\n  lead .#/.#/##\n  ice ###\n  lead #\n  lead .##/##.\n  stone #\nsolution:\n  2 r0 x2\n  4 r0 x2\n  5 r1 x0\n  1 r0 x0\n  6 r0 x3\n  3 r0 x1\n"
+ },
+ {
+  "id": "new-035",
+  "theme": "金",
+  "bits": 16.2,
+  "text": "format: 1\nid: new-035\ntitle: 雑貨屋の店主の文鎮\nrequest: 雑貨屋の店主が、文鎮を作ってほしいと言っている。\nterrain:\n  +GG..\n  GGGG.\n  ..GG.\n  +GGGG\n  +#..#\nhand:\n  stone #\n  lead #./#./##\n  ice #/#\n  lead .#/.#/##\n  lead .##/##.\nsolution:\n  2 r0 x3\n  3 r0 x0\n  4 r0 x1\n  5 r0 x0\n  1 r0 x0\n"
+ },
+ {
+  "id": "new-036",
+  "theme": "金",
+  "bits": 16.2,
+  "text": "format: 1\nid: new-036\ntitle: 雑貨屋の店主の鋳型\nrequest: 雑貨屋の店主が、鋳型を作ってほしいと言っている。\nterrain:\n  +.GG\n  ++.G\n  +GGG\n  GG.G\n  G...\nhand:\n  lead #./##\n  lead .#/.#/##\n  stone #\n  ice ###\n  lead #./##\nsolution:\n  1 r1 x0\n  2 r3 x1\n  3 r0 x1\n  4 r1 x0\n  5 r2 x2\n"
+ },
+ {
+  "id": "new-037",
+  "theme": "金",
+  "bits": 16.2,
+  "text": "format: 1\nid: new-037\ntitle: 雑貨屋の店主の台座\nrequest: 雑貨屋の店主が、台座を作ってほしいと言っている。\nterrain:\n  G...\n  G.GG\n  GGG.\n  +++G\nhand:\n  ice ##\n  lead #./#./##\n  stone #\n  lead ##/#.\n  lead #\nsolution:\n  1 r0 x0\n  2 r0 x0\n  3 r0 x2\n  5 r0 x3\n  4 r0 x2\n"
+ },
+ {
+  "id": "new-038",
+  "theme": "金",
+  "bits": 16.1,
+  "text": "format: 1\nid: new-038\ntitle: 橋の番人の飾り板\nrequest: 橋の番人が、飾り板を作ってほしいと言っている。\nterrain:\n  .+++.\n  GG...\n  G.+G.\n  GGGGG\nhand:\n  lead ###\n  lead ##/#.\n  lead ##/#.\n  ice ###\n  stone #\nsolution:\n  1 r0 x0\n  2 r0 x0\n  3 r3 x3\n  5 r0 x2\n  4 r0 x1\n"
+ },
+ {
+  "id": "new-039",
+  "theme": "金",
+  "bits": 16.1,
+  "text": "format: 1\nid: new-039\ntitle: 橋の番人の鋳型\nrequest: 橋の番人が、鋳型を作ってほしいと言っている。\nterrain:\n  .+.G\n  L+.G\n  LL.G\n  LL.G\n  L..+\nhand:\n  lead ####\n  lead .##/##.\n  stone #\n  lead ##\n  ice ##\nsolution:\n  3 r0 x3\n  1 r1 x3\n  4 r1 x0\n  2 r1 x0\n  5 r1 x1\n"
+ },
+ {
+  "id": "new-040",
+  "theme": "金",
+  "bits": 16,
+  "text": "format: 1\nid: new-040\ntitle: 雑貨屋の店主の型板\nrequest: 雑貨屋の店主が、型板を作ってほしいと言っている。\nterrain:\n  +++LL+\n  G+.+..\n  GG.LL.\n  G.#.L.\nhand:\n  stone #\n  ice ##/#.\n  lead .##/##.\n  lead ###/.#.\n  lead ###\nsolution:\n  3 r1 x3\n  4 r3 x0\n  1 r0 x0\n  2 r0 x1\n  5 r0 x3\n"
+ },
+ {
+  "id": "new-041",
+  "theme": "金",
+  "bits": 16,
+  "text": "format: 1\nid: new-041\ntitle: 雑貨屋の店主の踏み台\nrequest: 雑貨屋の店主が、踏み台を作ってほしいと言っている。\nterrain:\n  GGG+..\n  G++GGG\n  ..+GG.\nhand:\n  lead .##/##.\n  ice ##/#.\n  lead #./#./##\n  stone #\n  lead #\nsolution:\n  1 r0 x3\n  2 r1 x1\n  3 r1 x0\n  5 r0 x3\n  4 r0 x3\n"
+ }
+]

@@ -517,3 +517,36 @@ test('部屋分け：壁で区切られた部屋ごとに調べても、全体�
   }
   assert.ok(compared > 40);
 });
+
+// ── 問題の生成と依頼の掲示板 ──
+test('生成：作った問題は狙いの手順でクリアでき、答えが1つ', async () => {
+  const { makeCandidate, rng } = await import('../src/core/generate.js');
+  // 作れることが分かっている種で確かめる（同じ種からは、いつも同じ問題ができる）
+  for (const [seed, bits] of [[1935369, 20.9], [4406105, 19.3]]) {
+    const c = makeCandidate(rng(seed));
+    assert.ok(c, `種 ${seed}：作れない`);
+    assert.equal(c.bits, bits);
+    const st = parseStage(stageToText(c.raw));
+    const ch = checkSolution(st);
+    assert.ok(ch.ok && ch.cleared, `種 ${seed}：狙いの手順でクリアできない`);
+    assert.equal(solve(st).finalStates, 1);
+  }
+});
+
+// 全問の確かめは時間がかかる（数分）。ふだんは10問おきに1問、BOARD_ALL=1（npm run test:board）で全問
+test('依頼の掲示板：どの問題も読めて、狙いの手順でクリアでき、答えが1つ', async () => {
+  const board = JSON.parse(await readFile(new URL('../stages/board.json', import.meta.url), 'utf8'));
+  assert.ok(board.length >= 100, `問題が足りない（${board.length}）`);
+  const ids = new Set();
+  for (const [k, b] of board.entries()) {
+    assert.ok(!ids.has(b.id), `id が重なっている：${b.id}`);
+    ids.add(b.id);
+    const st = parseStage(b.text);
+    assert.deepEqual(initialProblems(st), [], b.id);
+    const c = checkSolution(st);
+    assert.ok(c.ok && c.cleared, `${b.id}：狙いの手順でクリアできない`);
+    if (!process.env.BOARD_ALL && k % 10 !== 0) continue;
+    const r = solve(st, { maxNodes: 400000 });
+    assert.ok(!r.truncated && r.finalStates === 1, `${b.id}：答えが1つでない（${r.finalStates}）`);
+  }
+});

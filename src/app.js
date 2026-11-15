@@ -6,10 +6,11 @@
 //   #/note        師匠のノート
 //   #/edit        エディタ（#/edit/play で試しに遊ぶ）
 //   #/s/<文字>    共有されたステージ
+//   #/board       依頼の掲示板（#/req/3 で3番の依頼）
 
 import { parseStage, buildStage } from './core/stage.js';
 import { MATERIALS } from './core/materials.js';
-import { decodeStage } from './core/share.js';
+import { decodeStage, encodeStage } from './core/share.js';
 import { Game } from './ui/game.js';
 import { Replay } from './ui/replay.js';
 import { drawPiece } from './ui/render.js';
@@ -19,6 +20,7 @@ import { openEditor, editorPlayStage, markEditorCleared, loadIntoEditor } from '
 const view = document.querySelector('#view');
 let chapters = [];
 let notes = [];
+let board = null; // 依頼の掲示板（はじめて開くときに読む）
 let cleanup = null; // 今の画面の後片付け
 
 async function boot() {
@@ -54,6 +56,10 @@ function route() {
       return;
     case 's':
       return showShared(parts.slice(1).join('/'));
+    case 'board':
+      return showBoard();
+    case 'req':
+      return showRequest(Number(parts[1]));
     default:
       return showTitle();
   }
@@ -86,7 +92,7 @@ function showTitle() {
       <p class="subtitle">見習い錬金術師ノエルと、7つの天体</p>
       <div class="menu">
         <a class="menu-item primary" href="#/story">物語<small>師匠をたずねて、称号「天体」をめざす</small></a>
-        <span class="menu-item disabled">依頼の掲示板<small>準備中（フェーズ8）</small></span>
+        <a class="menu-item" href="#/board">依頼の掲示板<small>難しい依頼が100問。新しい依頼も探せる</small></a>
         <a class="menu-item" href="#/edit">自分で作る<small>器と手持ちを決めて、共有URLで遊んでもらう</small></a>
         <a class="menu-item" href="#/note">師匠のノート<small>覚えた素材と、お手本</small></a>
       </div>
@@ -243,6 +249,89 @@ function showPlay(i, n) {
     clearDialog(text, [
       { label: 'もう一度', run: () => game.reset() },
       next ? { label: '次の依頼へ', href: next, primary: true } : { label: '章をえらぶ', href: '#/story', primary: true },
+    ]);
+  });
+}
+
+// ── 依頼の掲示板 ──
+async function loadBoard() {
+  if (!board) board = (await fetchJSON('stages/board.json')).map(b => ({ ...b, stage: parseStage(b.text) }));
+  return board;
+}
+
+const THEME_MATS = mats => [...new Set(mats)].filter(m => m !== 'lead').map(m => MATERIALS[m].short).join('・') || '鉛';
+
+async function showBoard() {
+  const list = await loadBoard();
+  if (location.hash !== '#/board') return;
+  const done = list.filter(b => save.isCleared(b.id)).length;
+  view.innerHTML = `
+    <section class="page">
+      <p class="back"><a href="#/">← タイトル</a></p>
+      <h2>依頼の掲示板 <small>${done} / ${list.length}</small></h2>
+      <p class="master-line">「腕の立つ錬金術師へ。どれも一筋縄ではいかない依頼ばかりだ。」</p>
+      <div class="board-new">
+        <button id="find-new">新しい依頼を探す</button>
+        <span id="find-status" class="ed-note">掲示板にない依頼を、ランダムに1つ出します（URLで人にも渡せます）</span>
+      </div>
+      <ol class="stage-list board-list">
+        ${list
+          .map((b, k) => {
+            const s = b.stage;
+            const mats = THEME_MATS([...s.hand.map(h => h.mat), ...s.pieces.map(p => p.mat)]);
+            const cls = save.isCleared(b.id) ? ' cleared' : '';
+            return `<li><a class="stage-item${cls}" href="#/req/${k + 1}"><span class="num">${k + 1}</span><span class="name">${escapeHTML(s.title)}</span><span class="req">${mats}</span></a></li>`;
+          })
+          .join('')}
+      </ol>
+    </section>`;
+  const btn = view.querySelector('#find-new');
+  const status = view.querySelector('#find-status');
+  let worker = null;
+  cleanup = () => worker?.terminate();
+  btn.onclick = async () => {
+    btn.disabled = true;
+    // 前もって作っておいた依頼から、まだ解いていないものをランダムに出す
+    const extra = await fetchJSON('stages/board-extra.json').catch(() => []);
+    const fresh = extra.filter(e => !save.isCleared(e.id));
+    if (fresh.length) {
+      const e = fresh[Math.floor(Math.random() * fresh.length)];
+      const st = parseStage(e.text);
+      location.hash = `#/s/${await encodeStage({ ...st.raw, title: '新しい依頼' })}`;
+      return;
+    }
+    // 全部解いたら、その場で作る（時間がかかる）
+    status.textContent = '探しています…';
+    worker = new Worker(new URL('./ui/gen-worker.js', import.meta.url), { type: 'module' });
+    worker.onmessage = async ev => {
+      const m = ev.data;
+      if (m.tried && !m.found) status.textContent = `探しています…（${m.tried} 個ためした）`;
+      if (m.timeout) {
+        status.textContent = '1分では見つかりませんでした。もう一度押してみてください。';
+        btn.disabled = false;
+        worker.terminate();
+      }
+      if (m.found) {
+        worker.terminate();
+        const raw = { ...m.found.raw, id: 'new', title: '新しい依頼', request: '掲示板に、まだ誰も見ていない依頼が貼られていた。' };
+        location.hash = `#/s/${await encodeStage(raw)}`;
+      }
+    };
+    worker.postMessage({ seed: Math.floor(Math.random() * 2 ** 31), min: 12, until: 60000 });
+  };
+}
+
+async function showRequest(n) {
+  const list = await loadBoard();
+  const b = list[n - 1];
+  if (!b) return (location.hash = '#/board');
+  const st = b.stage;
+  const game = mountGame(st, { heading: `依頼 ${n}. ${escapeHTML(st.title)}`, back: '<a href="#/board">← 依頼の掲示板</a>' }, () => {
+    save.markCleared(b.id);
+    const next = n < list.length ? `#/req/${n + 1}` : null;
+    clearDialog('依頼の品ができあがった。', [
+      { label: 'もう一度', run: () => game.reset() },
+      next ? { label: '次の依頼へ', href: next, primary: true } : { label: '掲示板へ', href: '#/board', primary: true },
     ]);
   });
 }

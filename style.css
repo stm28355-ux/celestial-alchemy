@@ -227,3 +227,7 @@ a.stage-item:hover { border-color: var(--accent); }
   .app-nav { margin-left: 0; }
 }
 .message.hint { color: #2f7a3e; }
+
+/* 依頼の掲示板 */
+.board-new { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 8px 0 16px; }
+.board-list { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
