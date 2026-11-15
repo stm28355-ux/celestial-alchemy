@@ -5,6 +5,8 @@
 // spec（JSON）：
 //   terrain    ["+++", "+++"]           器（terrains に複数並べてもよい）
 //   pieces, legend                       最初から置く素材（任意）
+//   open       ["floor 1", "right 0"]    外す枠（任意。低い枠・底の穴）。opens に候補をいくつも並べてもよい
+//   require.openMatters true なら、外した枠を付け直すと答えか道筋が増えること
 //   must       ["ice ##", "fire #"]      必ず入れる手持ち
 //   musts      [["sand ##"], ["sand ###"]] must の候補をいくつも並べて、全部ためす（must の代わり）
 //   pool       ["##", "###", ...]        足してよい鉛の形（省略すると1〜4マスの形と、5マスの器の形）
@@ -51,10 +53,17 @@ const cellsOf = s => parseShape(s).length;
 const results = [];
 let tried = 0;
 for (const must of spec.musts ?? [spec.must ?? []])
+for (const open of spec.opens ?? [spec.open ?? []])
 for (const terrain of terrains) {
   const head = ['format: 1', 'terrain:', ...terrain.map(r => `  ${r}`)];
+  if (open.length) head.push('open:', ...open.map(o => `  ${o}`));
   if (spec.pieces) head.push('pieces:', ...spec.pieces.map(r => `  ${r}`), 'legend:', ...Object.entries(spec.legend).map(([k, v]) => `  ${k}: ${v}`));
-  const base = parseStage(head.join('\n'));
+  let base;
+  try {
+    base = parseStage(head.join('\n'));
+  } catch {
+    continue; // 器に合わない枠の外し方（列の番号が器の外など）は飛ばす
+  }
   const problems = initialProblems(base);
   if (problems.length) {
     console.log(`器 ${terrain.join(' / ')} は最初の盤面に問題があるので飛ばす：${problems.join('、')}`);
@@ -129,6 +138,12 @@ for (const terrain of terrains) {
       const ra = solve(parseStage([...altHead, 'hand:', ...hand.map(h => `  ${h}`)].join('\n')), { maxNodes: spec.maxNodes ?? 300000 });
       return !(ra.finalStates > r.finalStates || ra.paths > r.paths || (ra.solvable && !r.solvable));
     })) continue;
+    // 外した枠を付け直すと、答えか道筋が増えること（枠のない所が置き方を縛っている）
+    if (req.openMatters && open.length) {
+      const closed = head.filter(l => l !== 'open:' && !open.some(o => l === `  ${o}`));
+      const ra = solve(parseStage([...closed, 'hand:', ...hand.map(h => `  ${h}`)].join('\n')), { maxNodes: spec.maxNodes ?? 300000 });
+      if (!(ra.finalStates > r.finalStates || ra.paths > r.paths)) continue;
+    }
     if (req.markMatters) {
       const altHead = head.map((l, i) => (i >= 2 && i < 2 + terrain.length ? l.replace(/x/g, '.') : l));
       const alt = parseStage([...altHead, 'hand:', ...hand.map(h => `  ${h}`)].join('\n'));
@@ -140,14 +155,14 @@ for (const terrain of terrains) {
     for (let i = 0; i < s0.hand.length; i++) for (let rr = 0; rr < 4; rr++) for (let x = 0; x < st.W; x++) if (drop(s0, i, rr, x).ok) legal++;
     const trap = legal ? 1 - r.firstMoves.length / legal : 0;
     if (req.minTrap && trap < req.minTrap) continue;
-    results.push({ terrain, hand, st, r, trap, legal });
+    results.push({ terrain, open, hand, st, r, trap, legal });
   }
 }
 
 results.sort((a, b) => a.r.finalStates - b.r.finalStates || b.trap - a.trap || a.r.paths - b.r.paths || a.hand.length - b.hand.length);
 console.log(`ためした組み合わせ ${tried}、条件に合う ${results.length}`);
 for (const f of results.slice(0, Number(topArg))) {
-  console.log(`\n--- 器 ${f.terrain.join(' / ')}`);
+  console.log(`\n--- 器 ${f.terrain.join(' / ')}${f.open.length ? `（枠を外す：${f.open.join('、')}）` : ''}`);
   console.log(`手持ち：${f.hand.join(', ')}`);
   console.log(`盤面 ${f.r.finalStates}、道筋 ${f.r.paths}、反応なし ${f.r.pathsNoReaction}、最初の1手 ${f.r.firstMoves.length}/${f.legal}（引っかけ ${Math.round(f.trap * 100)}%）`);
   const ex = f.r.examples[0];

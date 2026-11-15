@@ -23,8 +23,12 @@
 //     1 r0 x1
 //
 // terrain の文字：# 壁　. 空きマス（埋めなくてよい）　+ 目標マス　G 金で埋めるマス　L 鉛のまま残すマス
-//   x ×印（最後に何も残っていてはいけない）　- 器の外（通り抜けられるが止まれない。低い枠・底の穴を作る）
-//   いちばん下の行のさらに下は床。左右の外は壁。
+//   x ×印（最後に何も残っていてはいけない）　- 消したマス（器にないマス。通り抜けられるが止まれない）
+//   いちばん下の行のさらに下は床（器の底の枠）。左右の外は器の枠。
+// open：枠を外す所（任意）。マスはそのまま残る。1行に1つ：
+//   left 0 1   左の枠を、0行目と1行目の高さだけ外す（低い枠）
+//   right 0    右の枠を、0行目の高さだけ外す
+//   floor 2    底の枠を、2列目の下だけ外す（底の穴）
 // pieces：最初から盤にある素材。同じ英小文字のマスが1つのピース。legend で素材を決める。
 //   "fixed" を付けると動かない（枠側の氷など）。
 // hand：手持ち。「素材 形」。形は shape.js の書き方。
@@ -36,7 +40,8 @@ import { parseShape } from './shape.js';
 
 export const FORMAT = 1;
 const TERRAIN_CHARS = new Set(['#', '.', '+', 'G', 'L', 'x', '-']);
-const BLOCKS = new Set(['terrain', 'pieces', 'legend', 'hand', 'solution']);
+const BLOCKS = new Set(['terrain', 'open', 'pieces', 'legend', 'hand', 'solution']);
+const OPEN_SIDES = ['left', 'right', 'floor'];
 
 export function parseStageText(text) {
   const raw = { format: FORMAT };
@@ -72,7 +77,7 @@ export function parseStageText(text) {
 export function stageToText(raw) {
   const out = [`format: ${raw.format ?? FORMAT}`];
   for (const key of ['id', 'title', 'request']) if (raw[key]) out.push(`${key}: ${raw[key]}`);
-  for (const key of ['terrain', 'pieces']) {
+  for (const key of ['terrain', 'open', 'pieces']) {
     if (!raw[key]?.length) continue;
     out.push(`${key}:`, ...raw[key].map(r => `  ${r}`));
   }
@@ -96,6 +101,18 @@ export function buildStage(raw) {
   for (const row of terrain) {
     if (row.length !== W) throw new Error('terrain の行の長さがそろっていません');
     for (const c of row) if (!TERRAIN_CHARS.has(c)) throw new Error(`terrain に使えない文字です：「${c}」`);
+  }
+
+  const open = { left: [], right: [], floor: [] };
+  for (const line of raw.open ?? []) {
+    const [side, ...nums] = line.split(/\s+/);
+    if (!OPEN_SIDES.includes(side)) throw new Error(`open の書き方が違います：${line}`);
+    for (const n of nums) {
+      const v = Number(n);
+      const max = side === 'floor' ? W : H;
+      if (!Number.isInteger(v) || v < 0 || v >= max) throw new Error(`open の番号が器の外です：${line}`);
+      if (!open[side].includes(v)) open[side].push(v);
+    }
   }
 
   const pieces = [];
@@ -148,6 +165,7 @@ export function buildStage(raw) {
     W,
     H,
     terrain,
+    open,
     pieces,
     hand,
     solution,
@@ -176,4 +194,9 @@ function checkHorn(mat, cells, where) {
 function checkMaterial(key) {
   const m = material(key);
   if (!m.ready) throw new Error(`「${m.name}」（${key}）のルールはまだありません`);
+}
+
+// 枠があるか。side は 'left' | 'right'（y は行）か 'floor'（y の代わりに列）。stage でも状態（s）でもよい。
+export function hasFrame(s, side, n) {
+  return !s.open?.[side]?.includes(n);
 }

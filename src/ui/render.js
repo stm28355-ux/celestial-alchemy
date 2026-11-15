@@ -1,4 +1,5 @@
 import { drawIcon } from './icons.js';
+import { hasFrame } from '../core/stage.js';
 
 // 盤面の描画（試作の見た目。フェーズ9で作り直す）。
 // 素材の色は企画まとめの「素材の色とアイコン」に合わせる。アイコンの代わりに、いまは短い呼び名の1文字を書く。
@@ -48,25 +49,23 @@ export function draw(ctx, L, view) {
   const c = L.cell;
   ctx.clearRect(0, 0, L.width, L.height);
 
-  // 器の外枠（左右と底）と、口のふち。器の外（-）の横と下には枠がない（低い枠・底の穴）
+  // 器の外枠（左右と底）と、口のふち。外した枠（低い枠・底の穴）は描かない
   const x0 = L.left - L.frame;
   const xr = L.left + stage.W * c;
   const yb = L.top + stage.H * c;
-  const T = stage.terrain;
-  const out = (x, y) => T[y][x] === '-';
   ctx.fillStyle = WOOD;
   for (let y = 0; y < stage.H; y++) {
-    if (!out(0, y)) ctx.fillRect(x0, L.top + y * c, L.frame, c);
-    if (!out(stage.W - 1, y)) ctx.fillRect(xr, L.top + y * c, L.frame, c);
+    if (hasFrame(stage, 'left', y)) ctx.fillRect(x0, L.top + y * c, L.frame, c);
+    if (hasFrame(stage, 'right', y)) ctx.fillRect(xr, L.top + y * c, L.frame, c);
   }
-  for (let x = 0; x < stage.W; x++) if (!out(x, stage.H - 1)) ctx.fillRect(L.left + x * c, yb, c, L.frame);
-  if (!out(0, stage.H - 1)) ctx.fillRect(x0, yb, L.frame, L.frame);
-  if (!out(stage.W - 1, stage.H - 1)) ctx.fillRect(xr, yb, L.frame, L.frame);
-  // 口のふち：左右の枠のいちばん上
+  for (let x = 0; x < stage.W; x++) if (hasFrame(stage, 'floor', x)) ctx.fillRect(L.left + x * c, yb, c, L.frame);
+  if (hasFrame(stage, 'left', stage.H - 1) && hasFrame(stage, 'floor', 0)) ctx.fillRect(x0, yb, L.frame, L.frame);
+  if (hasFrame(stage, 'right', stage.H - 1) && hasFrame(stage, 'floor', stage.W - 1)) ctx.fillRect(xr, yb, L.frame, L.frame);
+  // 口のふち：左右の枠の、それぞれの切れ目のいちばん上
   ctx.fillStyle = WOOD_DARK;
-  for (const [ex, fx] of [[0, x0], [stage.W - 1, xr]]) {
+  for (const [side, fx] of [['left', x0], ['right', xr]]) {
     for (let y = 0; y < stage.H; y++) {
-      if (!out(ex, y) && (y === 0 || out(ex, y - 1))) ctx.fillRect(fx, L.top + y * c - 3, L.frame, 3);
+      if (hasFrame(stage, side, y) && (y === 0 || !hasFrame(stage, side, y - 1))) ctx.fillRect(fx, L.top + y * c - 3, L.frame, 3);
     }
   }
 
@@ -75,7 +74,15 @@ export function draw(ctx, L, view) {
     for (let x = 0; x < stage.W; x++) {
       const t = stage.terrain[y][x];
       const px = L.left + x * c, py = L.top + y * c;
-      if (t === '-') continue; // 器の外：何も描かない
+      if (t === '-') {
+        // 消したマス：器にないので、点線のふちだけ描く
+        ctx.save();
+        ctx.strokeStyle = 'rgba(120, 90, 50, 0.3)';
+        ctx.setLineDash([c * 0.08, c * 0.08]);
+        ctx.strokeRect(px + 2.5, py + 2.5, c - 5, c - 5);
+        ctx.restore();
+        continue;
+      }
       if (t === '#') {
         ctx.fillStyle = WOOD;
         ctx.fillRect(px, py, c, c);
@@ -111,7 +118,19 @@ export function draw(ctx, L, view) {
     drawPiece(ctx, L, p.cells, p.mat, { lift, shift, dir: p.dir, fixed: p.fixed, flash: view.flash?.has(p.id) ? view.flashAlpha ?? 0.7 : 0, icons: view.icons });
   }
 
-  // くっついているピースどうしの境目に、ゼリーの「のり」を描く
+  // ×印のマスにあるピースの上にも、×を描く（下に×印があると分かるように）
+  for (const p of view.pieces) {
+    if ((view.lift?.get(p.id) ?? 0) || (view.shift?.get(p.id) ?? 0)) continue;
+    for (const [x, y] of p.cells) {
+      if (y < 0 || stage.terrain[y]?.[x] !== 'x') continue;
+      ctx.save();
+      ctx.globalAlpha = 0.85;
+      drawCross(ctx, L.left + x * c, L.top + y * c, c);
+      ctx.restore();
+    }
+  }
+
+  // ゼリーとくっついている境目に、「のり」を描く
   drawGlue(ctx, L, view.pieces, view.lift, view.stage, view.shift);
 
   // 着地点の影
@@ -136,6 +155,7 @@ function drawGlue(ctx, L, pieces, lift, stage, shift) {
       for (const [dx, ddy] of [[1, 0], [0, 1]]) {
         const q = at.get(`${x + dx},${y + ddy}`);
         if (!q || q === p || q.group !== p.group) continue;
+        if (p.mat !== 'slime' && q.mat !== 'slime') continue; // のりはゼリーの境目だけ（同じ組でも、ゼリーをはさんだ向こう同士には出さない）
         // 2つのマスの境目の真ん中に、小さな丸
         const cx = L.left + (x + sx + 0.5 + dx * 0.5) * c;
         const cy = L.top + (y - dy + 0.5 + ddy * 0.5) * c;
@@ -146,8 +166,7 @@ function drawGlue(ctx, L, pieces, lift, stage, shift) {
       for (const side of [-1, 1]) {
         const nx = x + side;
         const q = at.get(`${nx},${y}`);
-        const edge = nx < 0 ? 0 : stage.W - 1;
-        const frame = (nx < 0 || nx >= stage.W) && y >= 0 && y < stage.H && stage.terrain[y][edge] !== '-';
+        const frame = (nx < 0 || nx >= stage.W) && y >= 0 && y < stage.H && hasFrame(stage, nx < 0 ? 'left' : 'right', y);
         const wall = frame || (y >= 0 && stage.terrain[y]?.[nx] === '#') || (q && q.fixed && q.mat !== 'ice');
         if (!wall) continue;
         dot(L.left + (x + sx + 0.5 + side * 0.5) * c, L.top + (y - dy + 0.5) * c);

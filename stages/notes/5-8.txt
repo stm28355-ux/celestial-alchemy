@@ -5,7 +5,8 @@ title: 底の穴
 terrain:
   +++
   +++
-  #-#
+open:
+  floor 1
 hand:
   lead ###
   sand ###

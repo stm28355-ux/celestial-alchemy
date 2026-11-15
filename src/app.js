@@ -159,7 +159,8 @@ const RULES = {
   steam: '火種と水玉が触れると、両方消える。',
   slime: 'スライムゼリーとは、横で触れ合うとそこで止まる（ゼリーが落ちるときも、ゼリーの横を物が落ちるときも）。止まると、触れたピースとくっついて1つになる。',
   slip: '氷竜の鱗はつるつるで、ゼリーとくっつかない（触れても止まらない）。',
-  outside: '器の外（枠のない所）では止まれない。器の外にはみ出して止まる手や、底の穴から器の外へ落ちる手は置けない。',
+  removed: '点線のマスは器にないマス。通り抜けられるが、そこで止まる手は置けない。',
+  open: '枠のない所（低い枠・底の穴）からは、ピースが器の外へ出てしまう。器の外へ落ちる手・押し出す手は置けない。',
   sand: 'ヘルメスの星砂は、落ちる間は形を保ち、止まると1マスずつの粒にばらけて真下に落ちる。火種では消えない。',
   horn: 'シルフの角笛は1マス。止まると、口の前のピースを、壁か他のピースに当たるまで横に押す。口の向き（左右）は回して決める。落ちてまた止まると、もう一度押す。',
 };
@@ -178,7 +179,8 @@ function puzzleHTML(st, { heading, back, extra = '' }) {
   if (has('slime') && has('ice')) rules.push(RULES.slip);
   if (has('sand')) rules.push(RULES.sand);
   if (has('horn')) rules.push(RULES.horn);
-  if (st.terrain.some(r => r.includes('-'))) rules.push(RULES.outside);
+  if (st.terrain.some(r => r.includes('-'))) rules.push(RULES.removed);
+  if (st.open && (st.open.left.length || st.open.right.length || st.open.floor.length)) rules.push(RULES.open);
   return `
     <main class="puzzle">
       <section class="info">

@@ -3,8 +3,10 @@ format: 1
 id: note-6-9
 title: 低い枠
 terrain:
-  ...-
+  ....
   +..+
+open:
+  right 0
 pieces:
   ....
   .a..

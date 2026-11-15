@@ -188,7 +188,8 @@ test('ソルバー：行き止まりの見切りは、答えを取りこぼさ�
       Array.from({ length: W }, () => chars[rand(chars.length)]).join(''),
     ).map((row, y) => (y === 0 ? row.replace(/#/g, '.') : row));
     const hand = Array.from({ length: 2 + rand(3) }, () => `  ${MATS[rand(MATS.length)]} ${SHAPES[rand(SHAPES.length)]}`);
-    const st = stage(['terrain:', ...terrain.map(r => `  ${r}`), 'hand:', ...hand]);
+    const open = chars.includes('-') ? ['open:', `  floor ${rand(W)}`, `  right ${rand(H)}`] : [];
+    const st = stage(['terrain:', ...terrain.map(r => `  ${r}`), ...open, 'hand:', ...hand]);
     const a = solve(st);
     const b = solve(st, { prune: false });
     assert.deepEqual(
@@ -358,37 +359,6 @@ test('ゼリー：先に置いたゼリーの横を落ちるピースも、そ�
   assert.equal(s.pieces.find(p => p.mat === 'lead').group, s.pieces.find(p => p.mat === 'slime').group);
 });
 
-// ── 器の外（低い枠・底の穴） ──
-test('器の外：低い枠（左だけ）。枠より上で止まる手は置けない。右は今までどおり', () => {
-  const st = stage(['terrain:', '  -++', '  +++', 'hand:', '  lead #', '  lead #/#']);
-  assert.equal(drop(createState(st), 1, 0, 0).reason, 'rim'); // 縦2マスを左に：上のマスが器の外
-  assert.equal(drop(createState(st), 1, 0, 2).ok, true); // 右は上端まで器
-  assert.equal(drop(createState(st), 0, 0, 0).ok, true); // 1マスなら器の中で止まる
-});
-
-test('器の外：低い枠より上では、ゼリーがつかまる枠がない', () => {
-  const st = stage(['terrain:', '  -..', '  ...', '  ...', 'hand:', '  slime #']);
-  // 右の枠ぎわは、いちばん上で貼りつく
-  assert.deepEqual(cellsOf(play(st, [[0, 0, 2]]).s, 'slime'), ['2,0']);
-  // 左の列は器の外を通り抜けて、枠のある高さで貼りつく
-  assert.deepEqual(cellsOf(play(st, [[0, 0, 0]]).s, 'slime'), ['0,1']);
-});
-
-test('器の外：底の穴。穴から落ちる手は置けない。穴をまたげば置ける', () => {
-  // 底の板（#）に穴（-）
-  const st = stage(['terrain:', '  ...', '  ...', '  #-#', 'hand:', '  lead #', '  lead ###']);
-  assert.equal(drop(createState(st), 0, 0, 1).reason, 'spill');
-  assert.equal(drop(createState(st), 0, 0, 0).ok, true);
-  assert.deepEqual(cellsOf(play(st, [[1, 0, 0]]).s, 'lead'), ['0,1', '1,1', '2,1']); // 穴の上にかかる
-  // いちばん下の行の器の外は、器のくぼみ：はみ出して止まる手は置けない
-  const notch = stage(['terrain:', '  ...', '  .-.', 'hand:', '  lead ###']);
-  assert.equal(drop(createState(notch), 0, 0, 0).reason, 'rim');
-  // 下の鱗が溶けて、穴から落ちてしまう手も置けない
-  const st2 = stage(['terrain:', '  ..', '  ..', '  -#', 'pieces:', '  b.', '  aa', '  ..', 'legend:', '  a: ice', '  b: lead', 'hand:', '  fire #']);
-  assert.deepEqual(initialProblems(st2), []);
-  assert.equal(drop(createState(st2), 0, 0, 1).reason, 'spill');
-});
-
 // ── ヘルメスの星砂 ──
 test('星砂：止まると1マスずつの粒にばらけて、真下に落ちる。止まる場所はばらける前の形で決まる', () => {
   const st = stage(['terrain:', '  ...', '  ...', '  #.#', 'hand:', '  sand ###']);
@@ -446,11 +416,42 @@ test('角笛：左右から押されたピースは動かない。下が溶け�
   assert.deepEqual(cellsOf(s3, 'lead'), ['2,1']); // 押しても壁ぎわなので動かない
 });
 
-test('角笛：低い枠の上から、器の外へ押し出す手は置けない。枠のある高さなら枠で止まる', () => {
-  // 右の枠は下の段だけ（右上が器の外）
-  const st = stage(['terrain:', '  ...-', '  ....', 'pieces:', '  ..a.', '  .cb.', 'legend:', '  a: lead', '  b: lead', '  c: lead', 'hand:', '  horn #']);
+// ── 消したマスと、外した枠 ──
+test('消したマス（-）：通り抜けられるが、止まる手は置けない', () => {
+  const st = stage(['terrain:', '  -++', '  +++', 'hand:', '  lead #', '  lead #/#']);
+  assert.equal(drop(createState(st), 1, 0, 0).reason, 'rim'); // 縦2マスを左に：上のマスが消したマス
+  assert.equal(drop(createState(st), 0, 0, 0).ok, true); // 1マスなら通り抜けて下で止まる
+});
+
+test('低い枠（左だけ）：マスはそのまま。枠のない高さでは、ゼリーがつかまれない', () => {
+  const st = stage(['terrain:', '  ...', '  ...', '  ...', 'open:', '  left 0', 'hand:', '  slime #', '  lead #/#/#']);
+  assert.deepEqual(cellsOf(play(st, [[0, 0, 2]]).s, 'slime'), ['2,0']); // 右はいちばん上で貼りつく
+  assert.deepEqual(cellsOf(play(st, [[0, 0, 0]]).s, 'slime'), ['0,1']); // 左は枠のある高さで貼りつく
+  assert.equal(drop(createState(st), 1, 0, 0).ok, true); // 枠のない高さのマスにも置ける
+});
+
+test('底の穴：穴から落ちる手は置けない。穴をまたげば置ける。反応のあとで落ちる手も置けない', () => {
+  const st = stage(['terrain:', '  ...', '  ...', 'open:', '  floor 1', 'hand:', '  lead #', '  lead ###']);
+  assert.equal(drop(createState(st), 0, 0, 1).reason, 'spill');
+  assert.equal(drop(createState(st), 0, 0, 0).ok, true);
+  assert.deepEqual(cellsOf(play(st, [[1, 0, 0]]).s, 'lead'), ['0,1', '1,1', '2,1']); // 穴の上にかかる
+  const st2 = stage(['terrain:', '  ..', '  ..', 'open:', '  floor 0', 'pieces:', '  b.', '  aa', 'legend:', '  a: ice', '  b: lead', 'hand:', '  fire #']);
+  assert.deepEqual(initialProblems(st2), []);
+  assert.equal(drop(createState(st2), 0, 0, 1).reason, 'spill');
+});
+
+test('角笛：低い枠の高さで押すと器の外へ出るので置けない。枠のある高さなら枠で止まる', () => {
+  const st = stage(['terrain:', '  ....', '  ....', 'open:', '  right 0', 'pieces:', '  ..a.', '  .cc.', 'legend:', '  a: lead', '  c: lead', 'hand:', '  horn #']);
   assert.deepEqual(initialProblems(st), []);
-  assert.equal(drop(createState(st), 0, 0, 1).reason, 'spill'); // 上の段で押す → 器の外へ
-  const st2 = stage(['terrain:', '  ...-', '  ....', 'pieces:', '  ....', '  ..b.', 'legend:', '  b: lead', 'hand:', '  horn #']);
-  assert.deepEqual(cellsOf(play(st2, [[0, 0, 1]]).s, 'lead'), ['3,1']); // 下の段は枠で止まる
+  assert.equal(drop(createState(st), 0, 0, 1).reason, 'spill');
+  const st2 = stage(['terrain:', '  ....', '  ....', 'open:', '  right 0', 'pieces:', '  ....', '  ..b.', 'legend:', '  b: lead', 'hand:', '  horn #']);
+  assert.deepEqual(cellsOf(play(st2, [[0, 0, 1]]).s, 'lead'), ['3,1']);
+});
+
+test('枠を外す（open）は文字に書き出して、元に戻せる', () => {
+  const st = stage(['terrain:', '  ...', '  ...', 'open:', '  left 0 1', '  floor 2', 'hand:', '  lead #']);
+  assert.deepEqual(st.open, { left: [0, 1], right: [], floor: [2] });
+  const again = parseStage(stageToText(st.raw));
+  assert.deepEqual(again.open, st.open);
+  assert.throws(() => stage(['terrain:', '  ..', 'open:', '  floor 5']), /器の外/);
 });

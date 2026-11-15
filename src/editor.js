@@ -17,7 +17,7 @@ const TERRAIN_TOOLS = [
   ['.', '空きマス'],
   ['x', '空けておくマス（×印）'],
   ['#', '壁'],
-  ['-', '器の外（低い枠・底の穴）'],
+  ['-', 'マスを消す（器にないマス）'],
   ['G', '金で埋めるマス'],
   ['L', '鉛のまま残すマス'],
 ];
@@ -95,6 +95,11 @@ export function openEditor(view) {
         <fieldset>
           <legend>器を塗る</legend>
           ${TERRAIN_TOOLS.map(([v, label]) => `<label><input type="radio" name="tool" value="t${v}"> ${label}</label>`).join('')}
+        </fieldset>
+        <fieldset>
+          <legend>枠を外す・付ける（マスはそのまま）</legend>
+          <label><input type="radio" name="tool" value="side"> 左右の枠（左端か右端のマスを押す。低い枠）</label>
+          <label><input type="radio" name="tool" value="floor"> 底の枠（その列のマスを押す。底の穴）</label>
         </fieldset>
         <fieldset>
           <legend>素材を置く（ひと続きに塗ったマスが1つのピース）</legend>
@@ -176,6 +181,17 @@ export function openEditor(view) {
     } else if (tool.kind === 'piece') {
       if (r.terrain[y][x] === '#' || r.terrain[y][x] === '-') return;
       setChar(r.pieces, x, y, stroke.letter);
+    } else if (tool.kind === 'side' || tool.kind === 'floor') {
+      const o = openOf(r);
+      const { W } = dims(r);
+      const spots = tool.kind === 'floor' ? [['floor', x]] : [...(x === 0 ? [['left', y]] : []), ...(x === W - 1 ? [['right', y]] : [])];
+      for (const [side, n] of spots) {
+        // なぞりの最初のマスで、外すか付けるかを決める
+        stroke.open ??= !o[side].includes(n);
+        o[side] = o[side].filter(v => v !== n);
+        if (stroke.open) o[side].push(n);
+      }
+      setOpen(r, o);
     }
   };
   canvas.addEventListener('pointerdown', ev => {
@@ -364,7 +380,7 @@ export function openEditor(view) {
     canvas.style.width = `${L.width}px`;
     canvas.style.height = `${L.height}px`;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    draw(ctx, L, { stage: { W, H, terrain: r.terrain }, pieces: piecesOf(r), icons: true });
+    draw(ctx, L, { stage: { W, H, terrain: r.terrain, open: openOf(r) }, pieces: piecesOf(r), icons: true });
   }
 
   function renderHand() {
@@ -462,6 +478,22 @@ function resizeRaw(r, W, H) {
   const fit = (rows, fill) => Array.from({ length: H }, (_, y) => (rows[y] ?? '').padEnd(W, fill).slice(0, W));
   r.terrain = fit(r.terrain, '+');
   r.pieces = fit(r.pieces, '.');
+  const o = openOf(r);
+  setOpen(r, { left: o.left.filter(n => n < H), right: o.right.filter(n => n < H), floor: o.floor.filter(n => n < W) });
+}
+
+// 外した枠（raw.open の行）を、{ left, right, floor } の番号の並びにする／戻す
+function openOf(r) {
+  const o = { left: [], right: [], floor: [] };
+  for (const line of r.open ?? []) {
+    const [side, ...nums] = line.split(/\s+/);
+    if (o[side]) o[side].push(...nums.map(Number));
+  }
+  return o;
+}
+
+function setOpen(r, o) {
+  r.open = ['left', 'right', 'floor'].filter(k => o[k].length).map(k => `${k} ${[...o[k]].sort((a, b) => a - b).join(' ')}`);
 }
 
 function letterCells(r) {

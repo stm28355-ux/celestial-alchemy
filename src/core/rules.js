@@ -18,19 +18,23 @@
 // シルフの角笛：1マスで、口は左右どちらか（dir）。止まると（置いたとき・落ちて止まったとき・押されて止まったとき）、
 //   口の前のピース（の組）を、壁か他のピースに当たるまで横に押す（「押す」の段。消える → 増える・変わる → 押す）。
 //   左右から同時に押されたピースは動かない。
-// 器の外（地形の -）：通り抜けられるが、止まれない。低い枠（列の上の方が器の外）では、その高さに枠がない。
-//   底の穴（いちばん下が器の外）からは、器の外へ落ちる。器の外で止まる手・器の外へ落ちる手は置けない。
+// 消したマス（地形の -）：器にないマス。通り抜けられるが、止まれない（止まる手は置けない）。
+// 枠を外す（open）：マスはそのまま。低い枠（左右の枠を、ある高さだけ外す）では、その高さにつかまる枠がなく、
+//   押されたピースは器の外へ出る。底の穴（底の枠を、ある列だけ外す）からは、器の外へ落ちる。
+//   器の外へ出る手・落ちる手は置けない（反応や押し出しのあとでも）。
 //
 // 状態はそのつど作り直す（drop は新しい状態を返す）。一手戻すとソルバーのため。
 
 import { rotate, size, canonicalKey, uniqueRotations } from './shape.js';
 import { material } from './materials.js';
+import { hasFrame } from './stage.js';
 
 export function createState(stage) {
   const s = {
     W: stage.W,
     H: stage.H,
     terrain: stage.terrain,
+    open: stage.open,
     pieces: stage.pieces.map((p, i) => ({ id: i + 1, group: i + 1, mat: p.mat, cells: p.cells.map(c => [...c]), fixed: p.fixed, ...(p.mat === 'horn' ? { dir: p.dir ?? 1 } : {}) })),
     hand: stage.hand.map(h => handItem(h.mat, h.cells, h.orig)),
     nextId: stage.pieces.length + 1,
@@ -73,12 +77,12 @@ export function occupancy(s) {
   return occ;
 }
 
-// 壁・器の枠・床か。器の外（-）は壁ではない。
-//   床：いちばん下の行のすぐ下。ただし底の穴（いちばん下が器の外）の下には床がない
-//   左右の枠：盤の左右の外。ただし、その高さの端のマスが器の外なら枠がない（低い枠）
+// 壁・器の枠か。消したマス（-）は壁ではない。
+//   底の枠：いちばん下の行のすぐ下。底の穴（open floor）の列にはない
+//   左右の枠：盤の左右の外。低い枠（open left / right）の高さにはない
 function isWall(s, x, y) {
-  if (y >= s.H) return y === s.H && x >= 0 && x < s.W && s.terrain[s.H - 1][x] !== '-';
-  if (x < 0 || x >= s.W) return y >= 0 && s.terrain[y][x < 0 ? 0 : s.W - 1] !== '-';
+  if (y >= s.H) return y === s.H && x >= 0 && x < s.W && hasFrame(s, 'floor', x);
+  if (x < 0 || x >= s.W) return y >= 0 && y < s.H && hasFrame(s, x < 0 ? 'left' : 'right', y);
   if (y < 0) return false; // 盤の上の空
   return s.terrain[y][x] === '#';
 }
@@ -110,6 +114,7 @@ export function landing(s, cells, x, occ = occupancy(s), mat = null) {
   while (!stuck(d) && free(d + 1)) {
     d++;
     if (cells.some(([, cy]) => cy + d >= s.H)) return { ok: false, reason: 'spill' }; // 底の穴から器の外へ落ちる
+    if (d > s.H + 1) break;
   }
   const placed = cells.map(([cx, cy]) => [cx + x, cy + d]);
   if (placed.some(([, y]) => y < 0)) return { ok: false, reason: 'above', cells: placed };
@@ -136,7 +141,7 @@ export function drop(s, handIndex, r, x, occ) {
   const events = [{ type: 'place', id: piece.id, mat: piece.mat, dir: piece.dir, cells: land.cells.map(c => [...c]) }];
   // 置いたピースは止まった所にあり、ほかのピースも止まっているので、落とす段は飛ばして反応から始める。
   events.push(...resolve(next, { settled: true }));
-  // 器の外へ落ちた・押し出された、器の外で止まった → 置けない
+  // 器の外へ落ちた・押し出された、消したマスで止まった → 置けない
   if (next.spilled) return { ok: false, reason: 'spill' };
   if (next.pieces.some(p => p.cells.some(([px, py]) => outside(next, px, py)))) return { ok: false, reason: 'rim' };
   return { ok: true, state: next, events };
@@ -296,7 +301,7 @@ export function react(s) {
       const topY = Math.min(...v.cells.map(c => c[1]));
       const x = v.cells.find(c => c[1] === topY)[0];
       const y = topY - 1;
-      if (y < 0 || isWall(s, x, y) || outside(s, x, y) || occ[y * s.W + x]) break; // ふさがっていたら伸びない（器の外にも伸びない）
+      if (y < 0 || isWall(s, x, y) || outside(s, x, y) || occ[y * s.W + x]) break; // ふさがっていたら伸びない（消したマスにも伸びない）
       v.cells.push([x, y]);
       occ[y * s.W + x] = s.pieces.indexOf(v) + 1;
       used.add(wid);
@@ -356,7 +361,7 @@ function crumble(s) {
 
 // 止まった角笛が、口の前のピース（の組）を横に押す。押したものの一覧を返す。
 //   壁・器の枠か、他のピースに当たるまで動く。左右から同時に押される組は動かない。
-//   枠のない所（低い枠より上）から盤の外へ押し出されたら、spilled にする。
+//   枠のない高さ（低い枠）から盤の外へ押し出されたら、spilled にする。
 function push(s) {
   const horns = s.pieces.filter(p => p.mat === 'horn' && p.armed).sort((a, b) => a.id - b.id);
   if (!horns.length) return [];
