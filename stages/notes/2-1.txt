@@ -1,0 +1,17 @@
+# お手本 2-1：鱗を溶かして消す
+format: 1
+id: note-2-1
+title: 鱗を溶かして消す
+terrain:
+  ++
+  ++
+hand:
+  ice ##
+  fire #
+  lead #
+  lead ##
+solution:
+  1 r0 x0
+  2 r0 x0
+  3 r0 x1
+  4 r0 x0

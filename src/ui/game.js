@@ -1,13 +1,12 @@
-// パズル画面：手持ちを選ぶ・列と向きを決める・落とす・1段ずつ見せる・一手戻す・やり直し。
+// パズル画面：手持ちを選ぶ・列と向きを決める・落とす・1段ずつ見せる・一手戻す・やり直し・ヒント。
+// root の中に #board #hand #message と、ボタン（#btn-rotate #btn-drop #btn-undo #btn-reset #btn-hint）があること。
 
 import { createState, drop, landing, isCleared } from '../core/rules.js';
 import { size } from '../core/shape.js';
 import { material } from '../core/materials.js';
 import { draw, layout, drawMini, SPAWN_GAP } from './render.js';
-
-const FALL_MS = 55; // 1マス落ちるのにかける時間
-const FLASH_MS = 380; // 溶けるときの光
-const PAUSE_MS = 90; // 段と段の間
+import { buildSteps, runSteps } from './anim.js';
+import { askHint } from './hint.js';
 
 export class Game {
   constructor(root, stage, { onClear } = {}) {
@@ -26,21 +25,24 @@ export class Game {
 
   // ── 状態 ──
   reset() {
+    this.anim?.cancel();
+    this.anim = null;
     this.state = createState(this.stage);
     this.history = [];
-    this.anim = null;
     this.done = false;
+    this.hintToken = null;
     this.select(this.state.hand[0]?.orig ?? null);
     this.say('');
     this.render();
   }
 
   undo() {
-    if (this.anim) this.finishAnim();
+    if (this.anim) this.anim.finish();
     const prev = this.history.pop();
     if (!prev) return;
     this.state = prev.state;
     this.done = false;
+    this.hintToken = null;
     this.select(prev.orig, prev.r);
     this.x = prev.x;
     this.clampX();
@@ -83,7 +85,7 @@ export class Game {
   }
 
   dropNow() {
-    if (this.anim) return this.finishAnim();
+    if (this.anim) return this.anim.finish();
     const cur = this.current();
     if (!cur || this.done) return;
     const before = this.state;
@@ -94,8 +96,18 @@ export class Game {
       return;
     }
     this.history.push({ state: before, orig: this.sel, r: this.r, x: this.x });
+    this.hintToken = null;
     this.say('');
-    this.play(before, d, cur.cells);
+    const steps = buildSteps(before, d, cur.cells, SPAWN_GAP);
+    this.anim = runSteps(
+      steps,
+      (pieces, extra) => draw(this.ctx, this.L, { stage: this.stage, pieces, icons: true, ...extra }),
+      () => {
+        this.anim = null;
+        this.state = d.state;
+        this.afterMove();
+      },
+    );
   }
 
   afterMove() {
@@ -114,64 +126,35 @@ export class Game {
     this.render();
   }
 
-  // ── 1段ずつ見せる ──
-  // events から「どのピースを・どれだけ動かすか」の段を作り、順に再生する。
-  play(before, d, cells) {
-    const work = before.pieces.map(p => ({ ...p, cells: p.cells.map(c => [...c]) }));
-    const steps = [];
-    const events = d.events;
-    const place = events[0];
-    const { h } = size(cells);
-    const topY = Math.min(...place.cells.map(c => c[1]));
-    work.push({ id: place.id, mat: place.mat, cells: place.cells.map(c => [...c]), fixed: false });
-    const dist = topY + h + SPAWN_GAP;
-    steps.push({ pieces: snapshot(work), move: new Set([place.id]), dist, dur: Math.max(120, dist * FALL_MS * 0.6) });
-    for (let i = 1; i < events.length; i++) {
-      const e = events[i];
-      if (e.type === 'fall') {
-        // 同じピースが続けて落ちるなら、1つの段にまとめる
-        let n = 1;
-        while (events[i + n]?.type === 'fall' && sameIds(events[i + n].ids, e.ids)) n++;
-        for (const p of work) if (e.ids.includes(p.id)) for (const c of p.cells) c[1] += n;
-        steps.push({ pieces: snapshot(work), move: new Set(e.ids), dist: n, dur: n * FALL_MS + PAUSE_MS });
-        i += n - 1;
-      } else if (e.type === 'react') {
-        const gone = new Set(e.removed.map(r => r.id));
-        steps.push({ pieces: snapshot(work), flash: gone, dur: FLASH_MS });
-        for (let k = work.length - 1; k >= 0; k--) if (gone.has(work[k].id)) work.splice(k, 1);
-        steps.push({ pieces: snapshot(work), dur: PAUSE_MS });
-      }
+  // ヒント：今の盤面から、クリアにつながる最初の1手を選んだ状態にする（落とすのは自分）。
+  async hint() {
+    if (this.anim || this.done || !this.state.hand.length) return;
+    const token = {};
+    this.hintToken = token;
+    this.say('ヒントを考えています…', 'hint');
+    let res;
+    try {
+      res = await askHint(this.state);
+    } catch (e) {
+      this.say(`ヒントを出せませんでした（${e.message}）`);
+      return;
     }
-    this.anim = { steps, i: 0, t0: performance.now(), final: d.state };
-    const tick = now => {
-      if (!this.anim) return;
-      const a = this.anim;
-      let st = a.steps[a.i];
-      while (st && now - a.t0 >= st.dur) {
-        a.t0 += st.dur;
-        a.i++;
-        st = a.steps[a.i];
-      }
-      if (!st) return this.finishAnim();
-      const t = Math.min(1, (now - a.t0) / st.dur);
-      const lift = new Map();
-      if (st.move) for (const id of st.move) lift.set(id, st.dist * (1 - easeIn(t)));
-      this.renderPieces(st.pieces, { lift, flash: st.flash, flashAlpha: 0.85 * Math.abs(Math.sin(t * Math.PI * 2)) });
-      requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }
-
-  finishAnim() {
-    if (!this.anim) return;
-    this.state = this.anim.final;
-    this.anim = null;
-    this.afterMove();
+    if (this.hintToken !== token) return; // 考えている間に盤面が変わった
+    if (!res.move) {
+      this.say(res.truncated ? 'この盤面は広すぎて、ヒントを見つけきれませんでした。' : 'この盤面からは解けません。「一手戻す」で前に戻ってみましょう。');
+      return;
+    }
+    const m = res.move;
+    this.select(m.orig, m.r);
+    this.x = m.x;
+    this.clampX();
+    this.render();
+    this.say(`ヒント：${m.orig + 1}番の${material(m.mat).short}を、この向き・この列で落としてみましょう。`, 'hint');
   }
 
   // ── 入力 ──
   bind() {
-    // ステージを替えるとき、つけた入力をまとめて外せるようにする
+    // 画面を替えるとき、つけた入力をまとめて外せるようにする
     this.ac = new AbortController();
     const on = { signal: this.ac.signal };
     const cv = this.canvas;
@@ -197,7 +180,7 @@ export class Game {
     let lastTap = null;
     cv.addEventListener('pointerup', ev => {
       if (ev.button === 2) return;
-      if (this.anim) return this.finishAnim();
+      if (this.anim) return this.anim.finish();
       const x = aimAt(ev);
       if (x === null) return;
       if (ev.pointerType === 'mouse') {
@@ -222,14 +205,16 @@ export class Game {
       ev.preventDefault();
       this.rotate(ev.deltaY > 0 ? 1 : -1);
     }, { passive: false, signal: this.ac.signal });
-    this.onKey = ev => {
-      if (ev.target instanceof HTMLInputElement || ev.altKey || ev.ctrlKey || ev.metaKey) return;
+    window.addEventListener('keydown', ev => {
+      if (ev.target instanceof HTMLInputElement || ev.target instanceof HTMLTextAreaElement) return;
+      if (ev.altKey || ev.ctrlKey || ev.metaKey || document.querySelector('dialog[open]')) return;
       const k = ev.key;
       if (k === 'ArrowLeft' || k === 'a') this.move(-1);
       else if (k === 'ArrowRight' || k === 'd') this.move(1);
       else if (k === 'ArrowUp' || k === 'r' || k === 'w') this.rotate(1);
       else if (k === 'ArrowDown' || k === ' ' || k === 'Enter' || k === 's') this.dropNow();
       else if (k === 'z' || k === 'Backspace') this.undo();
+      else if (k === 'h') this.hint();
       else if (/^[1-9]$/.test(k)) {
         const orig = Number(k) - 1;
         if (this.state.hand.some(h => h.orig === orig)) {
@@ -238,18 +223,21 @@ export class Game {
         }
       } else return;
       ev.preventDefault();
-    };
-    window.addEventListener('keydown', this.onKey, on);
+    }, on);
     window.addEventListener('resize', () => this.resize(), on);
-    this.root.querySelector('#btn-rotate').onclick = () => this.rotate(1);
-    this.root.querySelector('#btn-drop').onclick = () => this.dropNow();
-    this.root.querySelector('#btn-undo').onclick = () => this.undo();
-    this.root.querySelector('#btn-reset').onclick = () => this.reset();
+    const btn = (id, fn) => this.root.querySelector(id)?.addEventListener('click', fn, on);
+    btn('#btn-rotate', () => this.rotate(1));
+    btn('#btn-drop', () => this.dropNow());
+    btn('#btn-undo', () => this.undo());
+    btn('#btn-reset', () => this.reset());
+    btn('#btn-hint', () => this.hint());
   }
 
   destroy() {
     this.ac.abort();
+    this.anim?.cancel();
     this.anim = null;
+    this.hintToken = null;
   }
 
   // ── 描画 ──
@@ -282,10 +270,6 @@ export class Game {
     draw(this.ctx, this.L, view);
   }
 
-  renderPieces(pieces, extra) {
-    draw(this.ctx, this.L, { stage: this.stage, pieces, icons: true, ...extra });
-  }
-
   renderHand() {
     const box = this.handBox;
     box.innerHTML = '';
@@ -313,8 +297,10 @@ export class Game {
     });
   }
 
-  say(text) {
+  // kind：'hint' でヒントの色にする（ふだんは注意の色）
+  say(text, kind = '') {
     this.msg.textContent = text;
+    this.msg.className = kind ? `message ${kind}` : 'message';
   }
 
   shake() {
@@ -322,16 +308,4 @@ export class Game {
     void this.canvas.offsetWidth;
     this.canvas.classList.add('shake');
   }
-}
-
-function snapshot(pieces) {
-  return pieces.map(p => ({ ...p, cells: p.cells.map(c => [...c]) }));
-}
-
-function sameIds(a, b) {
-  return a.length === b.length && a.every(x => b.includes(x));
-}
-
-function easeIn(t) {
-  return t * t;
 }

@@ -5,6 +5,7 @@ import { parseShape, rotate, uniqueRotations, shapeText, canonicalKey } from '..
 import { parseStage, parseStageText, stageToText, buildStage } from '../src/core/stage.js';
 import { createState, drop, isCleared, initialProblems } from '../src/core/rules.js';
 import { solve, checkSolution } from '../src/core/solver.js';
+import { encodeStage, decodeStage } from '../src/core/share.js';
 
 // 小さな盤面を手早く作る。
 function stage(lines) {
@@ -187,18 +188,36 @@ test('ソルバー：行き止まりの見切りは、答えを取りこぼさ�
   assert.ok(solvable > 10, `解けるものが少なすぎる：${solvable}`);
 });
 
-test('試作の10問：読めて、最初の盤面に問題がなく、狙いの手順でクリアできる', async () => {
-  const dir = new URL('../stages/proto/', import.meta.url);
-  const names = JSON.parse(await readFile(new URL('list.json', dir), 'utf8'));
-  assert.equal(names.length, 10);
-  for (const name of names) {
-    const st = parseStage(await readFile(new URL(name, dir), 'utf8'));
-    assert.deepEqual(initialProblems(st), [], name);
-    const c = checkSolution(st);
-    assert.ok(c.ok && c.cleared, `${name}：狙いの手順でクリアできない`);
-    // 6問目から先（溶ける）は、9問目（溶かさない）を除いて、反応を使わないと解けない
-    if (name >= '06' && !name.startsWith('09')) assert.equal(solve(st).pathsNoReaction, 0, name);
+test('章のステージとお手本：読めて、最初の盤面に問題がなく、狙いの手順でクリアできる', async () => {
+  const root = new URL('../stages/', import.meta.url);
+  const chapters = JSON.parse(await readFile(new URL('chapters.json', root), 'utf8'));
+  assert.equal(chapters.length, 8);
+  const ids = new Set();
+  for (const ch of chapters) {
+    for (const path of ch.stages) {
+      const st = parseStage(await readFile(new URL(path, root), 'utf8'));
+      assert.match(st.id, new RegExp(`^ch${ch.id}-[0-9]{2}$`), path);
+      assert.ok(!ids.has(st.id), `id がかぶっている：${st.id}`);
+      ids.add(st.id);
+      assert.deepEqual(initialProblems(st), [], path);
+      const c = checkSolution(st);
+      assert.ok(c.ok && c.cleared, `${path}：狙いの手順でクリアできない`);
+    }
   }
+  const notes = JSON.parse(await readFile(new URL('notes.json', root), 'utf8'));
+  for (const n of notes) {
+    const st = parseStage(await readFile(new URL(n.stage, root), 'utf8'));
+    assert.deepEqual(initialProblems(st), [], n.stage);
+    assert.ok(checkSolution(st).ok, `${n.stage}：お手本の手順が打てない`);
+  }
+});
+
+test('共有URL：ステージを文字にして、元に戻せる', async () => {
+  const text = await readFile(new URL('../stages/ch2/03-chain.txt', import.meta.url), 'utf8');
+  const raw = parseStageText(text);
+  const code = await encodeStage(raw);
+  assert.match(code, /^[A-Za-z0-9_-]+$/);
+  assert.deepEqual(await decodeStage(code), raw);
 });
 
 test('ソルバー：解けないステージ', () => {

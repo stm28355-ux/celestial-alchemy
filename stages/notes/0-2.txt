@@ -1,0 +1,13 @@
+# お手本 0-2：置く順番
+format: 1
+id: note-0-2
+title: 置く順番
+terrain:
+  +++
+  +++
+hand:
+  lead #.#/###
+  lead #
+solution:
+  1 r0 x0
+  2 r0 x1

@@ -132,3 +132,98 @@ dialog .buttons { justify-content: center; margin-top: 12px; }
   main { grid-template-columns: 1fr; }
   .play { order: -1; }
 }
+
+/* ── アプリの枠 ── */
+a { color: #b0621c; }
+.app-header .logo { font-size: 19px; font-weight: bold; color: var(--ink); text-decoration: none; }
+.app-nav { margin-left: auto; gap: 14px; font-size: 14px; }
+.app-nav a { color: var(--ink-soft); text-decoration: none; }
+.app-nav a:hover { color: var(--accent); }
+.page { max-width: 980px; margin: 0 auto; padding: 16px; }
+.page h2 { font-size: 20px; margin: 4px 0 12px; }
+.page h2 small, .info h2 small { font-size: 14px; font-weight: normal; color: var(--ink-soft); }
+.page h3 { font-size: 16px; margin: 20px 0 8px; }
+.back { margin: 0 0 6px; font-size: 14px; }
+.back a { text-decoration: none; }
+.linkish { background: none; border: none; padding: 0; color: #b0621c; font: inherit; font-size: 13px; cursor: pointer; text-decoration: underline; }
+a.button { display: inline-block; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--line); background: #fff; color: var(--ink); text-decoration: none; font-size: 14px; }
+a.button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: bold; }
+.buttons button.dim { opacity: 0.55; }
+.buttons button:disabled { opacity: 0.4; cursor: default; }
+
+/* ── タイトル ── */
+.title-screen { max-width: 640px; margin: 0 auto; padding: 48px 16px; text-align: center; }
+.title-screen h1 { font-size: 40px; letter-spacing: 0.04em; color: #8a4f1c; }
+.subtitle { color: var(--ink-soft); margin: 4px 0 32px; }
+.menu { display: grid; gap: 12px; text-align: left; }
+.menu-item { display: block; padding: 14px 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--ink); text-decoration: none; font-size: 18px; font-weight: bold; }
+.menu-item small { display: block; font-size: 13px; font-weight: normal; color: var(--ink-soft); }
+.menu-item.primary { border-color: var(--accent); background: #fdebd6; }
+.menu-item.disabled { opacity: 0.5; }
+a.menu-item:hover { border-color: var(--accent); }
+.progress { margin-top: 24px; color: var(--ink-soft); }
+
+/* ── 章とステージ ── */
+.chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.chapter-card { display: flex; flex-direction: column; gap: 2px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--ink); text-decoration: none; }
+.chapter-card b { font-size: 16px; }
+.chapter-card .master { font-size: 13px; color: var(--ink-soft); }
+.chapter-card .status { font-size: 13px; color: var(--accent); }
+.chapter-card.done { border-color: var(--good); }
+.chapter-card.done .status { color: var(--good); }
+.chapter-card.locked { opacity: 0.5; }
+a.chapter-card:hover { border-color: var(--accent); }
+.dev { display: block; margin-top: 24px; font-size: 13px; color: var(--ink-soft); }
+.master-line { margin: 0 0 16px; padding: 10px 14px; background: var(--panel); border-radius: 10px; border: 1px solid var(--line); }
+.stage-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.stage-item { display: grid; grid-template-columns: 32px 1fr; gap: 0 10px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink); text-decoration: none; }
+.stage-item .num { grid-row: span 2; font-size: 20px; font-weight: bold; color: var(--accent); }
+.stage-item .req { font-size: 13px; color: var(--ink-soft); }
+.stage-item.cleared .name::after { content: " ✓"; color: var(--good); }
+.stage-item.locked { opacity: 0.45; }
+a.stage-item:hover { border-color: var(--accent); }
+
+/* ── 師匠のノート ── */
+.note-mats { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+.note-mat { display: flex; gap: 10px; align-items: center; padding: 8px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.note-mat p { margin: 2px 0 0; font-size: 13px; color: var(--ink-soft); }
+.note-list { display: flex; flex-wrap: wrap; gap: 16px; }
+.note { margin: 0; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); max-width: 280px; }
+.note canvas { display: block; margin: 0 auto 6px; }
+.note figcaption { display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+.note figcaption span { color: var(--ink-soft); }
+.note-more { font-size: 13px; color: var(--ink-soft); }
+
+/* ── エディタ ── */
+.editor { grid-template-columns: minmax(220px, 260px) auto minmax(260px, 320px); }
+.ed-side label { display: block; font-size: 14px; margin-bottom: 6px; }
+.ed-side input[type="text"], .ed-side input:not([type]), .ed-side input[maxlength] { width: 100%; padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; font: inherit; }
+.ed-size { display: flex; gap: 12px; }
+.ed-size input { width: 56px; padding: 2px 4px; font: inherit; }
+.ed-side fieldset { border: 1px solid var(--line); border-radius: 10px; margin: 10px 0; padding: 6px 10px 8px; }
+.ed-side legend { font-size: 13px; color: var(--ink-soft); }
+.ed-side select { font: inherit; margin: 2px 0 6px; }
+.ed-note { font-size: 12px; color: var(--ink-soft); margin: 4px 0; }
+.ed-board { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+#ed-canvas { touch-action: none; cursor: crosshair; max-width: 100%; }
+.ed-problems { list-style: none; padding: 0; margin: 8px 0 0; font-size: 13px; color: #b54a2c; }
+.ed-problems .info { color: var(--ink-soft); }
+.ed-hand h3 { font-size: 15px; margin: 0 0 8px; }
+.ed-hand .hand-item { cursor: default; }
+.ed-new { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; }
+.ed-new canvas { border: 1px solid var(--line); border-radius: 6px; cursor: pointer; }
+.ed-new select { font: inherit; display: block; margin-bottom: 6px; }
+.ed-new button { font: inherit; font-size: 13px; }
+.ed-result { min-height: 1.6em; font-size: 14px; margin: 8px 0; }
+.ed-share { display: flex; gap: 6px; }
+.ed-share[hidden] { display: none; }
+.ed-share input { flex: 1; min-width: 0; font-size: 12px; padding: 4px; }
+.ed-text { margin-top: 12px; font-size: 13px; }
+.ed-text textarea { width: 100%; font-family: ui-monospace, Consolas, monospace; font-size: 13px; margin: 6px 0; }
+
+@media (max-width: 900px) {
+  .editor { grid-template-columns: 1fr; }
+  .ed-board { order: -1; }
+  .app-nav { margin-left: 0; }
+}
+.message.hint { color: #2f7a3e; }
