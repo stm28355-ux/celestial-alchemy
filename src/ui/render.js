@@ -96,11 +96,41 @@ export function draw(ctx, L, view) {
     drawPiece(ctx, L, p.cells, p.mat, { lift, fixed: p.fixed, flash: view.flash?.has(p.id) ? view.flashAlpha ?? 0.7 : 0, icons: view.icons });
   }
 
+  // くっついているピースどうしの境目に、ゼリーの「のり」を描く
+  drawGlue(ctx, L, view.pieces, view.lift);
+
   // 着地点の影
   if (view.ghost) drawPiece(ctx, L, view.ghost.cells, view.ghost.mat, { ghost: true });
 
   // 落とす前のピース（器の口から少し上に浮かせる）
   if (view.preview) drawPiece(ctx, L, view.preview.cells, view.preview.mat, { invalid: view.invalid, lift: SPAWN_GAP, icons: view.icons });
+}
+
+function drawGlue(ctx, L, pieces, lift) {
+  const c = L.cell;
+  const at = new Map();
+  for (const p of pieces) for (const [x, y] of p.cells) at.set(`${x},${y}`, p);
+  ctx.save();
+  ctx.fillStyle = '#e46aa6';
+  ctx.strokeStyle = '#fff0f7';
+  ctx.lineWidth = 1.5;
+  for (const p of pieces) {
+    const dy = lift?.get(p.id) ?? 0;
+    for (const [x, y] of p.cells) {
+      for (const [dx, ddy] of [[1, 0], [0, 1]]) {
+        const q = at.get(`${x + dx},${y + ddy}`);
+        if (!q || q === p || q.group !== p.group) continue;
+        // 2つのマスの境目の真ん中に、小さな丸
+        const cx = L.left + (x + 0.5 + dx * 0.5) * c;
+        const cy = L.top + (y - dy + 0.5 + ddy * 0.5) * c;
+        ctx.beginPath();
+        ctx.arc(cx, cy, Math.max(3, c * 0.09), 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      }
+    }
+  }
+  ctx.restore();
 }
 
 function drawRune(ctx, px, py, c, t) {

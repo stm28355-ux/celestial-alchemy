@@ -73,6 +73,10 @@ export class Game {
 
   rotate(dir = 1) {
     if (!this.current() || this.anim) return;
+    if (material(this.current().item.mat).noRotate) {
+      this.say(`${material(this.current().item.mat).short}は回せません（いつも縦向き）。`);
+      return;
+    }
     this.r = (this.r + dir + 4) % 4;
     this.clampX();
     this.render();

@@ -14,7 +14,7 @@ export function buildSteps(before, d, cells, gap = 0) {
   const place = events[0];
   const { h } = size(cells);
   const topY = Math.min(...place.cells.map(c => c[1]));
-  work.push({ id: place.id, mat: place.mat, cells: place.cells.map(c => [...c]), fixed: false });
+  work.push({ id: place.id, group: place.id, mat: place.mat, cells: place.cells.map(c => [...c]), fixed: false });
   const dist = topY + h + gap;
   steps.push({ pieces: snapshot(work), move: new Set([place.id]), dist, dur: Math.max(120, dist * FALL_MS * 0.6) });
   for (let i = 1; i < events.length; i++) {
@@ -28,8 +28,20 @@ export function buildSteps(before, d, cells, gap = 0) {
       i += n - 1;
     } else if (e.type === 'react') {
       const gone = new Set(e.removed.map(r => r.id));
-      steps.push({ pieces: snapshot(work), flash: gone, dur: FLASH_MS });
-      for (let k = work.length - 1; k >= 0; k--) if (gone.has(work[k].id)) work.splice(k, 1);
+      if (gone.size) {
+        steps.push({ pieces: snapshot(work), flash: gone, dur: FLASH_MS });
+        for (let k = work.length - 1; k >= 0; k--) if (gone.has(work[k].id)) work.splice(k, 1);
+      }
+      // つるが伸びる：伸びたピースを光らせる
+      if (e.grown?.length) {
+        for (const g of e.grown) work.find(p => p.id === g.id)?.cells.push(...g.cells.map(c => [...c]));
+        steps.push({ pieces: snapshot(work), flash: new Set(e.grown.map(g => g.id)), dur: FLASH_MS * 0.8 });
+      }
+      // くっつく：組を入れ替える（のりの印が出る）
+      if (e.groups) {
+        const map = new Map(e.groups);
+        for (const p of work) if (map.has(p.id)) p.group = map.get(p.id);
+      }
       steps.push({ pieces: snapshot(work), dur: PAUSE_MS });
     }
   }

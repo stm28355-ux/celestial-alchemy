@@ -1,0 +1,14 @@
+# お手本 3-6：水で火を消す
+format: 1
+id: note-3-6
+title: 水で火を消す
+terrain:
+  ..
+pieces:
+  a.
+legend:
+  a: fire
+hand:
+  water #
+solution:
+  1 r0 x1

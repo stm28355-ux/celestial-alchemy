@@ -225,3 +225,15 @@ export const FEATURES = {
   // 動かないピース（枠側の氷）が溶けた
   frameMelt: events => events.some(e => e.type === 'react' && e.removed.some(r => r.fixed)),
 };
+
+// 3・4章の気付き
+Object.assign(FEATURES, {
+  // つるが伸びた
+  grow: events => events.some(e => e.type === 'react' && e.grown?.length),
+  // つるが燃えた
+  burn: events => events.some(e => e.type === 'react' && e.removed.some(r => r.why === 'burn')),
+  // 火種と水玉が消えた
+  steam: events => events.some(e => e.type === 'react' && e.removed.some(r => r.why === 'steam')),
+  // ゼリーで組が変わった（くっついた・離れた）
+  glue: events => events.some(e => e.type === 'react' && e.groups && new Set(e.groups.map(g => g[1])).size < e.groups.length),
+});

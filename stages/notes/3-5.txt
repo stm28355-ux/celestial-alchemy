@@ -1,0 +1,16 @@
+# お手本 3-5：燃えるつる
+format: 1
+id: note-3-5
+title: 燃えるつる
+terrain:
+  ..
+  ..
+pieces:
+  a.
+  a.
+legend:
+  a: vine
+hand:
+  fire #
+solution:
+  1 r0 x1

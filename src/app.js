@@ -153,6 +153,10 @@ const RULES = {
   free: '刻印のないマスは、埋めなくてよい（はみ出してもよい）。',
   fire: 'サラマンダーの火種に触れた氷竜の鱗は、ピースごと溶けて消える。火種は残る。',
   fixed: '斜線の鱗は器の一部で、動かない。でも火種で溶ける。',
+  water: 'ウンディーネの水玉がドリアードのつるに触れると、水玉は吸われて消え、つるがいちばん上の真上に1マス伸びる（ふさがっていたら伸びない）。',
+  vine: 'つるは縦の棒で、回せない。火種に触れると燃えて消える。',
+  steam: '火種と水玉が触れると、両方消える。',
+  slime: 'スライムゼリーは止まると、触れたピースとくっついて1つになる。くっついた形のまま落ちる。',
 };
 
 function puzzleHTML(st, { heading, back, extra = '' }) {
@@ -160,6 +164,11 @@ function puzzleHTML(st, { heading, back, extra = '' }) {
   if (st.terrain.some(r => r.includes('.'))) rules.push(RULES.free);
   if (st.hand.some(h => h.mat === 'fire') || st.pieces.some(p => p.mat === 'fire')) rules.push(RULES.fire);
   if (st.pieces.some(p => p.fixed)) rules.push(RULES.fixed);
+  const has = mat => st.hand.some(h => h.mat === mat) || st.pieces.some(p => p.mat === mat);
+  if (has('water') && has('vine')) rules.push(RULES.water);
+  if (has('vine')) rules.push(RULES.vine);
+  if (has('water') && has('fire')) rules.push(RULES.steam);
+  if (has('slime')) rules.push(RULES.slime);
   return `
     <main class="puzzle">
       <section class="info">

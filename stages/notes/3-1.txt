@@ -1,0 +1,18 @@
+# お手本 3-1：棚の下
+format: 1
+id: note-3-1
+title: 棚の下
+terrain:
+  #.
+  ..
+  ..
+pieces:
+  ..
+  ..
+  a.
+legend:
+  a: vine
+hand:
+  water #
+solution:
+  1 r0 x1

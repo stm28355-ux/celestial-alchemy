@@ -117,6 +117,7 @@ export function buildStage(raw) {
       if (!spec) throw new Error(`legend に「${letter}」がありません`);
       const [mat, ...flags] = spec.split(/\s+/);
       checkMaterial(mat);
+      checkVine(mat, cells, `pieces の「${letter}」`);
       pieces.push({ mat, cells, fixed: flags.includes('fixed') });
     }
   }
@@ -125,7 +126,9 @@ export function buildStage(raw) {
     const [mat, shape] = line.split(/\s+/);
     if (!shape) throw new Error(`hand の書き方が違います：${line}`);
     checkMaterial(mat);
-    return { mat, cells: parseShape(shape), orig: i };
+    const cells = parseShape(shape);
+    checkVine(mat, cells, `hand の ${i + 1} 番`);
+    return { mat, cells, orig: i };
   });
 
   const solution = (raw.solution ?? []).map(line => {
@@ -150,6 +153,15 @@ export function buildStage(raw) {
 
 export function parseStage(text) {
   return buildStage(parseStageText(text));
+}
+
+// つるは縦の棒（1〜3マス）だけ（中身の表のルール1）
+function checkVine(mat, cells, where) {
+  if (mat !== 'vine') return;
+  const xs = new Set(cells.map(c => c[0]));
+  const ys = cells.map(c => c[1]).sort((a, b) => a - b);
+  const straight = xs.size === 1 && ys.every((y, k) => k === 0 || y === ys[k - 1] + 1);
+  if (!straight || cells.length > 3) throw new Error(`つるは縦の棒（1〜3マス）だけです：${where}`);
 }
 
 function checkMaterial(key) {

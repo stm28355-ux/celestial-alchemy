@@ -1,0 +1,17 @@
+# お手本 3-3：ふさがると伸びない
+format: 1
+id: note-3-3
+title: ふさがると伸びない
+terrain:
+  ..
+  ..
+pieces:
+  b.
+  a.
+legend:
+  a: vine
+  b: lead
+hand:
+  water #
+solution:
+  1 r0 x1

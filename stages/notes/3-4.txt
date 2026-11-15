@@ -1,0 +1,19 @@
+# お手本 3-4：水玉の床
+format: 1
+id: note-3-4
+title: 水玉の床
+terrain:
+  ..
+  ..
+  ..
+pieces:
+  ..
+  .b
+  .a
+legend:
+  a: water
+  b: lead
+hand:
+  vine #
+solution:
+  1 r0 x0

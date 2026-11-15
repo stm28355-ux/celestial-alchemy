@@ -15,6 +15,9 @@
 //     needReact true なら「反応を使わないと解けない」
 //     feature   "chain" | "fallAfterReact" | "frameMelt" … その気付きを使わない道筋が0
 //     keepIce   true なら、どのクリア盤面にも鱗が残る
+//     alsoFeatures ["burn"] など。feature のほかに、これらの気付きもすべての答えで使う
+//     keep      ["water"] など。どのクリア盤面にも、その素材が残っている
+//     noneLeft  ["water"] など。どのクリア盤面にも、その素材が残っていない
 //     overhang  true なら、どのクリア盤面でも刻印のないマスにピースがある（はみ出し）
 //     bridge    true なら、どのクリア盤面でも「上にピースがある、空いた空きマス」がある（橋）
 //     firstMat  最初の1手の素材（例 "fire"）。答えがすべてそれで始まる
@@ -22,6 +25,7 @@
 //     lastShape 最後に置くピースの形（例 "#.#/###"）。答えがすべてそれで終わる
 //     lastR     そのときの向き
 //     minTrap   落とせる最初の1手のうち、行き止まりの割合の下限（0〜1。大きいほど引っかけが多い）
+//     slimeMatters true なら、ゼリーを鉛に替えると解けなくなること（くっつくことが答えに要る）
 
 import { readFile } from 'node:fs/promises';
 import { parseStage } from '../src/core/stage.js';
@@ -82,8 +86,11 @@ for (const terrain of terrains) {
     if (req.maxPaths && r.paths > req.maxPaths) continue;
     if (req.needReact && r.pathsNoReaction > 0) continue;
     if (feature && r.pathsWithoutFeature > 0) continue;
+    if (req.alsoFeatures && req.alsoFeatures.some(name => solve(st, { maxNodes: spec.maxNodes ?? 300000, feature: FEATURES[name] }).pathsWithoutFeature > 0)) continue;
     const finals = r.examples.map(e => e.state);
     if (req.keepIce && !finals.every(s => s.pieces.some(p => p.mat === 'ice'))) continue;
+    if (req.keep && !finals.every(s => req.keep.every(m => s.pieces.some(p => p.mat === m)))) continue;
+    if (req.noneLeft && !finals.every(s => !s.pieces.some(p => req.noneLeft.includes(p.mat)))) continue;
     if (req.overhang && !finals.every(s => overhangs(s))) continue;
     if (req.bridge && !finals.every(s => bridges(s))) continue;
     // 道筋の最初と最後（例は盤面ごとに1つなので、道筋全部ではないが目安にする）
@@ -97,6 +104,11 @@ for (const terrain of terrains) {
         return canonicalKey(item.cells) === want && (req.lastR === undefined || shapeText(rotate(item.cells, last.r)) === shapeText(rotate(parseShape(req.lastShape), req.lastR)));
       });
       if (!ok) continue;
+    }
+    // ゼリーが要るか：ゼリーを鉛に替えると解けなくなること
+    if (req.slimeMatters) {
+      const alt = parseStage([...head, 'hand:', ...hand.map(h => `  ${h}`)].join('\n').replace(/\bslime\b/g, 'lead'));
+      if (solve(alt, { maxNodes: spec.maxNodes ?? 300000 }).solvable) continue;
     }
     const s0 = createState(st);
     let legal = 0;

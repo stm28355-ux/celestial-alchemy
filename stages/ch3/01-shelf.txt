@@ -1,0 +1,25 @@
+# 3-1 つるは水玉に触れると、真上に1マス伸びる。上から入れない棚の下も、下から伸ばして埋められる（答えは1つ）。
+format: 1
+id: ch3-01
+title: 棚の下
+request: 庭師が、棚の下まで鉛を詰めてほしいと言っている。
+terrain:
+  #++
+  +++
+  +++
+pieces:
+  ...
+  ...
+  a..
+legend:
+  a: vine
+hand:
+  water #
+  lead #
+  lead #
+  lead .##/##.
+solution:
+  1 r0 x1
+  2 r0 x1
+  4 r1 x1
+  3 r0 x2

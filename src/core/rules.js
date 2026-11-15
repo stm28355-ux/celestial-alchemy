@@ -1,34 +1,43 @@
 // ルール：落とす・落ちる・反応・処理の順番・クリア。画面なしで動き、ソルバーとテストも同じものを使う。
 //
-// 処理の順番（企画まとめ「検討で決まったこと」）：
-//   1. 浮いているピースを全部落とし切る（ピースは形を保ったまま。1マスでも支えがあれば止まる）
-//   2. 盤面全体で反応を一度に調べ、まとめて起こす（消える反応が先、増える反応が後）
+// 処理の順番（企画まとめ「検討で決まったこと」「中身の表で決まったこと」）：
+//   1. 浮いているピースを全部落とし切る（形を保ったまま。1マスでも支えがあれば止まる）
+//   2. 盤面全体で反応を一度に調べ、まとめて起こす
+//        消える（溶ける・燃える・蒸発）→ 増える・変わる（伸びる・くっつく）
 //   3. 何か変わったら 1 に戻る。何も変わらなければ終わり
+//
+// ピースは1つの素材でできている。スライムゼリーでくっついたピースは同じ「組（group）」になり、
+// 組ごと1つの形として落ちる。組の中のピースが消えて離れ離れになったら、組は分かれる。
 //
 // 状態はそのつど作り直す（drop は新しい状態を返す）。一手戻すとソルバーのため。
 
 import { rotate, size, canonicalKey, uniqueRotations } from './shape.js';
+import { material } from './materials.js';
 
 export function createState(stage) {
-  return {
+  const s = {
     W: stage.W,
     H: stage.H,
     terrain: stage.terrain,
-    pieces: stage.pieces.map((p, i) => ({ id: i + 1, mat: p.mat, cells: p.cells.map(c => [...c]), fixed: p.fixed })),
+    pieces: stage.pieces.map((p, i) => ({ id: i + 1, group: i + 1, mat: p.mat, cells: p.cells.map(c => [...c]), fixed: p.fixed })),
     hand: stage.hand.map(h => handItem(h.mat, h.cells, h.orig)),
     nextId: stage.pieces.length + 1,
   };
+  glue(s); // 最初から置いてあるゼリーは、最初からくっついている
+  return s;
 }
 
 // 手持ちの1つ。向きごとの形と、まとめるための key を先に計算しておく（状態をまたいで使い回す）。
+// 回せない素材（つる）は、どの向きでも同じ形にする。
 export function handItem(mat, cells, orig) {
+  const still = material(mat).noRotate;
   return {
     mat,
     cells,
     orig,
-    key: `${mat}:${canonicalKey(cells)}`,
-    rots: [0, 1, 2, 3].map(r => rotate(cells, r)),
-    uniq: uniqueRotations(cells),
+    key: `${mat}:${still ? cells.map(c => c.join(',')).join(';') : canonicalKey(cells)}`,
+    rots: [0, 1, 2, 3].map(r => (still ? cells : rotate(cells, r))),
+    uniq: still ? [{ r: 0, cells }] : uniqueRotations(cells),
   };
 }
 
@@ -81,7 +90,8 @@ export function drop(s, handIndex, r, x, occ) {
   if (!land.ok) return { ok: false, reason: land.reason, cells: land.cells };
   const next = cloneState(s);
   next.hand.splice(handIndex, 1);
-  const piece = { id: next.nextId++, mat: item.mat, cells: land.cells, fixed: false };
+  const id = next.nextId++;
+  const piece = { id, group: id, mat: item.mat, cells: land.cells, fixed: false };
   next.pieces.push(piece);
   const events = [{ type: 'place', id: piece.id, mat: piece.mat, cells: land.cells.map(c => [...c]) }];
   // 置いたピースは止まった所にあり、ほかのピースも止まっているので、落とす段は飛ばして反応から始める。
@@ -113,54 +123,184 @@ export function settle(s) {
   throw new Error('落ち終わりません（ルールの間違い）');
 }
 
-// 支えのないピースの添字。床・壁・動かないピース・支えのあるピースの上に1マスでも乗っていれば支えがある。
+// 支えのないピースの添字。組ごとに考える：床・壁・動かないピース・支えのある別の組の上に、
+// 組のどこか1マスでも乗っていれば、組ごと支えがある。
 function unsupported(s) {
   const occ = occupancy(s);
-  const sup = s.pieces.map(p => p.fixed);
+  const members = new Map();
+  s.pieces.forEach((p, i) => {
+    if (!members.has(p.group)) members.set(p.group, []);
+    members.get(p.group).push(i);
+  });
+  const sup = new Map();
+  for (const [g, idx] of members) sup.set(g, idx.some(i => s.pieces[i].fixed));
   let changed = true;
   while (changed) {
     changed = false;
-    s.pieces.forEach((p, i) => {
-      if (sup[i]) return;
-      const held = p.cells.some(([x, y]) => {
-        if (isWall(s, x, y + 1)) return true;
-        const o = occ[(y + 1) * s.W + x];
-        return o !== 0 && o - 1 !== i && sup[o - 1];
-      });
+    for (const [g, idx] of members) {
+      if (sup.get(g)) continue;
+      const held = idx.some(i =>
+        s.pieces[i].cells.some(([x, y]) => {
+          if (isWall(s, x, y + 1)) return true;
+          const o = occ[(y + 1) * s.W + x];
+          return o !== 0 && s.pieces[o - 1].group !== g && sup.get(s.pieces[o - 1].group);
+        }),
+      );
       if (held) {
-        sup[i] = true;
+        sup.set(g, true);
         changed = true;
       }
-    });
+    }
   }
-  return sup.flatMap((v, i) => (v ? [] : [i]));
+  return s.pieces.flatMap((p, i) => (sup.get(p.group) ? [] : [i]));
 }
 
 const NEIGHBORS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 
-// 盤面全体の反応を一度に調べて、まとめて起こす。何も起きなければ null。
-//   火種 × 鱗：火種に触れた鱗は、ピースごと消える。火種は残る。
-export function react(s) {
-  const occ = occupancy(s);
-  const remove = new Set();
-  s.pieces.forEach(p => {
-    if (p.mat !== 'fire') return;
+// となり合っている、別のピースどうしの組（添字の組、重なりなし）。
+function touching(s, occ) {
+  const pairs = new Map();
+  s.pieces.forEach((p, i) => {
     for (const [x, y] of p.cells) {
       for (const [dx, dy] of NEIGHBORS) {
         const nx = x + dx, ny = y + dy;
         if (nx < 0 || nx >= s.W || ny < 0 || ny >= s.H) continue;
         const o = occ[ny * s.W + nx];
-        if (o && s.pieces[o - 1].mat === 'ice') remove.add(o - 1);
+        if (!o || o - 1 === i) continue;
+        const j = o - 1;
+        pairs.set(i < j ? `${i},${j}` : `${j},${i}`, i < j ? [i, j] : [j, i]);
       }
     }
   });
-  if (remove.size === 0) return null;
-  const removed = [...remove].sort((a, b) => a - b).map(i => s.pieces[i]);
-  s.pieces = s.pieces.filter((_, i) => !remove.has(i));
+  return [...pairs.values()];
+}
+
+// 盤面全体の反応を一度に調べて、まとめて起こす。何も起きなければ null。
+//   消える：火種 × 鱗 → 鱗が消える（溶ける）／火種 × つる → つるが消える（燃える）／火種 × 水玉 → 両方消える（蒸発）
+//   増える：つる × 水玉 → 水玉が消え、つるがいちばん上のマスの真上に1マス伸びる（触れた水玉1つにつき1マス。
+//           伸びる先がふさがっていたら伸びず、水玉も残る。器の上端より上には伸びない）
+//   変わる：スライムゼリーは、触れているピース（動かないピースはのぞく）とくっついて1つの組になる
+export function react(s) {
+  let occ = occupancy(s);
+  const why = new Map(); // 消すピースの添字 → 理由
+  for (const [i, j] of touching(s, occ)) {
+    const a = s.pieces[i], b = s.pieces[j];
+    for (const [p, q, pi, qi] of [[a, b, i, j], [b, a, j, i]]) {
+      if (p.mat !== 'fire') continue;
+      if (q.mat === 'ice') why.set(qi, 'melt');
+      if (q.mat === 'vine') why.set(qi, 'burn');
+      if (q.mat === 'water') {
+        why.set(qi, 'steam');
+        why.set(pi, 'steam');
+      }
+    }
+  }
+  const removed = [];
+  if (why.size) {
+    for (const [i, w] of [...why].sort((x, y) => x[0] - y[0])) removed.push(info(s.pieces[i], w));
+    s.pieces = s.pieces.filter((_, i) => !why.has(i));
+    splitGroups(s);
+    occ = occupancy(s);
+  }
+
+  // 伸びる：つるごとに、触れている水玉を順に吸う
+  const grown = [];
+  const used = new Set();
+  s.pieces.forEach(v => {
+    if (v.mat !== 'vine') return;
+    const waters = new Set();
+    for (const [x, y] of v.cells) {
+      for (const [dx, dy] of NEIGHBORS) {
+        const nx = x + dx, ny = y + dy;
+        if (nx < 0 || nx >= s.W || ny < 0 || ny >= s.H) continue;
+        const o = occ[ny * s.W + nx];
+        if (o && s.pieces[o - 1].mat === 'water' && !used.has(s.pieces[o - 1].id)) waters.add(s.pieces[o - 1].id);
+      }
+    }
+    for (const wid of [...waters].sort((p, q) => p - q)) {
+      const topY = Math.min(...v.cells.map(c => c[1]));
+      const x = v.cells.find(c => c[1] === topY)[0];
+      const y = topY - 1;
+      if (y < 0 || isWall(s, x, y) || occ[y * s.W + x]) break; // ふさがっていたら伸びない
+      v.cells.push([x, y]);
+      occ[y * s.W + x] = s.pieces.indexOf(v) + 1;
+      used.add(wid);
+      const g = grown.find(e => e.id === v.id);
+      if (g) g.cells.push([x, y]);
+      else grown.push({ id: v.id, cells: [[x, y]] });
+    }
+  });
+  if (used.size) {
+    for (const p of s.pieces) if (used.has(p.id)) removed.push(info(p, 'absorb'));
+    s.pieces = s.pieces.filter(p => !used.has(p.id));
+    splitGroups(s);
+  }
+
+  // くっつく
+  const merged = glue(s);
+
+  if (!removed.length && !grown.length && !merged) return null;
   return {
     type: 'react',
-    removed: removed.map(p => ({ id: p.id, mat: p.mat, fixed: p.fixed, cells: p.cells.map(c => [...c]), why: 'melt' })),
+    removed,
+    grown,
+    groups: s.pieces.map(p => [p.id, p.group]),
   };
+}
+
+function info(p, why) {
+  return { id: p.id, mat: p.mat, fixed: p.fixed, cells: p.cells.map(c => [...c]), why };
+}
+
+// ゼリーに触れているピースを同じ組にする。組が変わったら true。
+function glue(s) {
+  const occ = occupancy(s);
+  let changed = false;
+  for (const [i, j] of touching(s, occ)) {
+    const a = s.pieces[i], b = s.pieces[j];
+    if (a.mat !== 'slime' && b.mat !== 'slime') continue;
+    if (a.fixed || b.fixed || a.group === b.group) continue;
+    const from = Math.max(a.group, b.group), to = Math.min(a.group, b.group);
+    for (const p of s.pieces) if (p.group === from) p.group = to;
+    changed = true;
+  }
+  return changed;
+}
+
+// 組の中でつながっていないピースは、別の組に分ける（組の番号は、そのかたまりの中でいちばん小さいピースの番号）。
+function splitGroups(s) {
+  const byGroup = new Map();
+  for (const p of s.pieces) {
+    if (!byGroup.has(p.group)) byGroup.set(p.group, []);
+    byGroup.get(p.group).push(p);
+  }
+  for (const list of byGroup.values()) {
+    if (list.length < 2) {
+      list[0].group = list[0].id;
+      continue;
+    }
+    const at = new Map();
+    for (const p of list) for (const [x, y] of p.cells) at.set(`${x},${y}`, p);
+    const seen = new Set();
+    for (const start of list) {
+      if (seen.has(start)) continue;
+      const comp = [start];
+      seen.add(start);
+      for (let k = 0; k < comp.length; k++) {
+        for (const [x, y] of comp[k].cells) {
+          for (const [dx, dy] of NEIGHBORS) {
+            const q = at.get(`${x + dx},${y + dy}`);
+            if (q && !seen.has(q)) {
+              seen.add(q);
+              comp.push(q);
+            }
+          }
+        }
+      }
+      const g = Math.min(...comp.map(p => p.id));
+      for (const p of comp) p.group = g;
+    }
+  }
 }
 
 // クリア：手持ちを使い切り、目標マスが全部埋まっている（G は金、L は鉛で）。
@@ -185,13 +325,14 @@ export function targetsFilled(s) {
 }
 
 // 同じ盤面・同じ手持ちなら同じ文字列。ソルバーの記録に使う。
-// 盤を左上から読み、マスごとに「素材の文字（動かないなら !）＋何番目に出てきたピースか」を並べる。
-// ピースの分かれ方も区別する（2つの鉛が並んでいるのと、1つの長い鉛は別の盤面）。
+// 盤を左上から読み、マスごとに「素材の文字（動かないなら !）＋何番目に出てきたピースか＋何番目に出てきた組か」を並べる。
+// ピースの分かれ方も、くっつき方も区別する。
 const MAT_CHAR = { lead: 'l', gold: 'g', fire: 'f', ice: 'i', water: 'w', vine: 'v', slime: 's', sand: 'd', horn: 'h', stone: 'p' };
 
 export function stateKey(s) {
   const occ = occupancy(s);
   const label = new Int32Array(s.pieces.length + 1).fill(-1);
+  const glabel = new Map();
   let next = 0;
   let out = '';
   for (let i = 0; i < occ.length; i++) {
@@ -202,7 +343,8 @@ export function stateKey(s) {
     }
     const p = s.pieces[o - 1];
     if (label[o] < 0) label[o] = next++;
-    out += MAT_CHAR[p.mat] + (p.fixed ? '!' : '') + String.fromCharCode(48 + label[o]);
+    if (!glabel.has(p.group)) glabel.set(p.group, glabel.size);
+    out += MAT_CHAR[p.mat] + (p.fixed ? '!' : '') + String.fromCharCode(48 + label[o]) + String.fromCharCode(48 + glabel.get(p.group));
   }
   return `${out}/${s.hand.map(h => h.key).sort().join('|')}`;
 }

@@ -58,7 +58,14 @@
     "master": "ジョーヴ",
     "title": "木星の錬金術師",
     "line": "水をやれば、つるは育つ！ 育つ先を空けておいてやりなよ。",
-    "stages": []
+    "stages": [
+      "ch3/01-shelf.txt",
+      "ch3/02-two-drops.txt",
+      "ch3/03-water-floor.txt",
+      "ch3/04-burn.txt",
+      "ch3/05-steam.txt",
+      "ch3/06-trial.txt"
+    ]
   },
   {
     "id": 4,

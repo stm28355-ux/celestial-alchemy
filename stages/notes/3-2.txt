@@ -1,0 +1,22 @@
+# お手本 3-2：水玉ふたつ
+format: 1
+id: note-3-2
+title: 水玉ふたつ
+terrain:
+  .#.
+  ...
+  ...
+  ...
+pieces:
+  ...
+  ...
+  ...
+  .a.
+legend:
+  a: vine
+hand:
+  water #
+  water #
+solution:
+  1 r0 x0
+  2 r0 x2

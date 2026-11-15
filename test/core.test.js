@@ -48,7 +48,7 @@ test('ステージ：テキスト → 生の形 → テキスト で同じにな
 
 test('ステージ：間違いを知らせる', () => {
   assert.throws(() => stage(['terrain:', '  ++', '  +']), /長さ/);
-  assert.throws(() => stage(['terrain:', '  ++', 'hand:', '  water #']), /まだありません/);
+  assert.throws(() => stage(['terrain:', '  ++', 'hand:', '  sand #']), /まだありません/);
   assert.throws(() => stage(['terrain:', '  ++', 'hand:', '  copper #']), /知らない素材/);
   assert.throws(() => stage(['terrain:', '  #+', 'pieces:', '  a.', 'legend:', '  a: lead']), /壁の上/);
 });
@@ -226,4 +226,91 @@ test('共有URL：ステージを文字にして、元に戻せる', async () =>
 test('ソルバー：解けないステージ', () => {
   const st = stage(['terrain:', '  +++', 'hand:', '  lead ##']);
   assert.equal(solve(st).solvable, false);
+});
+
+// ── 3・4章の素材（水玉・つる・ゼリー） ──
+function cellsOfPiece(s, mat) {
+  return s.pieces.filter(p => p.mat === mat).map(p => p.cells.map(([x, y]) => `${x},${y}`).sort());
+}
+
+test('つる×水玉：水玉は吸われて消え、つるがいちばん上の真上に1マス伸びる', () => {
+  const st = stage(['terrain:', '  ..', '  ..', 'pieces:', '  ..', '  a.', 'legend:', '  a: vine', 'hand:', '  water #']);
+  const { s, events } = play(st, [[0, 0, 1]]);
+  assert.deepEqual(cellsOfPiece(s, 'vine'), [['0,0', '0,1']]);
+  assert.deepEqual(cellsOfPiece(s, 'water'), []);
+  const r = events.find(e => e.type === 'react');
+  assert.deepEqual(r.grown, [{ id: 1, cells: [[0, 0]] }]);
+  assert.equal(r.removed[0].why, 'absorb');
+});
+
+test('つる：伸びる先がふさがっていたら伸びず、水玉も残る（器の上端も同じ）', () => {
+  const blocked = stage(['terrain:', '  ..', '  ..', 'pieces:', '  b.', '  a.', 'legend:', '  a: vine', '  b: lead', 'hand:', '  water #']);
+  const s1 = play(blocked, [[0, 0, 1]]).s;
+  assert.deepEqual(cellsOfPiece(s1, 'water'), [['1,1']]);
+  const top = stage(['terrain:', '  ..', '  ..', 'pieces:', '  a.', '  a.', 'legend:', '  a: vine', 'hand:', '  water #']);
+  const s2 = play(top, [[0, 0, 1]]).s;
+  assert.deepEqual(cellsOfPiece(s2, 'vine'), [['0,0', '0,1']]);
+  assert.deepEqual(cellsOfPiece(s2, 'water'), [['1,1']]);
+});
+
+test('つる：水玉2つで2マス伸びる。水玉が吸われると、上に乗っていた物が落ちる', () => {
+  const st = stage(['terrain:', '  ...', '  ...', '  ...', 'pieces:', '  ...', '  ...', '  .a.', 'legend:', '  a: vine', 'hand:', '  water #', '  water #']);
+  const s = play(st, [[0, 0, 0], [0, 0, 2]]).s;
+  assert.deepEqual(cellsOfPiece(s, 'vine'), [['1,0', '1,1', '1,2']]);
+  const st2 = stage(['terrain:', '  ..', '  ..', '  ..', 'pieces:', '  ..', '  .b', '  .a', 'legend:', '  a: water', '  b: lead', 'hand:', '  vine #']);
+  const s2 = play(st2, [[0, 0, 0]]).s;
+  assert.deepEqual(cellsOfPiece(s2, 'lead'), [['1,2']]);
+  assert.deepEqual(cellsOfPiece(s2, 'vine'), [['0,1', '0,2']]);
+});
+
+test('つるは回せない（縦の棒だけ）', () => {
+  const st = stage(['terrain:', '  ...', 'hand:', '  vine #/#']);
+  const s = createState(st);
+  assert.equal(s.hand[0].uniq.length, 1);
+  assert.deepEqual(s.hand[0].rots[1], s.hand[0].rots[0]);
+  assert.throws(() => stage(['terrain:', '  ...', 'hand:', '  vine ##']), /縦の棒/);
+});
+
+test('火種×つる：つるが燃えて消える。火種×水玉：両方消える', () => {
+  const st = stage(['terrain:', '  ..', '  ..', 'pieces:', '  a.', '  a.', 'legend:', '  a: vine', 'hand:', '  fire #']);
+  const s = play(st, [[0, 0, 1]]).s;
+  assert.deepEqual(cellsOfPiece(s, 'vine'), []);
+  assert.deepEqual(cellsOfPiece(s, 'fire'), [['1,1']]);
+  const st2 = stage(['terrain:', '  ..', 'pieces:', '  a.', 'legend:', '  a: water', 'hand:', '  fire #']);
+  const s2 = play(st2, [[0, 0, 1]]).s;
+  assert.equal(s2.pieces.length, 0);
+});
+
+test('ゼリー：触れたピースとくっつき、組ごと支えられる（下の鱗が溶けても落ちない）', () => {
+  const st = stage([
+    'terrain:', '  ....', '  ....',
+    'pieces:', '  .asb', '  .i.c',
+    'legend:', '  a: lead', '  s: slime', '  b: lead', '  i: ice', '  c: lead',
+    'hand:', '  fire #',
+  ]);
+  const s0 = createState(st);
+  const byMat = (st0, mat, x) => st0.pieces.find(p => p.mat === mat && p.cells[0][0] === x);
+  const A = byMat(s0, 'lead', 1), S = byMat(s0, 'slime', 2), B = byMat(s0, 'lead', 3);
+  assert.equal(A.group, S.group);
+  assert.equal(S.group, B.group); // a・ゼリー・b が1つの組
+  assert.notEqual(s0.pieces.find(p => p.mat === 'lead' && p.cells[0][1] === 1).group, A.group); // c はゼリーに触れていない
+  const s = play(st, [[0, 0, 0]]).s; // 火種が (0,1) に落ちて鱗を溶かす
+  assert.deepEqual(cellsOfPiece(s, 'ice'), []);
+  assert.deepEqual(cellsOfPiece(s, 'lead').sort(), [['1,0'], ['3,0'], ['3,1']]); // a は落ちない
+});
+
+test('ゼリー：くっついた鱗が溶けて離れ離れになると、別々の組になる', () => {
+  const st = stage([
+    'terrain:', '  ...', '  ...',
+    'pieces:', '  ...', '  sit',
+    'legend:', '  s: slime', '  i: ice', '  t: slime',
+    'hand:', '  fire #',
+  ]);
+  const s0 = createState(st);
+  assert.equal(new Set(s0.pieces.map(p => p.group)).size, 1);
+  const { events } = play(st, [[0, 0, 1]]);
+  // 溶けた直後の組（このあと火種が間に落ちて、またくっつく）
+  const groups = new Map(events.find(e => e.type === 'react').groups);
+  const [s1, s2] = s0.pieces.filter(p => p.mat === 'slime').map(p => p.id);
+  assert.notEqual(groups.get(s1), groups.get(s2));
 });

@@ -1,0 +1,27 @@
+# 3-2 水玉を2つ当てると、2マス伸びる。水玉を置く場所が、つるの横で空いているうちに（答えは1つ）。
+format: 1
+id: ch3-02
+title: 水玉ふたつ
+request: ジョーヴが、深い棚の下をつるで埋めてみなと言っている。
+terrain:
+  #++
+  +++
+  +++
+  +++
+pieces:
+  ...
+  ...
+  ...
+  a..
+legend:
+  a: vine
+hand:
+  water #
+  water #
+  lead #./#./##
+  lead #./#./##
+solution:
+  1 r0 x1
+  2 r0 x1
+  3 r0 x1
+  4 r2 x1

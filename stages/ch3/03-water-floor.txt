@@ -1,0 +1,28 @@
+# 3-3 水玉は吸われて消える。水玉の上に乗っていたピースは、形を保ったまま落ちる（答えは1つ）。
+format: 1
+id: ch3-03
+title: 水玉の床
+request: 温室の番人が、水玉の上に置いた鉛を床まで下ろしてほしいと言っている。
+terrain:
+  ++++
+  ++++
+  ++++
+  ++++
+pieces:
+  ....
+  ....
+  .bb.
+  .aa.
+legend:
+  a: water
+  b: lead
+hand:
+  vine #
+  lead ####
+  lead #./#./##
+  lead ##./.##
+solution:
+  1 r0 x0
+  4 r0 x0
+  3 r2 x2
+  2 r0 x0
