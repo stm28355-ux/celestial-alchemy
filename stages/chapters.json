@@ -129,6 +129,13 @@
     "master": "ソレイユ",
     "title": "太陽の錬金術師",
     "line": "鉛を金に。きみがここまで来た理由が、ようやく分かるよ。",
-    "stages": []
+    "stages": [
+      "ch7/01-gold.txt",
+      "ch7/02-marks.txt",
+      "ch7/03-ice.txt",
+      "ch7/04-horn.txt",
+      "ch7/05-sand.txt",
+      "ch7/06-final.txt"
+    ]
   }
 ]

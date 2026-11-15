@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { parseShape, rotate, uniqueRotations, shapeText, canonicalKey } from '../src/core/shape.js';
 import { parseStage, parseStageText, stageToText, buildStage } from '../src/core/stage.js';
 import { createState, drop, isCleared, initialProblems } from '../src/core/rules.js';
-import { solve, checkSolution } from '../src/core/solver.js';
+import { solve, checkSolution, solveRooms, solveState } from '../src/core/solver.js';
 import { encodeStage, decodeStage } from '../src/core/share.js';
 
 // 小さな盤面を手早く作る。
@@ -48,7 +48,6 @@ test('ステージ：テキスト → 生の形 → テキスト で同じにな
 
 test('ステージ：間違いを知らせる', () => {
   assert.throws(() => stage(['terrain:', '  ++', '  +']), /長さ/);
-  assert.throws(() => stage(['terrain:', '  ++', 'hand:', '  stone #']), /まだありません/);
   assert.throws(() => stage(['terrain:', '  ++', 'hand:', '  copper #']), /知らない素材/);
   assert.throws(() => stage(['terrain:', '  #+', 'pieces:', '  a.', 'legend:', '  a: lead']), /壁の上/);
 });
@@ -218,7 +217,9 @@ test('章のステージとお手本：読めて、最初の盤面に問題が�
       const c = checkSolution(st);
       assert.ok(c.ok && c.cleared, `${path}：狙いの手順でクリアできない`);
       // 答えが絞れていること（クリアしたときの盤面は2種類まで）
-      const r = solve(st);
+      // 手持ちが多い問題（最後の調合）は、壁で区切られた部屋ごとに調べる
+      let r = solve(st, { maxNodes: 300000 });
+      if (r.truncated) r = solveRooms(createState(st)) ?? r;
       assert.ok(!r.truncated && r.finalStates <= 2, `${path}：答えが多すぎる（${r.finalStates}）`);
     }
   }
@@ -454,4 +455,65 @@ test('枠を外す（open）は文字に書き出して、元に戻せる', () =
   const again = parseStage(stageToText(st.raw));
   assert.deepEqual(again.open, st.open);
   assert.throws(() => stage(['terrain:', '  ..', 'open:', '  floor 5']), /器の外/);
+});
+
+// ── 賢者の石と金 ──
+test('賢者の石：触れた鉛は金になり、つながった鉛に広がる。別の鉛のピースでも触れていれば広がる', () => {
+  const st = stage(['terrain:', '  ....', '  ....', 'pieces:', '  ....', '  .aab', 'legend:', '  a: lead', '  b: lead', 'hand:', '  stone #']);
+  const { s, events } = play(st, [[0, 0, 0]]);
+  assert.deepEqual(cellsOf(s, 'gold'), ['1,1', '2,1', '3,1']);
+  assert.deepEqual(cellsOf(s, 'stone'), ['0,1']); // 石は残る
+  const g = events.find(e => e.type === 'react').gilded;
+  assert.deepEqual(g.flatMap(p => p.cells).map(c => c[2]).sort(), [1, 2, 3]); // 石から1マスずつ広がる
+});
+
+test('賢者の石：鉛以外で区切ると止まる。あとから金に触れた鉛も金になる', () => {
+  const st = stage(['terrain:', '  ....', '  ....', 'pieces:', '  ....', '  .ab.', 'legend:', '  a: lead', '  b: ice', 'hand:', '  stone #', '  lead #']);
+  const s = play(st, [[0, 0, 0]]).s;
+  assert.deepEqual(cellsOf(s, 'gold'), ['1,1']);
+  // 金の上に落ちてきた鉛も金になる
+  const s2 = play(st, [[0, 0, 0], [0, 0, 1]]).s;
+  assert.deepEqual(cellsOf(s2, 'gold'), ['1,0', '1,1']);
+});
+
+test('金の刻印は金で、鉛の刻印は鉛で埋める', () => {
+  const st = stage(['terrain:', '  GL', 'hand:', '  stone #', '  lead #']);
+  // 石を右に置いて左に鉛 → 鉛が金に。金の刻印は埋まるが、石が鉛の刻印にいるので失敗
+  assert.equal(isCleared(play(st, [[0, 0, 1], [0, 0, 0]]).s), false);
+  const st2 = stage(['terrain:', '  ..', '  GL', 'pieces:', '  ..', '  ab', 'legend:', '  a: lead', '  b: lead', 'hand:', '  stone #']);
+  // 鉛が2つ並んでいると、両方金になってしまう
+  assert.deepEqual(cellsOf(play(st2, [[0, 0, 0]]).s, 'gold'), ['0,1', '1,1']);
+  assert.equal(solve(st2).solvable, false);
+});
+
+test('部屋分け：壁で区切られた部屋ごとに調べても、全体を調べたのと同じ盤面の数になる', () => {
+  let seed = 7;
+  const rand = n => {
+    seed = (seed * 1103515245 + 12345) % 2147483648;
+    return seed % n;
+  };
+  const SHAPES = ['#', '##', '#/#', '##/#.', '###'];
+  const MATS = ['lead', 'lead', 'ice', 'fire', 'slime', 'sand', 'horn', 'stone'];
+  let compared = 0;
+  for (let n = 0; n < 60; n++) {
+    const room = () => Array.from({ length: 2 }, () => Array.from({ length: 1 + rand(2) }, () => '++.GLx'[rand(6)]).join(''));
+    const a = room(), b = room();
+    const terrain = [0, 1].map(y => a[y] + '#' + b[y]);
+    const hand = Array.from({ length: 2 + rand(3) }, () => {
+      const m = MATS[rand(MATS.length)];
+      return `  ${m} ${m === 'horn' || m === 'stone' ? '#' : m === 'sand' ? '##' : SHAPES[rand(SHAPES.length)]}`;
+    });
+    let st;
+    try {
+      st = stage(['terrain:', ...terrain.map(r => `  ${r}`), 'hand:', ...hand]);
+    } catch {
+      continue;
+    }
+    const whole = solve(st);
+    const rooms = solveRooms(createState(st));
+    assert.equal(rooms.finalStates, whole.finalStates, terrain.join('/') + ' ' + hand.join(','));
+    if (whole.solvable) assert.ok(rooms.firstMoves.length > 0);
+    compared++;
+  }
+  assert.ok(compared > 40);
 });

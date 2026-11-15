@@ -1,0 +1,15 @@
+# お手本 7-7：押して金に触れさせる
+format: 1
+id: note-7-7
+title: 押して金に触れさせる
+terrain:
+  GG.+
+pieces:
+  a.b.
+legend:
+  a: gold
+  b: lead
+hand:
+  horn #
+solution:
+  1 r1 x3

@@ -1,0 +1,17 @@
+# お手本 7-1：鉛が金に
+format: 1
+id: note-7-1
+title: 鉛が金に
+terrain:
+  ....
+  +GGG
+pieces:
+  ....
+  .aab
+legend:
+  a: lead
+  b: lead
+hand:
+  stone #
+solution:
+  1 r0 x0

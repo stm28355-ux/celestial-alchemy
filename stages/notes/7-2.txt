@@ -1,0 +1,15 @@
+# お手本 7-2：金の刻印と鉛の刻印
+format: 1
+id: note-7-2
+title: 金の刻印と鉛の刻印
+terrain:
+  +G#L
+pieces:
+  .a.b
+legend:
+  a: lead
+  b: lead
+hand:
+  stone #
+solution:
+  1 r0 x0

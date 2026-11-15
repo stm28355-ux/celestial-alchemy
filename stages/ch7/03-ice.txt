@@ -1,0 +1,19 @@
+# 7-3 鉛以外の素材で区切ると、金の広がりが止まる。鱗を区切りにする（答えは1つ）。
+format: 1
+id: ch7-03
+title: 鱗の区切り
+request: 宝石商が、金と鉛の間に氷をはさんだ箱を作ってほしいと言っている。
+terrain:
+  ....
+  GG+L
+  GG+L
+hand:
+  stone #
+  ice ##
+  lead ##/##
+  lead #./#./##
+solution:
+  2 r1 x2
+  3 r0 x0
+  1 r0 x0
+  4 r2 x2

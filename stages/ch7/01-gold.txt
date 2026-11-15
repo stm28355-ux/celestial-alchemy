@@ -1,0 +1,18 @@
+# 7-1 賢者の石に触れた鉛は金になり、つながった鉛に広がる。石の置き場所は刻印のない角だけ（答えは1つ）。
+format: 1
+id: ch7-01
+title: はじめての金
+request: 太陽の錬金術師ソレイユが、最初の課題を出した。鉛の延べ棒を、金に変えてごらん。
+terrain:
+  +GGG
+  GGGG
+hand:
+  stone #
+  lead #
+  lead ##
+  lead ##./.##
+solution:
+  3 r0 x0
+  1 r0 x0
+  4 r0 x1
+  2 r0 x3

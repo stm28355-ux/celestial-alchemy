@@ -226,6 +226,23 @@ export const FEATURES = {
   chain: events => events.filter(e => e.type === 'react').length >= 2,
   // 反応が起きた
   react: events => events.some(e => e.type === 'react'),
+  // 鉛が金になった
+  gild: events => events.some(e => e.type === 'react' && e.gilded?.length),
+  // 反応のあとで落ちてきた鉛が、金に触れて金になった（あとから金になる）
+  lateGild: events => {
+    const i = events.findIndex(e => e.type === 'react' && !e.gilded?.length);
+    return i >= 0 && events.slice(i + 1).some(e => e.type === 'react' && e.gilded?.length);
+  },
+  // 鱗が溶けたあとで、鉛が金になった（区切りが消えて、そのときに広がる）
+  meltGild: events => {
+    const i = events.findIndex(e => e.type === 'react' && e.removed.some(r => r.why === 'melt'));
+    return i >= 0 && events.slice(i).some(e => e.type === 'react' && e.gilded?.length && !e.removed.length);
+  },
+  // 押したあとで、鉛が金になった
+  pushGild: events => {
+    const i = events.findIndex(e => e.type === 'react' && e.pushed?.length);
+    return i >= 0 && events.slice(i + 1).some(e => e.type === 'react' && e.gilded?.length);
+  },
   // 星砂がばらけた
   crumble: events => events.some(e => e.type === 'react' && e.split?.length),
   // 角笛がピースを押した
@@ -265,3 +282,107 @@ Object.assign(FEATURES, {
 
 // 1つの火種で、つるを燃やすのと水玉の蒸発を、同じ段で一度に起こす（まとめて消す）
 FEATURES.burnSteam = events => events.some(e => e.type === 'react' && e.removed.some(r => r.why === 'burn') && e.removed.some(r => r.why === 'steam'));
+
+// ── 部屋分け ──
+// 上から下まで壁（#）の列で区切られた器は、部屋どうしが関わらない（ピースも反応も押し出しも壁を越えない）。
+// 手持ちが多くて全体を調べきれない問題（最後の調合など）は、部屋ごとに調べて掛け合わせる。
+// 置く順番は部屋どうしで自由に混ぜられるので、クリア盤面の数は「手持ちの分け方ごとの、部屋の盤面の数の積」の合計。
+export function roomsOf(s) {
+  const rooms = [];
+  for (let x = 0; x < s.W; x++) {
+    if (s.terrain.every(row => row[x] === '#')) continue;
+    if (!rooms.length || rooms.at(-1).end !== x - 1) rooms.push({ start: x, end: x });
+    else rooms.at(-1).end = x;
+  }
+  return rooms;
+}
+
+function roomState(s, room, hand) {
+  const { start, end } = room;
+  const w = end - start + 1;
+  const open = {
+    left: start === 0 ? [...(s.open?.left ?? [])] : [],
+    right: end === s.W - 1 ? [...(s.open?.right ?? [])] : [],
+    floor: (s.open?.floor ?? []).filter(x => x >= start && x <= end).map(x => x - start),
+  };
+  return {
+    ...s,
+    W: w,
+    terrain: s.terrain.map(row => row.slice(start, end + 1)),
+    open,
+    pieces: s.pieces.filter(p => p.cells.every(([x]) => x >= start && x <= end)).map(p => ({ ...p, cells: p.cells.map(([x, y]) => [x - start, y]) })),
+    hand,
+  };
+}
+
+// 部屋が2つ以上なければ null。返すもの：solvable, finalStates, truncated, firstMoves（ヒント用に、どれか1部屋の最初の手）
+export function solveRooms(root, { maxNodes = 2_000_000 } = {}) {
+  const rooms = roomsOf(root);
+  if (rooms.length < 2) return null;
+  const kinds = [];
+  for (const h of root.hand) {
+    const k = kinds.find(q => q.key === handKey(h));
+    if (k) k.items.push(h);
+    else kinds.push({ key: handKey(h), items: [h] });
+  }
+  let truncated = false;
+  const memo = new Map();
+  const handFor = counts => kinds.flatMap((q, i) => q.items.slice(0, counts[i]));
+  const finals = (r, counts) => {
+    const key = `${r}|${counts.join(',')}`;
+    if (!memo.has(key)) {
+      const res = solveState(roomState(root, rooms[r], handFor(counts)), { maxNodes });
+      if (res.truncated) truncated = true;
+      memo.set(key, res.finalStates);
+    }
+    return memo.get(key);
+  };
+  let total = 0;
+  let plan = null;
+  const left = kinds.map(q => q.items.length);
+  const walk = (r, prod, acc) => {
+    if (r === rooms.length) {
+      if (left.every(v => v === 0)) {
+        total += prod;
+        plan ??= acc.map(a => [...a]);
+      }
+      return;
+    }
+    const take = kinds.map(() => 0);
+    const rec = i => {
+      if (i === kinds.length) {
+        const n = finals(r, take);
+        if (!n) return;
+        for (let j = 0; j < kinds.length; j++) left[j] -= take[j];
+        acc.push([...take]);
+        walk(r + 1, prod * n, acc);
+        acc.pop();
+        for (let j = 0; j < kinds.length; j++) left[j] += take[j];
+        return;
+      }
+      for (let c = 0; c <= left[i]; c++) {
+        take[i] = c;
+        rec(i + 1);
+      }
+      take[i] = 0;
+    };
+    rec(0);
+  };
+  walk(0, 1, []);
+  // ヒント用：手持ちを割り当てた部屋のうち、最初の部屋の「最初の1手」
+  const firstMoves = [];
+  if (plan) {
+    const used = kinds.map(() => 0);
+    for (let r = 0; r < rooms.length && !firstMoves.length; r++) {
+      const items = kinds.flatMap((q, i) => q.items.slice(used[i], used[i] + plan[r][i]));
+      plan[r].forEach((n, i) => (used[i] += n));
+      if (!items.length) continue;
+      const res = solveState(roomState(root, rooms[r], items), { maxNodes });
+      for (const m of res.firstMoves) {
+        const item = items[m.hand];
+        firstMoves.push({ ...m, hand: root.hand.indexOf(item), x: m.x + rooms[r].start });
+      }
+    }
+  }
+  return { solvable: total > 0, finalStates: total, truncated, firstMoves, rooms: rooms.length };
+}

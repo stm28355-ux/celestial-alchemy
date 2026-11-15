@@ -301,11 +301,12 @@ export function openEditor(view) {
     }
     say('調べています…（大きいと少し時間がかかります）');
     const res = await askHint(createState(st), 1500000);
-    if (res.truncated && !res.solvable) return say('探しきれませんでした。手持ちを減らすか、器を小さくしてみてください。');
+    if (res.truncated && !res.solvable) return say('探しきれませんでした。手持ちを減らすか、器を小さくするか、壁の列で部屋に分けてみてください。');
     if (!res.solvable) return say('解けません。');
     const once = res.finalStates === 1 ? '答えは1つに決まっています。' : `クリアしたときの盤面は${res.finalStates}種類あります。`;
     const react = res.pathsNoReaction === 0 ? '反応を使わないと解けません。' : '';
-    say(`解けます。クリアまでの道筋は${res.paths}通り。${once}${react}${res.truncated ? '（全部は調べきれていません）' : ''}`);
+    const paths = res.paths == null ? '（部屋ごとに調べたので、道筋の数は数えていません）' : `クリアまでの道筋は${res.paths}通り。`;
+    say(`解けます。${paths}${once}${react}${res.truncated ? '（全部は調べきれていません）' : ''}`);
   }, on);
   $('#ed-share').addEventListener('click', async () => {
     if (d.verifiedText !== stageToText(d.raw)) return say('共有する前に「試しに遊ぶ」で、自分でクリアしてください。');

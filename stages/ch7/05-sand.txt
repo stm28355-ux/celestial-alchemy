@@ -1,0 +1,21 @@
+# 7-5 区切りには、鉛でなければ何を使ってもよい。星砂の粒を区切りにする（答えは1つ）。
+format: 1
+id: ch7-05
+title: 星砂の区切り
+request: 砂時計職人が、金の部屋と鉛の部屋に分かれた重しを作ってほしいと言っている。
+terrain:
+  ....
+  G+LL
+  G+LL
+hand:
+  stone #
+  sand ##
+  lead #
+  lead #
+  lead ##/##
+solution:
+  2 r1 x1
+  3 r0 x0
+  4 r0 x0
+  1 r0 x0
+  5 r0 x2

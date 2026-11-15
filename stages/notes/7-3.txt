@@ -1,0 +1,16 @@
+# お手本 7-3：区切ると止まる
+format: 1
+id: note-7-3
+title: 区切ると止まる
+terrain:
+  +G+L
+pieces:
+  .acb
+legend:
+  a: lead
+  b: lead
+  c: ice
+hand:
+  stone #
+solution:
+  1 r0 x0

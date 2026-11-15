@@ -156,6 +156,8 @@ for (const terrain of terrains) {
     const trap = legal ? 1 - r.firstMoves.length / legal : 0;
     if (req.minTrap && trap < req.minTrap) continue;
     results.push({ terrain, open, hand, st, r, trap, legal });
+    // 時間のかかる探しでも途中で見られるように、見つけたらすぐ1行出す
+    if (spec.stream) console.log(`見つけた：${terrain.join(' / ')}｜${hand.join(', ')}｜盤面 ${r.finalStates}、道筋 ${r.paths}｜${r.examples[0].moves.map(m => `${m.orig + 1} r${m.r} x${m.x}`).join(', ')}`);
   }
 }
 

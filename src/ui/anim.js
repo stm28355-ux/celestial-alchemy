@@ -6,6 +6,7 @@ const FALL_MS = 55; // 1マス落ちるのにかける時間
 const FLASH_MS = 380; // 溶けるときの光
 const PAUSE_MS = 90; // 段と段の間
 const SLIDE_MS = 70; // 押されて1マス滑るのにかける時間
+const GILD_MS = 130; // 金が1マス広がるのにかける時間
 
 // before：落とす前の状態、d：drop の結果、cells：落とした形、gap：器の口から浮かせた高さ
 export function buildSteps(before, d, cells, gap = 0) {
@@ -54,6 +55,28 @@ export function buildSteps(before, d, cells, gap = 0) {
         for (const p of work) if (map.has(p.id)) p.group = map.get(p.id);
       }
       steps.push({ pieces: snapshot(work), dur: PAUSE_MS });
+      // 金になる：石や金から近い順に、1マスずつ金に変わって見せる
+      if (e.gilded?.length) {
+        const far = Math.max(...e.gilded.flatMap(g => g.cells.map(c => c[2])));
+        for (let k = 1; k <= far; k++) {
+          const frame = [];
+          for (const p of work) {
+            const g = e.gilded.find(q => q.id === p.id);
+            if (!g) {
+              frame.push({ ...p, cells: p.cells.map(c => [...c]) });
+              continue;
+            }
+            const done = g.cells.filter(c => c[2] <= k).map(([x, y]) => [x, y]);
+            const rest = g.cells.filter(c => c[2] > k).map(([x, y]) => [x, y]);
+            if (rest.length) frame.push({ ...p, mat: 'lead', cells: rest });
+            if (done.length) frame.push({ ...p, id: `${p.id}:g`, mat: 'gold', cells: done });
+          }
+          const fresh = new Set(e.gilded.filter(g => g.cells.some(c => c[2] === k)).map(g => `${g.id}:g`));
+          steps.push({ pieces: frame, flash: fresh, dur: GILD_MS });
+        }
+        for (const p of work) if (e.gilded.some(g => g.id === p.id)) p.mat = 'gold';
+        steps.push({ pieces: snapshot(work), dur: PAUSE_MS });
+      }
       // 押す（角笛）：押されたピースを横に滑らせる
       for (const ps of e.pushed ?? []) {
         for (const p of work) if (ps.ids.includes(p.id)) for (const c of p.cells) c[0] += ps.dx;

@@ -1,0 +1,16 @@
+# お手本 7-6：あとから来ても金に
+format: 1
+id: note-7-6
+title: あとから来ても金に
+terrain:
+  G.
+  G.
+pieces:
+  ..
+  a.
+legend:
+  a: gold
+hand:
+  lead #
+solution:
+  1 r0 x0

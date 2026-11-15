@@ -1,0 +1,21 @@
+# 7-2 金の刻印と鉛の刻印。金はつながった鉛に広がるので、鉛の刻印側とはつなげない（答えは1つ）。
+format: 1
+id: ch7-02
+title: 金と鉛の刻印
+request: 両替商が、半分は金、半分は鉛の秤の重りを作ってほしいと言っている。
+terrain:
+  .....
+  GG.LL
+  GG.LL
+hand:
+  stone #
+  lead #
+  lead #
+  lead #./#./##
+  lead #./#./##
+solution:
+  4 r0 x0
+  2 r0 x1
+  1 r0 x1
+  5 r0 x3
+  3 r0 x4

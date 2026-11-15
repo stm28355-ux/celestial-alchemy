@@ -159,6 +159,8 @@ const RULES = {
   steam: '火種と水玉が触れると、両方消える。',
   slime: 'スライムゼリーとは、横で触れ合うとそこで止まる（ゼリーが落ちるときも、ゼリーの横を物が落ちるときも）。止まると、触れたピースとくっついて1つになる。',
   slip: '氷竜の鱗はつるつるで、ゼリーとくっつかない（触れても止まらない）。',
+  stone: '賢者の石に触れた鉛は金になり、金はつながった鉛に広がる（触れていれば別の鉛にも）。金に触れた鉛は、あとから来てもいつでも金になる。石は残る。',
+  goldMark: '金の刻印（金色の○）は金で、鉛の刻印（灰色の○）は鉛で埋める。',
   removed: '点線のマスは器にないマス。通り抜けられるが、そこで止まる手は置けない。',
   open: '枠のない所（低い枠・底の穴）からは、ピースが器の外へ出てしまう。器の外へ落ちる手・押し出す手は置けない。',
   sand: 'ヘルメスの星砂は、落ちる間は形を保ち、止まると1マスずつの粒にばらけて真下に落ちる。火種では消えない。',
@@ -179,6 +181,8 @@ function puzzleHTML(st, { heading, back, extra = '' }) {
   if (has('slime') && has('ice')) rules.push(RULES.slip);
   if (has('sand')) rules.push(RULES.sand);
   if (has('horn')) rules.push(RULES.horn);
+  if (has('stone')) rules.push(RULES.stone);
+  if (st.terrain.some(r => r.includes('G') || r.includes('L'))) rules.push(RULES.goldMark);
   if (st.terrain.some(r => r.includes('-'))) rules.push(RULES.removed);
   if (st.open && (st.open.left.length || st.open.right.length || st.open.floor.length)) rules.push(RULES.open);
   return `

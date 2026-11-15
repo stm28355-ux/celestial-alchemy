@@ -189,6 +189,7 @@ function checkVine(mat, cells, where) {
 // 角笛は1マス（中身の表のルール6）。口の向きは、手持ちなら落とすときの向き（r0 右・r1 左）、最初から置くなら legend の left（なければ右）
 function checkHorn(mat, cells, where) {
   if (mat === 'horn' && cells.length !== 1) throw new Error(`角笛は1マスだけです：${where}`);
+  if (mat === 'stone' && cells.length !== 1) throw new Error(`賢者の石は1マスだけです：${where}`);
 }
 
 function checkMaterial(key) {

@@ -18,6 +18,8 @@
 // シルフの角笛：1マスで、口は左右どちらか（dir）。止まると（置いたとき・落ちて止まったとき・押されて止まったとき）、
 //   口の前のピース（の組）を、壁か他のピースに当たるまで横に押す（「押す」の段。消える → 増える・変わる → 押す）。
 //   左右から同時に押されたピースは動かない。
+// 賢者の石：1マス。触れた鉛は金になり、金はつながった鉛に広がる（別の鉛のピースでも、触れていれば広がる）。
+//   金に触れた鉛は、いつ触れても金になる。石は残る。金は他の素材と反応しない（「変わる」の段）。
 // 消したマス（地形の -）：器にないマス。通り抜けられるが、止まれない（止まる手は置けない）。
 // 枠を外す（open）：マスはそのまま。低い枠（左右の枠を、ある高さだけ外す）では、その高さにつかまる枠がなく、
 //   押されたピースは器の外へ出る。底の穴（底の枠を、ある列だけ外す）からは、器の外へ落ちる。
@@ -322,18 +324,65 @@ export function react(s) {
   // くっつく
   const merged = glue(s);
 
+  // 金になる（賢者の石）
+  const gilded = gild(s);
+
   // 押す（角笛）
   const pushed = push(s);
 
-  if (!removed.length && !grown.length && !split.length && !merged && !pushed.length) return null;
+  if (!removed.length && !grown.length && !split.length && !merged && !gilded.length && !pushed.length) return null;
   return {
     type: 'react',
     removed,
     grown,
     split,
+    gilded,
     pushed,
     groups: s.pieces.map(p => [p.id, p.group]),
   };
+}
+
+// 賢者の石か金に触れている鉛から、つながった鉛を全部金にする。
+// 金になったピースと、マスごとの「石・金から何マス目か」（見せるときに1マスずつ広げる）を返す。
+function gild(s) {
+  const occ = occupancy(s);
+  const dist = new Map(); // マス → 何マス目か
+  let wave = [];
+  const at = (x, y) => (x >= 0 && x < s.W && y >= 0 && y < s.H ? occ[y * s.W + x] : 0);
+  for (const p of s.pieces) {
+    if (p.mat !== 'stone' && p.mat !== 'gold') continue;
+    for (const [x, y] of p.cells) {
+      for (const [dx, dy] of NEIGHBORS) {
+        const o = at(x + dx, y + dy);
+        const k = `${x + dx},${y + dy}`;
+        if (o && s.pieces[o - 1].mat === 'lead' && !dist.has(k)) {
+          dist.set(k, 1);
+          wave.push([x + dx, y + dy]);
+        }
+      }
+    }
+  }
+  for (let d = 2; wave.length; d++) {
+    const next = [];
+    for (const [x, y] of wave) {
+      for (const [dx, dy] of NEIGHBORS) {
+        const o = at(x + dx, y + dy);
+        const k = `${x + dx},${y + dy}`;
+        if (o && s.pieces[o - 1].mat === 'lead' && !dist.has(k)) {
+          dist.set(k, d);
+          next.push([x + dx, y + dy]);
+        }
+      }
+    }
+    wave = next;
+  }
+  const gilded = [];
+  for (const p of s.pieces) {
+    if (p.mat !== 'lead' || !p.cells.some(([x, y]) => dist.has(`${x},${y}`))) continue;
+    p.mat = 'gold';
+    gilded.push({ id: p.id, cells: p.cells.map(([x, y]) => [x, y, dist.get(`${x},${y}`)]) });
+  }
+  return gilded;
 }
 
 // 2マス以上の星砂を、1マスずつの粒（別々のピース）にする。ばらけたものの一覧を返す。
