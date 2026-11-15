@@ -4,7 +4,7 @@
 
 **遊ぶ：** https://stm28355-ux.github.io/celestial-alchemy/
 
-今は作っている途中です。0〜3章の29問、師匠のノート、エディタと共有URLが動きます。進み具合は [Milestones](https://github.com/stm28355-ux/celestial-alchemy/milestones) を見てください。
+今は作っている途中です。0〜4章の34問、師匠のノート、エディタと共有URLが動きます。進み具合は [Milestones](https://github.com/stm28355-ux/celestial-alchemy/milestones) を見てください。
 
 ## 遊び方
 

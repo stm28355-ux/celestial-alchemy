@@ -8,6 +8,8 @@
 //
 // ピースは1つの素材でできている。スライムゼリーでくっついたピースは同じ「組（group）」になり、
 // 組ごと1つの形として落ちる。組の中のピースが消えて離れ離れになったら、組は分かれる。
+// スライムゼリーは、落ちる途中で横（左右）に壁・器の枠・ピースが触れたら、そこでくっついて止まる。
+// 止まったあとも、横に触れている物があるかぎり落ちない（組ごと支えになる）。
 //
 // 状態はそのつど作り直す（drop は新しい状態を返す）。一手戻すとソルバーのため。
 
@@ -65,8 +67,8 @@ function isWall(s, x, y) {
 }
 
 // 手持ちの形を、列 x の上から落としたときに止まる場所。置けないときは ok: false。
-// occ は同じ状態で何度も落とすとき（ソルバー）に渡すと速い。
-export function landing(s, cells, x, occ = occupancy(s)) {
+// occ は同じ状態で何度も落とすとき（ソルバー）に渡すと速い。mat がゼリーなら、横に触れた所で止まる。
+export function landing(s, cells, x, occ = occupancy(s), mat = null) {
   const { w, h } = size(cells);
   if (x < 0 || x + w > s.W) return { ok: false, reason: 'outside' };
   const free = d => cells.every(([cx, cy]) => {
@@ -74,8 +76,14 @@ export function landing(s, cells, x, occ = occupancy(s)) {
     if (isWall(s, px, py)) return false;
     return py < 0 || occ[py * s.W + px] === 0;
   });
+  const sticky = mat === 'slime';
+  const stuck = d => sticky && cells.some(([cx, cy]) => {
+    const px = cx + x, py = cy + d;
+    if (py < 0) return false;
+    return [px - 1, px + 1].some(nx => isWall(s, nx, py) || occ[py * s.W + nx] !== 0);
+  });
   let d = -h;
-  while (free(d + 1)) d++;
+  while (!stuck(d) && free(d + 1)) d++;
   const placed = cells.map(([cx, cy]) => [cx + x, cy + d]);
   if (placed.some(([, y]) => y < 0)) return { ok: false, reason: 'above', cells: placed };
   return { ok: true, cells: placed };
@@ -86,7 +94,7 @@ export function drop(s, handIndex, r, x, occ) {
   const item = s.hand[handIndex];
   if (!item) return { ok: false, reason: 'no-piece' };
   const cells = item.rots[((r % 4) + 4) % 4];
-  const land = landing(s, cells, x, occ);
+  const land = landing(s, cells, x, occ, item.mat);
   if (!land.ok) return { ok: false, reason: land.reason, cells: land.cells };
   const next = cloneState(s);
   next.hand.splice(handIndex, 1);
@@ -134,16 +142,27 @@ function unsupported(s) {
   });
   const sup = new Map();
   for (const [g, idx] of members) sup.set(g, idx.some(i => s.pieces[i].fixed));
+  // ゼリーが横で壁・器の枠に触れている組は、それだけで支えがある
+  const sideWall = (x, y) => isWall(s, x, y) && y >= 0;
+  for (const [g, idx] of members) {
+    if (sup.get(g)) continue;
+    if (idx.some(i => s.pieces[i].mat === 'slime' && s.pieces[i].cells.some(([x, y]) => sideWall(x - 1, y) || sideWall(x + 1, y)))) sup.set(g, true);
+  }
   let changed = true;
   while (changed) {
     changed = false;
     for (const [g, idx] of members) {
       if (sup.get(g)) continue;
+      const other = (x, y) => {
+        if (x < 0 || x >= s.W || y < 0 || y >= s.H) return false;
+        const o = occ[y * s.W + x];
+        return o !== 0 && s.pieces[o - 1].group !== g && sup.get(s.pieces[o - 1].group);
+      };
       const held = idx.some(i =>
         s.pieces[i].cells.some(([x, y]) => {
-          if (isWall(s, x, y + 1)) return true;
-          const o = occ[(y + 1) * s.W + x];
-          return o !== 0 && s.pieces[o - 1].group !== g && sup.get(s.pieces[o - 1].group);
+          if (isWall(s, x, y + 1) || other(x, y + 1)) return true;
+          // ゼリーは、横に触れている支えのある物にもつかまる
+          return s.pieces[i].mat === 'slime' && (other(x - 1, y) || other(x + 1, y));
         }),
       );
       if (held) {

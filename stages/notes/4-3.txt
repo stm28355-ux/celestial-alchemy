@@ -1,0 +1,16 @@
+# お手本 4-3：くっついて1つ
+format: 1
+id: note-4-3
+title: くっついて1つ
+terrain:
+  ...
+  ...
+pieces:
+  ...
+  a..
+legend:
+  a: lead
+hand:
+  slime #
+solution:
+  1 r0 x1

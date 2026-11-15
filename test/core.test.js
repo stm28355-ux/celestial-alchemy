@@ -314,3 +314,28 @@ test('ゼリー：くっついた鱗が溶けて離れ離れになると、別�
   const [s1, s2] = s0.pieces.filter(p => p.mat === 'slime').map(p => p.id);
   assert.notEqual(groups.get(s1), groups.get(s2));
 });
+
+test('ゼリー：落ちる途中で横に触れたら、そこで止まる（壁・器の枠・ピース）', () => {
+  // 柱の横：柱の上の段で止まり、下は空いたまま
+  const st = stage(['terrain:', '  ...', '  ...', '  ...', 'pieces:', '  ...', '  a..', '  a..', 'legend:', '  a: lead', 'hand:', '  slime #']);
+  const s = play(st, [[0, 0, 1]]).s;
+  assert.deepEqual(cellsOfPiece(s, 'slime'), [['1,1']]);
+  // 器の枠ぎわに落とすと、いちばん上で貼りつく
+  const st2 = stage(['terrain:', '  ..', '  ..', '  ..', 'hand:', '  slime #']);
+  assert.deepEqual(cellsOfPiece(play(st2, [[0, 0, 0]]).s, 'slime'), [['0,0']]);
+  // ふつうの鉛は横に触れても止まらない
+  const st3 = stage(['terrain:', '  ...', '  ...', '  ...', 'pieces:', '  ...', '  a..', '  a..', 'legend:', '  a: lead', 'hand:', '  lead #']);
+  assert.deepEqual(cellsOfPiece(play(st3, [[0, 0, 1]]).s, 'lead').flat().sort(), ['0,1', '0,2', '1,2']);
+});
+
+test('ゼリー：横の壁につかまっているので、下の鱗が溶けても落ちない', () => {
+  const st = stage([
+    'terrain:', '  #..', '  #..', '  #..',
+    'pieces:', '  ...', '  .s.', '  .i.',
+    'legend:', '  s: slime', '  i: ice',
+    'hand:', '  fire #',
+  ]);
+  const s = play(st, [[0, 0, 2]]).s; // 火種が (2,2) に落ちて鱗を溶かす
+  assert.deepEqual(cellsOfPiece(s, 'ice'), []);
+  assert.deepEqual(cellsOfPiece(s, 'slime'), [['1,1']]);
+});

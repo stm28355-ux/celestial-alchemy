@@ -73,8 +73,14 @@
     "metal": "銅",
     "master": "ヴィーナ",
     "title": "金星の錬金術師",
-    "line": "くっつけば、ひとつ。落ちるときも、形はそのままよ。",
-    "stages": []
+    "line": "ふれあえば、そこで止まる。くっつけば、ひとつ。そういうものよ。",
+    "stages": [
+      "ch4/01-between.txt",
+      "ch4/02-pillar.txt",
+      "ch4/03-frame.txt",
+      "ch4/04-shelf.txt",
+      "ch4/05-trial.txt"
+    ]
   },
   {
     "id": 5,

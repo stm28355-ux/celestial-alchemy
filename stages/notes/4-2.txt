@@ -1,0 +1,12 @@
+# お手本 4-2：枠ぎわ
+format: 1
+id: note-4-2
+title: 枠ぎわ
+terrain:
+  ..
+  ..
+  ..
+hand:
+  slime #
+solution:
+  1 r0 x0

@@ -1,0 +1,18 @@
+# お手本 4-4：ゼリーをつなぐ
+format: 1
+id: note-4-4
+title: ゼリーをつなぐ
+terrain:
+  ....
+  ....
+pieces:
+  a...
+  a...
+legend:
+  a: lead
+hand:
+  slime #
+  slime #
+solution:
+  1 r0 x1
+  2 r0 x2

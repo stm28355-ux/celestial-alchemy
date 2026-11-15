@@ -1,0 +1,18 @@
+# お手本 4-1：横に触れたら止まる
+format: 1
+id: note-4-1
+title: 横に触れたら止まる
+terrain:
+  ...
+  ...
+  ...
+pieces:
+  ...
+  a..
+  a..
+legend:
+  a: lead
+hand:
+  slime #
+solution:
+  1 r0 x1

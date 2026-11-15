@@ -1,0 +1,21 @@
+# 4-5 まとめ：ゼリーを2つつないで、柱から柱へ橋をかける（答えは1つ）。
+format: 1
+id: ch4-05
+title: 金星の試験
+request: ヴィーナが、最後の試験を出した。
+terrain:
+  ++++++
+  +....+
+  +....+
+hand:
+  slime #
+  slime #
+  lead #
+  lead ##/#.
+  lead #./#./##
+solution:
+  3 r0 x0
+  4 r0 x0
+  1 r0 x2
+  2 r0 x3
+  5 r2 x4

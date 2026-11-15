@@ -268,7 +268,7 @@ export class Game {
     if (cur) {
       const { h } = size(cur.cells);
       view.preview = { mat: cur.item.mat, cells: cur.cells.map(([cx, cy]) => [cx + this.x, cy - h]) };
-      const land = landing(this.state, cur.cells, this.x);
+      const land = landing(this.state, cur.cells, this.x, undefined, cur.item.mat);
       if (land.ok) view.ghost = { mat: cur.item.mat, cells: land.cells };
       else view.invalid = true;
     }
