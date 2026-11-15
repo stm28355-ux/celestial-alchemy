@@ -23,6 +23,7 @@
 //     1 r0 x1
 //
 // terrain の文字：# 壁　. 空きマス（埋めなくてよい）　+ 目標マス　G 金で埋めるマス　L 鉛のまま残すマス
+//   x ×印（最後に何も残っていてはいけない）　- 器の外（通り抜けられるが止まれない。低い枠・底の穴を作る）
 //   いちばん下の行のさらに下は床。左右の外は壁。
 // pieces：最初から盤にある素材。同じ英小文字のマスが1つのピース。legend で素材を決める。
 //   "fixed" を付けると動かない（枠側の氷など）。
@@ -34,7 +35,7 @@ import { material } from './materials.js';
 import { parseShape } from './shape.js';
 
 export const FORMAT = 1;
-const TERRAIN_CHARS = new Set(['#', '.', '+', 'G', 'L', 'x']);
+const TERRAIN_CHARS = new Set(['#', '.', '+', 'G', 'L', 'x', '-']);
 const BLOCKS = new Set(['terrain', 'pieces', 'legend', 'hand', 'solution']);
 
 export function parseStageText(text) {
@@ -108,6 +109,7 @@ export function buildStage(raw) {
         if (c === '.') return;
         if (!/[a-z]/.test(c)) throw new Error(`pieces に使えない文字です：「${c}」`);
         if (terrain[y][x] === '#') throw new Error(`壁の上にピースがあります：(${x}, ${y})`);
+        if (terrain[y][x] === '-') throw new Error(`器の外にピースがあります：(${x}, ${y})`);
         if (!byLetter.has(c)) byLetter.set(c, []);
         byLetter.get(c).push([x, y]);
       });
@@ -118,7 +120,8 @@ export function buildStage(raw) {
       const [mat, ...flags] = spec.split(/\s+/);
       checkMaterial(mat);
       checkVine(mat, cells, `pieces の「${letter}」`);
-      pieces.push({ mat, cells, fixed: flags.includes('fixed') });
+      checkHorn(mat, cells, `pieces の「${letter}」`);
+      pieces.push({ mat, cells, fixed: flags.includes('fixed'), ...(mat === 'horn' ? { dir: flags.includes('left') ? -1 : 1 } : {}) });
     }
   }
 
@@ -128,6 +131,7 @@ export function buildStage(raw) {
     checkMaterial(mat);
     const cells = parseShape(shape);
     checkVine(mat, cells, `hand の ${i + 1} 番`);
+    checkHorn(mat, cells, `hand の ${i + 1} 番`);
     return { mat, cells, orig: i };
   });
 
@@ -162,6 +166,11 @@ function checkVine(mat, cells, where) {
   const ys = cells.map(c => c[1]).sort((a, b) => a - b);
   const straight = xs.size === 1 && ys.every((y, k) => k === 0 || y === ys[k - 1] + 1);
   if (!straight || cells.length > 3) throw new Error(`つるは縦の棒（1〜3マス）だけです：${where}`);
+}
+
+// 角笛は1マス（中身の表のルール6）。口の向きは、手持ちなら落とすときの向き（r0 右・r1 左）、最初から置くなら legend の left（なければ右）
+function checkHorn(mat, cells, where) {
+  if (mat === 'horn' && cells.length !== 1) throw new Error(`角笛は1マスだけです：${where}`);
 }
 
 function checkMaterial(key) {

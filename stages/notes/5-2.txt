@@ -1,0 +1,11 @@
+# お手本 5-2：いくつもの穴
+format: 1
+id: note-5-2
+title: いくつもの穴
+terrain:
+  .+.
+  +#+
+hand:
+  sand ###
+solution:
+  1 r0 x0

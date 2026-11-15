@@ -93,7 +93,14 @@
     "master": "メルク",
     "title": "水星の錬金術師",
     "line": "星の砂はじっとしてないよ。止まったら、すぐばらけちゃう。",
-    "stages": []
+    "stages": [
+      "ch5/01-flow.txt",
+      "ch5/02-pits.txt",
+      "ch5/03-turn.txt",
+      "ch5/04-catch.txt",
+      "ch5/05-hole.txt",
+      "ch5/06-trial.txt"
+    ]
   },
   {
     "id": 6,
@@ -102,7 +109,18 @@
     "master": "ルーナ",
     "title": "月の錬金術師",
     "line": "風は、上からでは届かない場所へも運んでくれる。",
-    "stages": []
+    "stages": [
+      "ch6/01-shoulder.txt",
+      "ch6/02-dir.txt",
+      "ch6/03-fall.txt",
+      "ch6/04-cloth.txt",
+      "ch6/05-shoulders.txt",
+      "ch6/06-fire.txt",
+      "ch6/07-again.txt",
+      "ch6/08-rim.txt",
+      "ch6/09-sand.txt",
+      "ch6/10-trial.txt"
+    ]
   },
   {
     "id": 7,

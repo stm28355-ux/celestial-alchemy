@@ -1,0 +1,12 @@
+# お手本 5-4：引っかかってからばらける
+format: 1
+id: note-5-4
+title: 引っかかってからばらける
+terrain:
+  .+
+  .#
+  +.
+hand:
+  sand ##
+solution:
+  1 r0 x0

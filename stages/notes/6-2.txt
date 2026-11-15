@@ -1,0 +1,14 @@
+# お手本 6-2：口の向き
+format: 1
+id: note-6-2
+title: 口の向き
+terrain:
+  +..+
+pieces:
+  ..a.
+legend:
+  a: lead
+hand:
+  horn #
+solution:
+  1 r1 x3

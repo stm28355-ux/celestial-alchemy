@@ -1,0 +1,13 @@
+# お手本 5-7：粒をまとめる
+format: 1
+id: note-5-7
+title: 粒をまとめる
+terrain:
+  ++
+  ++
+hand:
+  sand ##
+  slime ##
+solution:
+  1 r0 x0
+  2 r0 x0

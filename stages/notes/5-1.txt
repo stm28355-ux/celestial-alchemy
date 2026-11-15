@@ -1,0 +1,12 @@
+# お手本 5-1：ばらけて流れ込む
+format: 1
+id: note-5-1
+title: ばらけて流れ込む
+terrain:
+  ..+
+  .+#
+  +##
+hand:
+  sand ###
+solution:
+  1 r0 x0

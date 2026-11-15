@@ -1,0 +1,19 @@
+# お手本 6-8：左右から押すと
+format: 1
+id: note-6-8
+title: 左右から押すと
+terrain:
+  .....
+  ++++.
+pieces:
+  .bcd.
+  .aaa.
+legend:
+  a: ice
+  b: horn
+  c: lead
+  d: horn left
+hand:
+  fire #
+solution:
+  1 r0 x0

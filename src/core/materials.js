@@ -9,8 +9,8 @@ export const MATERIALS = {
   water: { name: 'ウンディーネの水玉', short: '水玉', chapter: 3, ready: true, rule: 'つるに吸われて消え、つるを1マス伸ばす。火種に触れると、いっしょに消える。' },
   vine: { name: 'ドリアードのつる', short: 'つる', chapter: 3, ready: true, noRotate: true, rule: '縦の棒で、回せない。水玉に触れると、いちばん上の真上に1マス伸びる。' },
   slime: { name: 'スライムゼリー', short: 'ゼリー', chapter: 4, ready: true, rule: '横で触れ合うと、そこで止まる（ゼリーが落ちるときも、横を物が落ちるときも）。触れたピースとくっついて1つになる。鱗とはくっつかない。' },
-  sand: { name: 'ヘルメスの星砂', short: '星砂', chapter: 5, ready: false, rule: '止まると、1マスずつにばらけて真下に落ちる。' },
-  horn: { name: 'シルフの角笛', short: '角笛', chapter: 6, ready: false, rule: '止まると、口の前のピースを壁か他のピースまで横に押す。' },
+  sand: { name: 'ヘルメスの星砂', short: '星砂', chapter: 5, ready: true, rule: '止まると、1マスずつの粒にばらけて真下に落ちる。火種では消えない。' },
+  horn: { name: 'シルフの角笛', short: '角笛', chapter: 6, ready: true, rule: '1マス。止まると、口の前のピースを壁か他のピースに当たるまで横に押す。口の向き（左右）は回して決める。' },
   stone: { name: '賢者の石', short: '賢者の石', chapter: 7, ready: false, rule: '触れた鉛を金に変える。金はつながった鉛に広がる。' },
 };
 

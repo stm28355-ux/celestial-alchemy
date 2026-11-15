@@ -15,10 +15,15 @@ export const PALETTE = {
 };
 
 // (x, y) はマスの左上、s はマスの大きさ。
-export function drawIcon(ctx, mat, x, y, s) {
+// dir：角笛の口の向き。-1 なら左右を反転して描く（口が左）
+export function drawIcon(ctx, mat, x, y, s, dir = 1) {
   const p = PALETTE[mat];
   ctx.save();
   ctx.translate(x, y);
+  if (dir < 0) {
+    ctx.translate(s, 0);
+    ctx.scale(-1, 1);
+  }
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   const lw = Math.max(1.5, s * 0.06);

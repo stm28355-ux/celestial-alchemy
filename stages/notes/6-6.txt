@@ -1,0 +1,18 @@
+# お手本 6-6：火種を押して溶かす
+format: 1
+id: note-6-6
+title: 火種を押して溶かす
+terrain:
+  ##..
+  x+.+
+pieces:
+  ....
+  a...
+legend:
+  a: ice fixed
+hand:
+  fire #
+  horn #
+solution:
+  1 r0 x2
+  2 r1 x3

@@ -48,21 +48,34 @@ export function draw(ctx, L, view) {
   const c = L.cell;
   ctx.clearRect(0, 0, L.width, L.height);
 
-  // 器の外枠（左右と底）と、口のふち
+  // 器の外枠（左右と底）と、口のふち。器の外（-）の横と下には枠がない（低い枠・底の穴）
   const x0 = L.left - L.frame;
+  const xr = L.left + stage.W * c;
+  const yb = L.top + stage.H * c;
+  const T = stage.terrain;
+  const out = (x, y) => T[y][x] === '-';
   ctx.fillStyle = WOOD;
-  ctx.fillRect(x0, L.top, L.frame, stage.H * c + L.frame);
-  ctx.fillRect(L.left + stage.W * c, L.top, L.frame, stage.H * c + L.frame);
-  ctx.fillRect(x0, L.top + stage.H * c, stage.W * c + L.frame * 2, L.frame);
+  for (let y = 0; y < stage.H; y++) {
+    if (!out(0, y)) ctx.fillRect(x0, L.top + y * c, L.frame, c);
+    if (!out(stage.W - 1, y)) ctx.fillRect(xr, L.top + y * c, L.frame, c);
+  }
+  for (let x = 0; x < stage.W; x++) if (!out(x, stage.H - 1)) ctx.fillRect(L.left + x * c, yb, c, L.frame);
+  if (!out(0, stage.H - 1)) ctx.fillRect(x0, yb, L.frame, L.frame);
+  if (!out(stage.W - 1, stage.H - 1)) ctx.fillRect(xr, yb, L.frame, L.frame);
+  // 口のふち：左右の枠のいちばん上
   ctx.fillStyle = WOOD_DARK;
-  ctx.fillRect(x0, L.top - 3, L.frame, 3);
-  ctx.fillRect(L.left + stage.W * c, L.top - 3, L.frame, 3);
+  for (const [ex, fx] of [[0, x0], [stage.W - 1, xr]]) {
+    for (let y = 0; y < stage.H; y++) {
+      if (!out(ex, y) && (y === 0 || out(ex, y - 1))) ctx.fillRect(fx, L.top + y * c - 3, L.frame, 3);
+    }
+  }
 
   // 器の中：空きマス・目標マス・壁
   for (let y = 0; y < stage.H; y++) {
     for (let x = 0; x < stage.W; x++) {
       const t = stage.terrain[y][x];
       const px = L.left + x * c, py = L.top + y * c;
+      if (t === '-') continue; // 器の外：何も描かない
       if (t === '#') {
         ctx.fillStyle = WOOD;
         ctx.fillRect(px, py, c, c);
@@ -94,20 +107,21 @@ export function draw(ctx, L, view) {
   // ピース
   for (const p of view.pieces) {
     const lift = view.lift?.get(p.id) ?? 0;
-    drawPiece(ctx, L, p.cells, p.mat, { lift, fixed: p.fixed, flash: view.flash?.has(p.id) ? view.flashAlpha ?? 0.7 : 0, icons: view.icons });
+    const shift = view.shift?.get(p.id) ?? 0;
+    drawPiece(ctx, L, p.cells, p.mat, { lift, shift, dir: p.dir, fixed: p.fixed, flash: view.flash?.has(p.id) ? view.flashAlpha ?? 0.7 : 0, icons: view.icons });
   }
 
   // くっついているピースどうしの境目に、ゼリーの「のり」を描く
-  drawGlue(ctx, L, view.pieces, view.lift, view.stage);
+  drawGlue(ctx, L, view.pieces, view.lift, view.stage, view.shift);
 
   // 着地点の影
-  if (view.ghost) drawPiece(ctx, L, view.ghost.cells, view.ghost.mat, { ghost: true });
+  if (view.ghost) drawPiece(ctx, L, view.ghost.cells, view.ghost.mat, { ghost: true, invalid: view.invalid });
 
   // 落とす前のピース（器の口から少し上に浮かせる）
-  if (view.preview) drawPiece(ctx, L, view.preview.cells, view.preview.mat, { invalid: view.invalid, lift: SPAWN_GAP, icons: view.icons });
+  if (view.preview) drawPiece(ctx, L, view.preview.cells, view.preview.mat, { invalid: view.invalid, dir: view.preview.dir, lift: SPAWN_GAP, icons: view.icons });
 }
 
-function drawGlue(ctx, L, pieces, lift, stage) {
+function drawGlue(ctx, L, pieces, lift, stage, shift) {
   const c = L.cell;
   const at = new Map();
   for (const p of pieces) for (const [x, y] of p.cells) at.set(`${x},${y}`, p);
@@ -117,12 +131,13 @@ function drawGlue(ctx, L, pieces, lift, stage) {
   ctx.lineWidth = 1.5;
   for (const p of pieces) {
     const dy = lift?.get(p.id) ?? 0;
+    const sx = shift?.get(p.id) ?? 0;
     for (const [x, y] of p.cells) {
       for (const [dx, ddy] of [[1, 0], [0, 1]]) {
         const q = at.get(`${x + dx},${y + ddy}`);
         if (!q || q === p || q.group !== p.group) continue;
         // 2つのマスの境目の真ん中に、小さな丸
-        const cx = L.left + (x + 0.5 + dx * 0.5) * c;
+        const cx = L.left + (x + sx + 0.5 + dx * 0.5) * c;
         const cy = L.top + (y - dy + 0.5 + ddy * 0.5) * c;
         dot(cx, cy);
       }
@@ -131,9 +146,11 @@ function drawGlue(ctx, L, pieces, lift, stage) {
       for (const side of [-1, 1]) {
         const nx = x + side;
         const q = at.get(`${nx},${y}`);
-        const wall = nx < 0 || nx >= stage.W || (y >= 0 && stage.terrain[y]?.[nx] === '#') || (q && q.fixed && q.mat !== 'ice');
+        const edge = nx < 0 ? 0 : stage.W - 1;
+        const frame = (nx < 0 || nx >= stage.W) && y >= 0 && y < stage.H && stage.terrain[y][edge] !== '-';
+        const wall = frame || (y >= 0 && stage.terrain[y]?.[nx] === '#') || (q && q.fixed && q.mat !== 'ice');
         if (!wall) continue;
-        dot(L.left + (x + 0.5 + side * 0.5) * c, L.top + (y - dy + 0.5) * c);
+        dot(L.left + (x + sx + 0.5 + side * 0.5) * c, L.top + (y - dy + 0.5) * c);
       }
     }
   }
@@ -179,11 +196,12 @@ function drawRune(ctx, px, py, c, t) {
 
 // cells は盤のマス座標（y が負なら盤の上）。lift は上にずらすマス数（落ちていく途中の見せ方）。
 // icons: true で、1文字の代わりにアイコン（試し描き）を描く。
-export function drawPiece(ctx, L, cells, mat, { lift = 0, fixed = false, flash = 0, ghost = false, invalid = false, icons = false } = {}) {
+// shift は横にずらすマス数（押されて滑る途中の見せ方）。dir は角笛の口の向き（1 右・-1 左）。
+export function drawPiece(ctx, L, cells, mat, { lift = 0, shift = 0, dir = 1, fixed = false, flash = 0, ghost = false, invalid = false, icons = false } = {}) {
   const c = L.cell;
   const look = LOOK[mat];
   const set = new Set(cells.map(([x, y]) => `${x},${y}`));
-  const pos = (x, y) => [L.left + x * c, L.top + (y - lift) * c];
+  const pos = (x, y) => [L.left + (x + shift) * c, L.top + (y - lift) * c];
   ctx.save();
   if (ghost) ctx.globalAlpha = 0.32;
   for (const [x, y] of cells) {
@@ -193,7 +211,7 @@ export function drawPiece(ctx, L, cells, mat, { lift = 0, fixed = false, flash =
     if (!ghost && icons && !invalid) {
       ctx.fillStyle = 'rgba(255, 255, 255, 0.14)';
       ctx.fillRect(px + 2, py + 2, c - 4, c * 0.16);
-      drawIcon(ctx, mat, px, py, c);
+      drawIcon(ctx, mat, px, py, c, dir);
     } else if (!ghost) {
       ctx.fillStyle = 'rgba(255, 255, 255, 0.16)';
       ctx.fillRect(px + 2, py + 2, c - 4, c * 0.22);

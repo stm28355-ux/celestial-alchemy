@@ -1,0 +1,16 @@
+# お手本 6-5：肩の下へ
+format: 1
+id: note-6-5
+title: 肩の下へ
+terrain:
+  #..
+  +.+
+pieces:
+  ...
+  .a.
+legend:
+  a: lead
+hand:
+  horn #
+solution:
+  1 r1 x2

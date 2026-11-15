@@ -17,6 +17,7 @@ const TERRAIN_TOOLS = [
   ['.', '空きマス'],
   ['x', '空けておくマス（×印）'],
   ['#', '壁'],
+  ['-', '器の外（低い枠・底の穴）'],
   ['G', '金で埋めるマス'],
   ['L', '鉛のまま残すマス'],
 ];
@@ -171,9 +172,9 @@ export function openEditor(view) {
       setChar(r.pieces, x, y, '.');
     } else if (tool.kind === 'terrain') {
       setChar(r.terrain, x, y, tool.value);
-      if (tool.value === '#') setChar(r.pieces, x, y, '.');
+      if (tool.value === '#' || tool.value === '-') setChar(r.pieces, x, y, '.');
     } else if (tool.kind === 'piece') {
-      if (r.terrain[y][x] === '#') return;
+      if (r.terrain[y][x] === '#' || r.terrain[y][x] === '-') return;
       setChar(r.pieces, x, y, stroke.letter);
     }
   };

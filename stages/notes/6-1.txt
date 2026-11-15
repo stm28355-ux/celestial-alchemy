@@ -1,0 +1,14 @@
+# お手本 6-1：角笛で押す
+format: 1
+id: note-6-1
+title: 角笛で押す
+terrain:
+  +..+
+pieces:
+  .a..
+legend:
+  a: lead
+hand:
+  horn #
+solution:
+  1 r0 x0

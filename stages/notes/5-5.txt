@@ -1,0 +1,19 @@
+# お手本 5-5：1粒ずつ落ちる
+format: 1
+id: note-5-5
+title: 1粒ずつ落ちる
+terrain:
+  +...
+  ++++
+pieces:
+  ....
+  baa.
+legend:
+  a: ice
+  b: lead
+hand:
+  sand ###
+  fire #
+solution:
+  1 r0 x0
+  2 r0 x3

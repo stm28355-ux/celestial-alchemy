@@ -14,6 +14,13 @@
 //   ・氷竜の鱗はつるつるで、ゼリーとくっつかない（触れても止まらない。組にもならない）
 // 止まったあとも、横で触れ合っている支えのある物につかまって落ちない（組ごと支えになる）。
 //
+// ヘルメスの星砂：落ちる間は形を保ち、止まると1マスずつの粒（別々のピース）にばらける（「変わる」の段）。
+// シルフの角笛：1マスで、口は左右どちらか（dir）。止まると（置いたとき・落ちて止まったとき・押されて止まったとき）、
+//   口の前のピース（の組）を、壁か他のピースに当たるまで横に押す（「押す」の段。消える → 増える・変わる → 押す）。
+//   左右から同時に押されたピースは動かない。
+// 器の外（地形の -）：通り抜けられるが、止まれない。低い枠（列の上の方が器の外）では、その高さに枠がない。
+//   底の穴（いちばん下が器の外）からは、器の外へ落ちる。器の外で止まる手・器の外へ落ちる手は置けない。
+//
 // 状態はそのつど作り直す（drop は新しい状態を返す）。一手戻すとソルバーのため。
 
 import { rotate, size, canonicalKey, uniqueRotations } from './shape.js';
@@ -24,10 +31,11 @@ export function createState(stage) {
     W: stage.W,
     H: stage.H,
     terrain: stage.terrain,
-    pieces: stage.pieces.map((p, i) => ({ id: i + 1, group: i + 1, mat: p.mat, cells: p.cells.map(c => [...c]), fixed: p.fixed })),
+    pieces: stage.pieces.map((p, i) => ({ id: i + 1, group: i + 1, mat: p.mat, cells: p.cells.map(c => [...c]), fixed: p.fixed, ...(p.mat === 'horn' ? { dir: p.dir ?? 1 } : {}) })),
     hand: stage.hand.map(h => handItem(h.mat, h.cells, h.orig)),
     nextId: stage.pieces.length + 1,
   };
+  crumble(s); // 最初から置いてある星砂は、最初から粒
   glue(s); // 最初から置いてあるゼリーは、最初からくっついている
   return s;
 }
@@ -36,13 +44,15 @@ export function createState(stage) {
 // 回せない素材（つる）は、どの向きでも同じ形にする。
 export function handItem(mat, cells, orig) {
   const still = material(mat).noRotate;
+  // 角笛は1マス。回すと口の向きが左右に入れ替わるので、向きは2つ（r0 右・r1 左）
+  const uniq = mat === 'horn' ? [{ r: 0, cells }, { r: 1, cells }] : still ? [{ r: 0, cells }] : uniqueRotations(cells);
   return {
     mat,
     cells,
     orig,
     key: `${mat}:${still ? cells.map(c => c.join(',')).join(';') : canonicalKey(cells)}`,
     rots: [0, 1, 2, 3].map(r => (still ? cells : rotate(cells, r))),
-    uniq: still ? [{ r: 0, cells }] : uniqueRotations(cells),
+    uniq,
   };
 }
 
@@ -63,11 +73,18 @@ export function occupancy(s) {
   return occ;
 }
 
+// 壁・器の枠・床か。器の外（-）は壁ではない。
+//   床：いちばん下の行のすぐ下。ただし底の穴（いちばん下が器の外）の下には床がない
+//   左右の枠：盤の左右の外。ただし、その高さの端のマスが器の外なら枠がない（低い枠）
 function isWall(s, x, y) {
-  if (x < 0 || x >= s.W || y >= s.H) return true; // 左右の外と、床
+  if (y >= s.H) return y === s.H && x >= 0 && x < s.W && s.terrain[s.H - 1][x] !== '-';
+  if (x < 0 || x >= s.W) return y >= 0 && s.terrain[y][x < 0 ? 0 : s.W - 1] !== '-';
   if (y < 0) return false; // 盤の上の空
   return s.terrain[y][x] === '#';
 }
+
+const outside = (s, x, y) => y >= 0 && y < s.H && x >= 0 && x < s.W && s.terrain[y][x] === '-';
+const offBoard = (s, x, y) => y >= s.H || x < 0 || x >= s.W;
 
 // 手持ちの形を、列 x の上から落としたときに止まる場所。置けないときは ok: false。
 // occ は同じ状態で何度も落とすとき（ソルバー）に渡すと速い。mat は落とす素材（ゼリーと横で触れ合うと止まる）。
@@ -77,7 +94,7 @@ export function landing(s, cells, x, occ = occupancy(s), mat = null) {
   const free = d => cells.every(([cx, cy]) => {
     const px = cx + x, py = cy + d;
     if (isWall(s, px, py)) return false;
-    return py < 0 || occ[py * s.W + px] === 0;
+    return py < 0 || py >= s.H || occ[py * s.W + px] === 0;
   });
   const stuck = d => mat !== null && mat !== 'ice' && cells.some(([cx, cy]) => {
     const px = cx + x, py = cy + d;
@@ -90,9 +107,13 @@ export function landing(s, cells, x, occ = occupancy(s), mat = null) {
     });
   });
   let d = -h;
-  while (!stuck(d) && free(d + 1)) d++;
+  while (!stuck(d) && free(d + 1)) {
+    d++;
+    if (cells.some(([, cy]) => cy + d >= s.H)) return { ok: false, reason: 'spill' }; // 底の穴から器の外へ落ちる
+  }
   const placed = cells.map(([cx, cy]) => [cx + x, cy + d]);
   if (placed.some(([, y]) => y < 0)) return { ok: false, reason: 'above', cells: placed };
+  if (placed.some(([px, py]) => outside(s, px, py))) return { ok: false, reason: 'rim', cells: placed };
   return { ok: true, cells: placed };
 }
 
@@ -107,10 +128,17 @@ export function drop(s, handIndex, r, x, occ) {
   next.hand.splice(handIndex, 1);
   const id = next.nextId++;
   const piece = { id, group: id, mat: item.mat, cells: land.cells, fixed: false };
+  if (item.mat === 'horn') {
+    piece.dir = ((r % 4) + 4) % 2 === 0 ? 1 : -1;
+    piece.armed = true; // 止まったので、このあと押す
+  }
   next.pieces.push(piece);
-  const events = [{ type: 'place', id: piece.id, mat: piece.mat, cells: land.cells.map(c => [...c]) }];
+  const events = [{ type: 'place', id: piece.id, mat: piece.mat, dir: piece.dir, cells: land.cells.map(c => [...c]) }];
   // 置いたピースは止まった所にあり、ほかのピースも止まっているので、落とす段は飛ばして反応から始める。
   events.push(...resolve(next, { settled: true }));
+  // 器の外へ落ちた・押し出された、器の外で止まった → 置けない
+  if (next.spilled) return { ok: false, reason: 'spill' };
+  if (next.pieces.some(p => p.cells.some(([px, py]) => outside(next, px, py)))) return { ok: false, reason: 'rim' };
   return { ok: true, state: next, events };
 }
 
@@ -119,7 +147,9 @@ export function resolve(s, { settled = false } = {}) {
   const events = [];
   for (let guard = 0; guard < 1000; guard++) {
     if (!settled || guard > 0) events.push(...settle(s));
+    if (s.spilled) return events;
     const reaction = react(s);
+    if (s.spilled) return events;
     if (!reaction) return events;
     events.push(reaction);
   }
@@ -132,8 +162,17 @@ export function settle(s) {
   for (let guard = 0; guard < s.H + 1; guard++) {
     const falling = unsupported(s);
     if (falling.length === 0) return events;
-    for (const i of falling) for (const c of s.pieces[i].cells) c[1] += 1;
+    for (const i of falling) {
+      const p = s.pieces[i];
+      for (const c of p.cells) c[1] += 1;
+      if (p.mat === 'horn') p.armed = true; // 落ちて止まったら、また押す
+    }
     events.push({ type: 'fall', ids: falling.map(i => s.pieces[i].id) });
+    // 底の穴から器の外へ落ちた
+    if (falling.some(i => s.pieces[i].cells.some(([x, y]) => offBoard(s, x, y)))) {
+      s.spilled = true;
+      return events;
+    }
   }
   throw new Error('落ち終わりません（ルールの間違い）');
 }
@@ -257,7 +296,7 @@ export function react(s) {
       const topY = Math.min(...v.cells.map(c => c[1]));
       const x = v.cells.find(c => c[1] === topY)[0];
       const y = topY - 1;
-      if (y < 0 || isWall(s, x, y) || occ[y * s.W + x]) break; // ふさがっていたら伸びない
+      if (y < 0 || isWall(s, x, y) || outside(s, x, y) || occ[y * s.W + x]) break; // ふさがっていたら伸びない（器の外にも伸びない）
       v.cells.push([x, y]);
       occ[y * s.W + x] = s.pieces.indexOf(v) + 1;
       used.add(wid);
@@ -272,16 +311,101 @@ export function react(s) {
     splitGroups(s);
   }
 
+  // ばらける（星砂）
+  const split = crumble(s);
+
   // くっつく
   const merged = glue(s);
 
-  if (!removed.length && !grown.length && !merged) return null;
+  // 押す（角笛）
+  const pushed = push(s);
+
+  if (!removed.length && !grown.length && !split.length && !merged && !pushed.length) return null;
   return {
     type: 'react',
     removed,
     grown,
+    split,
+    pushed,
     groups: s.pieces.map(p => [p.id, p.group]),
   };
+}
+
+// 2マス以上の星砂を、1マスずつの粒（別々のピース）にする。ばらけたものの一覧を返す。
+function crumble(s) {
+  const split = [];
+  const out = [];
+  for (const p of s.pieces) {
+    if (p.mat !== 'sand' || p.cells.length < 2) {
+      out.push(p);
+      continue;
+    }
+    const into = p.cells.map(c => {
+      const id = s.nextId++;
+      return { id, group: id, mat: 'sand', cells: [[...c]], fixed: p.fixed };
+    });
+    out.push(...into);
+    split.push({ id: p.id, into: into.map(g => ({ id: g.id, cells: g.cells.map(c => [...c]) })) });
+  }
+  if (split.length) {
+    s.pieces = out;
+    splitGroups(s);
+  }
+  return split;
+}
+
+// 止まった角笛が、口の前のピース（の組）を横に押す。押したものの一覧を返す。
+//   壁・器の枠か、他のピースに当たるまで動く。左右から同時に押される組は動かない。
+//   枠のない所（低い枠より上）から盤の外へ押し出されたら、spilled にする。
+function push(s) {
+  const horns = s.pieces.filter(p => p.mat === 'horn' && p.armed).sort((a, b) => a.id - b.id);
+  if (!horns.length) return [];
+  for (const h of horns) h.armed = false;
+  let occ = occupancy(s);
+  const wants = [];
+  const dirs = new Map(); // 組 → 押される向き
+  for (const h of horns) {
+    const [x, y] = h.cells[0];
+    const nx = x + h.dir;
+    if (nx < 0 || nx >= s.W || y < 0) continue;
+    const o = occ[y * s.W + nx];
+    if (!o) continue;
+    const t = s.pieces[o - 1];
+    if (t.fixed || t.group === h.group) continue;
+    wants.push({ group: t.group, dir: h.dir });
+    if (!dirs.has(t.group)) dirs.set(t.group, new Set());
+    dirs.get(t.group).add(h.dir);
+  }
+  const pushed = [];
+  for (const { group, dir } of wants) {
+    if (dirs.get(group).size > 1) continue; // 左右から押されて動かない
+    const members = s.pieces.filter(p => p.group === group);
+    if (members.some(p => p.fixed)) continue;
+    let n = 0;
+    for (;;) {
+      const mine = new Set(members.map(p => s.pieces.indexOf(p) + 1));
+      const can = members.every(p => p.cells.every(([x, y]) => {
+        const nx = x + dir;
+        if (isWall(s, nx, y)) return false;
+        if (nx < 0 || nx >= s.W) return true; // 枠のない所から、盤の外へ
+        const o = occ[y * s.W + nx];
+        return !o || mine.has(o);
+      }));
+      if (!can) break;
+      for (const p of members) for (const c of p.cells) c[0] += dir;
+      n++;
+      if (members.some(p => p.cells.some(([x, y]) => offBoard(s, x, y)))) {
+        s.spilled = true;
+        pushed.push({ ids: members.map(p => p.id), dx: dir * n });
+        return pushed;
+      }
+      occ = occupancy(s);
+    }
+    if (n === 0) continue;
+    for (const p of members) if (p.mat === 'horn') p.armed = true; // 押されて止まった角笛も、また押す
+    pushed.push({ ids: members.map(p => p.id), dx: dir * n });
+  }
+  return pushed;
 }
 
 function info(p, why) {
@@ -389,7 +513,7 @@ export function stateKey(s) {
     const p = s.pieces[o - 1];
     if (label[o] < 0) label[o] = next++;
     if (!glabel.has(p.group)) glabel.set(p.group, glabel.size);
-    out += MAT_CHAR[p.mat] + (p.fixed ? '!' : '') + String.fromCharCode(48 + label[o]) + String.fromCharCode(48 + glabel.get(p.group));
+    out += (p.mat === 'horn' && p.dir < 0 ? 'k' : MAT_CHAR[p.mat]) + (p.fixed ? '!' : '') + String.fromCharCode(48 + label[o]) + String.fromCharCode(48 + glabel.get(p.group));
   }
   return `${out}/${s.hand.map(h => h.key).sort().join('|')}`;
 }
@@ -411,6 +535,11 @@ export function initialProblems(stage) {
     }
   }
   if (settle(cloneState(s)).length) problems.push('最初の盤面に、浮いているピースがあります');
+  if (s.pieces.some(p => p.mat === 'horn')) {
+    const t = cloneState(s);
+    for (const p of t.pieces) if (p.mat === 'horn') p.armed = true;
+    if (push(t).length) problems.push('最初の盤面で、角笛がもう押します');
+  }
   if (react(cloneState(s))) problems.push('最初の盤面で、もう反応が起きます');
   return problems;
 }

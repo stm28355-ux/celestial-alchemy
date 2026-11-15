@@ -8,6 +8,13 @@ import { draw, layout, drawMini, SPAWN_GAP } from './render.js';
 import { buildSteps, runSteps } from './anim.js';
 import { askHint } from './hint.js';
 
+// 置けない手の知らせ方（rules.js の reason ごと）
+const REASONS = {
+  above: 'そこに置くと、器の上にはみ出して止まります。',
+  rim: 'そこに置くと、器の外にはみ出して止まります。',
+  spill: 'そこに置くと、ピースが器の外へ落ちてしまいます。',
+};
+
 export class Game {
   constructor(root, stage, { onClear } = {}) {
     this.root = root;
@@ -96,7 +103,7 @@ export class Game {
     const before = this.state;
     const d = drop(before, cur.idx, this.r, this.x);
     if (!d.ok) {
-      this.say(d.reason === 'above' ? 'そこに置くと、器の上にはみ出して止まります。' : size(cur.cells).w > this.stage.W ? 'この向きでは器に入りません。回してみましょう。' : 'そこには置けません。');
+      this.say(REASONS[d.reason] ?? (size(cur.cells).w > this.stage.W ? 'この向きでは器に入りません。回してみましょう。' : 'そこには置けません。'));
       this.shake();
       return;
     }
@@ -267,10 +274,14 @@ export class Game {
     const cur = this.done ? null : this.current();
     if (cur) {
       const { h } = size(cur.cells);
-      view.preview = { mat: cur.item.mat, cells: cur.cells.map(([cx, cy]) => [cx + this.x, cy - h]) };
+      const dir = cur.item.mat === 'horn' ? (this.r % 2 === 0 ? 1 : -1) : 1;
+      view.preview = { mat: cur.item.mat, dir, cells: cur.cells.map(([cx, cy]) => [cx + this.x, cy - h]) };
       const land = landing(this.state, cur.cells, this.x, undefined, cur.item.mat);
-      if (land.ok) view.ghost = { mat: cur.item.mat, cells: land.cells };
-      else view.invalid = true;
+      if (land.ok) {
+        view.ghost = { mat: cur.item.mat, cells: land.cells };
+        // 止まる所は器の中でも、反応や押し出しのあとで器の外へ出てしまう手は赤くする
+        if (!drop(this.state, cur.idx, this.r, this.x).ok) view.invalid = true;
+      } else view.invalid = true;
     }
     draw(this.ctx, this.L, view);
   }

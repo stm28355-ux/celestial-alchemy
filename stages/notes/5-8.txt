@@ -1,0 +1,14 @@
+# お手本 5-8：底の穴
+format: 1
+id: note-5-8
+title: 底の穴
+terrain:
+  +++
+  +++
+  #-#
+hand:
+  lead ###
+  sand ###
+solution:
+  1 r0 x0
+  2 r0 x0

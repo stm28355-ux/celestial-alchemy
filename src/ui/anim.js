@@ -5,6 +5,7 @@ import { size } from '../core/shape.js';
 const FALL_MS = 55; // 1マス落ちるのにかける時間
 const FLASH_MS = 380; // 溶けるときの光
 const PAUSE_MS = 90; // 段と段の間
+const SLIDE_MS = 70; // 押されて1マス滑るのにかける時間
 
 // before：落とす前の状態、d：drop の結果、cells：落とした形、gap：器の口から浮かせた高さ
 export function buildSteps(before, d, cells, gap = 0) {
@@ -14,7 +15,7 @@ export function buildSteps(before, d, cells, gap = 0) {
   const place = events[0];
   const { h } = size(cells);
   const topY = Math.min(...place.cells.map(c => c[1]));
-  work.push({ id: place.id, group: place.id, mat: place.mat, cells: place.cells.map(c => [...c]), fixed: false });
+  work.push({ id: place.id, group: place.id, mat: place.mat, dir: place.dir, cells: place.cells.map(c => [...c]), fixed: false });
   const dist = topY + h + gap;
   steps.push({ pieces: snapshot(work), move: new Set([place.id]), dist, dur: Math.max(120, dist * FALL_MS * 0.6) });
   for (let i = 1; i < events.length; i++) {
@@ -37,12 +38,28 @@ export function buildSteps(before, d, cells, gap = 0) {
         for (const g of e.grown) work.find(p => p.id === g.id)?.cells.push(...g.cells.map(c => [...c]));
         steps.push({ pieces: snapshot(work), flash: new Set(e.grown.map(g => g.id)), dur: FLASH_MS * 0.8 });
       }
+      // ばらける（星砂）：ピースを1マスずつの粒に入れ替えて、粒を軽く光らせる
+      if (e.split?.length) {
+        for (const sp of e.split) {
+          const k = work.findIndex(p => p.id === sp.id);
+          if (k < 0) continue;
+          const old = work[k];
+          work.splice(k, 1, ...sp.into.map(g => ({ id: g.id, group: g.id, mat: old.mat, cells: g.cells.map(c => [...c]), fixed: old.fixed })));
+        }
+        steps.push({ pieces: snapshot(work), flash: new Set(e.split.flatMap(sp => sp.into.map(g => g.id))), dur: FLASH_MS * 0.6 });
+      }
       // くっつく：組を入れ替える（のりの印が出る）
       if (e.groups) {
         const map = new Map(e.groups);
         for (const p of work) if (map.has(p.id)) p.group = map.get(p.id);
       }
       steps.push({ pieces: snapshot(work), dur: PAUSE_MS });
+      // 押す（角笛）：押されたピースを横に滑らせる
+      for (const ps of e.pushed ?? []) {
+        for (const p of work) if (ps.ids.includes(p.id)) for (const c of p.cells) c[0] += ps.dx;
+        const n = Math.abs(ps.dx);
+        steps.push({ pieces: snapshot(work), slide: new Set(ps.ids), sdist: ps.dx, dur: n * SLIDE_MS + PAUSE_MS });
+      }
     }
   }
   return steps;
@@ -70,7 +87,12 @@ export function runSteps(steps, frame, done) {
     const t = Math.min(1, (now - t0) / st.dur);
     const lift = new Map();
     if (st.move) for (const id of st.move) lift.set(id, st.dist * (1 - t * t));
-    frame(st.pieces, { lift, flash: st.flash, flashAlpha: 0.85 * Math.abs(Math.sin(t * Math.PI * 2)) });
+    const shift = new Map();
+    if (st.slide) {
+      const u = Math.min(1, (now - t0) / Math.max(1, st.dur - PAUSE_MS));
+      for (const id of st.slide) shift.set(id, -st.sdist * (1 - u));
+    }
+    frame(st.pieces, { lift, shift, flash: st.flash, flashAlpha: 0.85 * Math.abs(Math.sin(t * Math.PI * 2)) });
     requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);

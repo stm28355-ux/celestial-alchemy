@@ -6,6 +6,7 @@
 //   terrain    ["+++", "+++"]           器（terrains に複数並べてもよい）
 //   pieces, legend                       最初から置く素材（任意）
 //   must       ["ice ##", "fire #"]      必ず入れる手持ち
+//   musts      [["sand ##"], ["sand ###"]] must の候補をいくつも並べて、全部ためす（must の代わり）
 //   pool       ["##", "###", ...]        足してよい鉛の形（省略すると1〜4マスの形と、5マスの器の形）
 //   k          [2, 4]                    足す鉛の数
 //   cells      [a, b]                    手持ちのマス数（鱗はのぞく）の範囲。省略すると「刻印の数ちょうど」
@@ -28,6 +29,7 @@
 //     swapUnsolvable [["ice", "lead"]] など。手持ちの素材を入れ替えると解けなくなる
 //     caught    true なら、どのクリア盤面にも「下に何もなく、ゼリーで宙に止まっている」ピースがある
 //     slimeMatters true なら、ゼリーを鉛に替えると解けなくなること（くっつくことが答えに要る）
+//     matters   [["-", "#"]] など。地形の文字を替えると答えが増えること（その地形が置き方を縛っている）
 //     markMatters true なら、×印を空きマスに替えると答え（クリア盤面）が増えること（×印が置き方を縛っている）
 
 import { readFile } from 'node:fs/promises';
@@ -48,6 +50,7 @@ const cellsOf = s => parseShape(s).length;
 
 const results = [];
 let tried = 0;
+for (const must of spec.musts ?? [spec.must ?? []])
 for (const terrain of terrains) {
   const head = ['format: 1', 'terrain:', ...terrain.map(r => `  ${r}`)];
   if (spec.pieces) head.push('pieces:', ...spec.pieces.map(r => `  ${r}`), 'legend:', ...Object.entries(spec.legend).map(([k, v]) => `  ${k}: ${v}`));
@@ -59,7 +62,7 @@ for (const terrain of terrains) {
   }
   const targets = terrain.join('').split('').filter(c => '+GL'.includes(c)).length;
   const preFilled = base.pieces.filter(p => p.mat !== 'ice').flatMap(p => p.cells).filter(([x, y]) => '+GL'.includes(terrain[y][x])).length;
-  const mustCells = spec.must.reduce((n, m) => {
+  const mustCells = must.reduce((n, m) => {
     const [mat, sh] = m.split(/\s+/);
     return n + (mat === 'ice' ? 0 : cellsOf(sh));
   }, 0);
@@ -81,7 +84,7 @@ for (const terrain of terrains) {
 
   for (const leads of combos) {
     tried++;
-    const hand = [...spec.must, ...leads.map(l => `lead ${l}`)];
+    const hand = [...must, ...leads.map(l => `lead ${l}`)];
     const st = parseStage([...head, 'hand:', ...hand.map(h => `  ${h}`)].join('\n'));
     const r = solve(st, { maxNodes: spec.maxNodes ?? 300000, feature, examples: Math.min(40, req.maxFinal ?? 40) });
     if (r.truncated || !r.solvable) continue;
@@ -120,6 +123,12 @@ for (const terrain of terrains) {
       const alt = parseStage([...head, 'hand:', ...hand.map(h => `  ${h}`)].join('\n').replace(/\bslime\b/g, 'lead'));
       if (solve(alt, { maxNodes: spec.maxNodes ?? 300000 }).solvable) continue;
     }
+    // 地形の文字を替えると答え（クリア盤面）が増えること。例 [["-", "#"]]：底の穴をふさぐと答えが増える＝穴が置き方を縛っている
+    if (req.matters && req.matters.some(([from, to]) => {
+      const altHead = head.map((l, i) => (i >= 2 && i < 2 + terrain.length ? l.split(from).join(to) : l));
+      const ra = solve(parseStage([...altHead, 'hand:', ...hand.map(h => `  ${h}`)].join('\n')), { maxNodes: spec.maxNodes ?? 300000 });
+      return !(ra.finalStates > r.finalStates || ra.paths > r.paths || (ra.solvable && !r.solvable));
+    })) continue;
     if (req.markMatters) {
       const altHead = head.map((l, i) => (i >= 2 && i < 2 + terrain.length ? l.replace(/x/g, '.') : l));
       const alt = parseStage([...altHead, 'hand:', ...hand.map(h => `  ${h}`)].join('\n'));

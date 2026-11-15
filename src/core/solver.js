@@ -208,7 +208,7 @@ export function checkSolution(stage) {
     const idx = s.hand.findIndex(h => h.orig === m.hand);
     if (idx < 0) return { ok: false, step, reason: `手持ちの${m.hand + 1}番は、もう使っています` };
     const d = drop(s, idx, m.r, m.x);
-    if (!d.ok) return { ok: false, step, reason: d.reason === 'above' ? '上端より上で止まります' : '置けません' };
+    if (!d.ok) return { ok: false, step, reason: { above: '上端より上で止まります', rim: '器の外で止まります', spill: '器の外へ落ちます' }[d.reason] ?? '置けません' };
     reactions += d.events.filter(e => e.type === 'react').length;
     s = d.state;
   }
@@ -226,6 +226,27 @@ export const FEATURES = {
   chain: events => events.filter(e => e.type === 'react').length >= 2,
   // 反応が起きた
   react: events => events.some(e => e.type === 'react'),
+  // 星砂がばらけた
+  crumble: events => events.some(e => e.type === 'react' && e.split?.length),
+  // 角笛がピースを押した
+  push: events => events.some(e => e.type === 'react' && e.pushed?.length),
+  // 鱗が溶けたあとで、ピースが落ちた（星砂のばらけとは別に数える）
+  meltFall: events => {
+    const i = events.findIndex(e => e.type === 'react' && e.removed.some(r => r.why === 'melt'));
+    return i >= 0 && events.slice(i + 1).some(e => e.type === 'fall');
+  },
+  // 鱗が溶けたあとで、角笛が押した（落ちて止まった角笛が、もう一度押す）
+  meltPush: events => {
+    const i = events.findIndex(e => e.type === 'react' && e.removed.some(r => r.why === 'melt'));
+    return i >= 0 && events.slice(i + 1).some(e => e.type === 'react' && e.pushed?.length);
+  },
+  // 押したあとで、ピースが落ちた（押されて段から落ちる・上に乗っていた物が置いていかれる）
+  pushFall: events => {
+    const i = events.findIndex(e => e.type === 'react' && e.pushed?.length);
+    return i >= 0 && events.slice(i + 1).some(e => e.type === 'fall');
+  },
+  // 1手のうちに2回以上押した（落ちてもう一度、押されてもう一度）
+  pushTwice: events => events.filter(e => e.type === 'react').reduce((n, e) => n + (e.pushed?.length ?? 0), 0) >= 2,
   // 動かないピース（枠側の氷）が溶けた
   frameMelt: events => events.some(e => e.type === 'react' && e.removed.some(r => r.fixed)),
 };

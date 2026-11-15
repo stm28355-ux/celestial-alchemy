@@ -1,0 +1,21 @@
+# 6-6 上から届かない鱗に、火種を横から押し当てて溶かす。×印の鱗を消す（答えは1つ）。
+format: 1
+id: ch6-06
+title: 火種を押す
+request: 氷室の番人が、奥の氷を溶かした棚を作ってほしいと言っている。
+terrain:
+  ##++
+  x+++
+pieces:
+  ....
+  a...
+legend:
+  a: ice fixed
+hand:
+  horn #
+  fire #
+  lead ##/#.
+solution:
+  2 r0 x2
+  1 r1 x3
+  3 r0 x2

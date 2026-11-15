@@ -1,0 +1,17 @@
+# お手本 6-4：テーブルクロス引き
+format: 1
+id: note-6-4
+title: テーブルクロス引き
+terrain:
+  ....
+  ++.+
+pieces:
+  .b..
+  .a..
+legend:
+  a: lead
+  b: lead
+hand:
+  horn #
+solution:
+  1 r0 x0

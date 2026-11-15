@@ -1,0 +1,16 @@
+# お手本 6-3：押されて落ちる
+format: 1
+id: note-6-3
+title: 押されて落ちる
+terrain:
+  +...
+  ##.+
+pieces:
+  .a..
+  ....
+legend:
+  a: lead
+hand:
+  horn #
+solution:
+  1 r0 x0
