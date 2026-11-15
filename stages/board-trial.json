@@ -1,0 +1,44 @@
+[
+ {
+  "id": "trial-1",
+  "theme": "melt",
+  "bits": 12.2,
+  "seed": 1121,
+  "text": "format: 1\nid: trial-1\ntitle: 試作1：溶けて落ちる\nrequest: 鱗が溶けると、上に乗っていた物が落ちる。それを使う依頼。\nterrain:\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  .b..\n  aa..\nlegend:\n  a: ice\n  b: lead\nhand:\n  ice ###\n  lead ##./.##\n  fire #\n  lead ##/#.\n  lead #./##\nsolution:\n  3 r0 x0\n  1 r0 x0\n  2 r0 x1\n  4 r0 x0\n  5 r2 x2\n"
+ },
+ {
+  "id": "trial-2",
+  "theme": "melt",
+  "bits": 17.1,
+  "seed": 1219,
+  "text": "format: 1\nid: trial-2\ntitle: 試作2：溶けて落ちる\nrequest: 鱗が溶けると、上に乗っていた物が落ちる。それを使う依頼。\nterrain:\n  ++++\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  aaa.\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead .#/.#/##\n  lead .##/##.\n  ice ###\n  fire #\n  lead ##./.##\n  lead #./##\nsolution:\n  3 r0 x0\n  4 r0 x0\n  5 r0 x0\n  2 r1 x2\n  6 r0 x0\n  1 r3 x1\n"
+ },
+ {
+  "id": "trial-3",
+  "theme": "melt",
+  "bits": 9.7,
+  "seed": 1045,
+  "text": "format: 1\nid: trial-3\ntitle: 試作3：溶けて落ちる\nrequest: 鱗が溶けると、上に乗っていた物が落ちる。それを使う依頼。\nterrain:\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  aaaa\n  ....\nlegend:\n  a: ice fixed\nhand:\n  ice ##\n  fire #\n  lead ##/#.\n  lead ####\n  lead ##./.##\nsolution:\n  1 r0 x1\n  2 r0 x0\n  5 r0 x0\n  3 r1 x2\n  4 r0 x0\n"
+ },
+ {
+  "id": "trial-4",
+  "theme": "sand",
+  "bits": 12.7,
+  "seed": 1147,
+  "text": "format: 1\nid: trial-4\ntitle: 試作4：星砂は真下に\nrequest: 星砂は止まるとばらけて、粒が真下に流れ込む。それを使う依頼。\nterrain:\n  +++++\n  +++++\n  ++#++\nhand:\n  lead ##./.##\n  lead ##\n  sand ###\n  lead ##./.##\n  lead #\nsolution:\n  1 r0 x2\n  2 r1 x4\n  3 r0 x1\n  4 r1 x0\n  5 r0 x0\n"
+ },
+ {
+  "id": "trial-5",
+  "theme": "sand",
+  "bits": 5.8,
+  "seed": 1191,
+  "text": "format: 1\nid: trial-5\ntitle: 試作5：星砂は真下に\nrequest: 星砂は止まるとばらけて、粒が真下に流れ込む。それを使う依頼。\nterrain:\n  ++++\n  ++++\n  #+++\nhand:\n  lead ###/.#.\n  sand ###\n  lead ###/.#.\nsolution:\n  2 r0 x0\n  1 r1 x2\n  3 r0 x0\n"
+ },
+ {
+  "id": "trial-6",
+  "theme": "sand",
+  "bits": 9.1,
+  "seed": 1201,
+  "text": "format: 1\nid: trial-6\ntitle: 試作6：星砂は真下に\nrequest: 星砂は止まるとばらけて、粒が真下に流れ込む。それを使う依頼。\nterrain:\n  ++++\n  ++++\n  ++#+\nhand:\n  lead #\n  sand ##\n  lead ###/.#.\n  lead ##./.##\nsolution:\n  3 r1 x2\n  2 r0 x1\n  4 r1 x0\n  1 r0 x0\n"
+ }
+]

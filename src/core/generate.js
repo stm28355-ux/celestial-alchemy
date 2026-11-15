@@ -7,7 +7,7 @@
 //   4. ソルバーで答えが1つか調べる。2つ以上なら空いたマスを×印にして絞り、要らない×印は空きマスに戻す
 //   5. 難しさを測る：答えの道筋の1手ごとに「置ける手のうち、クリアにつながる手がどれだけ少ないか」を足す（迷いの量）
 
-import { createState, drop } from './rules.js';
+import { createState, drop, initialProblems } from './rules.js';
 import { solveState, moves } from './solver.js';
 import { parseStage, stageToText, FORMAT } from './stage.js';
 
@@ -271,4 +271,157 @@ export function difficulty(stage, maxNodes = 150000) {
     s = drop(s, i, m.r, m.x).state;
   }
   return { bits: Math.round(bits * 10) / 10, hardest: Math.round(hardest * 10) / 10, trap: Math.round(trap * 100) / 100, steps: path.length };
+}
+
+// ── テーマから作る（2026-11-15 作り直し） ──
+// 1問に1つ、メインの気付きを決める。器はすっきりした形（長方形に壁を少し、刻印はほぼ全面）にして、
+// 形合わせではなく、順番と素材の性質で考える問題にする。確かめ：
+//   ・答え（クリア盤面）が1つ
+//   ・どの答えでも、メインの気付きを使う（feature）
+//   ・メインの素材を同じ形の鉛に替えると解けない（素材の性質が要る）
+import { FEATURES } from './solver.js';
+
+export const THEMED = {
+  melt: {
+    name: '溶けて落ちる',
+    idea: '鱗が溶けると、上に乗っていた物が形を保ったまま落ちる',
+    feature: 'meltFall',
+    main: 'ice',
+    hand: r => ['fire #', ...(r() < 0.3 ? [`ice ${pick(r, ['#', '##', '###'])}`] : [])],
+    size: r => [4, between(r, 3, 4)],
+    terrain(r, W, H) {
+      return Array.from({ length: H }, () => Array(W).fill('+'));
+    },
+    // 最初から置く：底の鱗とその上の鉛（2-5 上から落ちる・2-6 連鎖）か、枠の鱗の段（2-8 器の底）
+    presets(r, W, H) {
+      const p = Array.from({ length: H }, () => Array(W).fill('.'));
+      const legend = {};
+      if (r() < 0.35) {
+        const y = H - 2;
+        const from = between(r, 0, 1), to = between(r, W - 2, W - 1);
+        for (let x = from; x <= to; x++) p[y][x] = 'a';
+        legend.a = 'ice fixed';
+        return { p, legend };
+      }
+      const w = between(r, 1, 3);
+      const x0 = between(r, 0, W - w);
+      for (let x = x0; x < x0 + w; x++) p[H - 1][x] = 'a';
+      legend.a = 'ice';
+      // 鱗の上に鉛を乗せる（はみ出してもよいが、鱗だけに支えられる）
+      const lw = between(r, 1, 2);
+      const lx = between(r, Math.max(0, x0 - lw + 1), Math.min(W - lw, x0 + w - 1));
+      for (let x = lx; x < lx + lw; x++) p[H - 2][x] = 'b';
+      legend.b = 'lead';
+      if (r() < 0.4) {
+        // 2つ目の鱗（連鎖）：最初の鱗の隣
+        const nx = x0 + w < W ? x0 + w : x0 - 1;
+        if (nx >= 0 && nx < W && p[H - 1][nx] === '.') {
+          p[H - 1][nx] = 'c';
+          legend.c = 'ice';
+        }
+      }
+      return { p, legend };
+    },
+  },
+  sand: {
+    name: '星砂は真下に',
+    idea: '星砂は止まるとばらけて、粒が真下に流れ込む（形のままでは入らない所にも入る）',
+    feature: 'sandFall',
+    main: 'sand',
+    hand: r => Array.from({ length: between(r, 1, 2) }, () => `sand ${pick(r, ['##', '###', '#./##', '##/#.', '####', '###/#..'])}`),
+    size: r => [between(r, 4, 5), 3],
+    terrain(r, W, H) {
+      const t = Array.from({ length: H }, () => Array(W).fill('+'));
+      // 床のでこぼこ：底の行に1〜2個の出っぱり（くぼみができる）
+      const n = between(r, 1, 2);
+      for (let k = 0; k < n; k++) {
+        const x = between(r, 0, W - 1);
+        t[H - 1][x] = '#';
+        if (r() < 0.4 && H > 3) t[H - 2][x] = '#';
+      }
+      if (r() < 0.3) t[0] = t[0].map(() => '.');
+      return t;
+    },
+  },
+};
+
+const cellsOf = sh => sh.split('').filter(c => c === '#').length;
+
+// テーマから1問作ってみる。だめなら null（why に理由を数える）
+export function makeThemed(r, key, { maxNodes = 200000, stats = null } = {}) {
+  const th = THEMED[key];
+  const why = k => {
+    if (stats) stats[k] = (stats[k] ?? 0) + 1;
+    return null;
+  };
+  const [W, H] = th.size(r);
+  const grid = th.terrain(r, W, H);
+  // 1列まるごと壁は作らない
+  for (let x = 0; x < W; x++) if (grid.every(row => row[x] === '#')) grid[0][x] = '+';
+  const terrain = grid.map(row => row.join(''));
+  const pre = th.presets ? th.presets(r, W, H) : null;
+  const targets = terrain.join('').split('').filter(c => c === '+').length;
+  const must = th.hand(r);
+  // 鱗は溶けて消えるので、刻印を埋めるマスには数えない（最初から置く鉛は数える）
+  const mustCells = must.reduce((n, h) => n + (h.startsWith('ice') ? 0 : cellsOf(h.split(' ')[1])), 0);
+  const preCells = pre ? pre.p.flat().filter(c => c !== '.' && pre.legend[c] === 'lead').length : 0;
+  const need = targets - mustCells - preCells;
+  if (need < 2) return why('鉛が入らない');
+  // 鉛を1〜3個、合計がちょうど need マスになる組み合わせを全部挙げて、ランダムな順にためす
+  const combos = [];
+  const rec = (start, sum, acc) => {
+    if (sum === need && acc.length) combos.push([...acc]);
+    if (acc.length >= 4 || sum >= need) return;
+    for (let i = start; i < LEAD.length; i++) {
+      acc.push(LEAD[i]);
+      rec(i, sum + cellsOf(LEAD[i]), acc);
+      acc.pop();
+    }
+  };
+  rec(0, 0, []);
+  if (!combos.length) return why('鉛の数が合わない');
+  combos.sort(() => r() - 0.5);
+  for (const leads of combos.slice(0, 60)) {
+    const hand = [...must, ...leads.map(s => `lead ${s}`)].sort(() => r() - 0.5);
+    const raw = { format: FORMAT, terrain, hand, solution: [] };
+    if (pre) {
+      raw.pieces = pre.p.map(row => row.join(''));
+      raw.legend = pre.legend;
+    }
+    let st;
+    try {
+      st = parseStage(stageToText(raw));
+    } catch {
+      return why('形');
+    }
+    if (initialProblems(st).length) return why('最初の盤面がおかしい');
+    const res = solveState(createState(st), { maxNodes, examples: 1, feature: FEATURES[th.feature] });
+    if (res.truncated) {
+      why('調べきれない');
+      continue;
+    }
+    if (!res.solvable) {
+      why('解けない');
+      continue;
+    }
+    if (res.finalStates !== 1) {
+      why('答えが2つ以上');
+      continue;
+    }
+    if (res.pathsWithoutFeature > 0) {
+      why('気付きを使わずに解ける');
+      continue;
+    }
+    // メインの素材を、同じ形の鉛に替えると解けないこと
+    const swapped = { ...raw, hand: hand.map(h => (h.startsWith(`${th.main} `) ? `lead ${h.split(' ')[1]}` : h)) };
+    const rs = solveState(createState(parseStage(stageToText(swapped))), { maxNodes });
+    if (rs.truncated || rs.solvable) {
+      why('鉛に替えても解ける');
+      continue;
+    }
+    const score = difficulty(st, maxNodes);
+    if (!score) continue;
+    return { theme: key, name: th.name, raw: { ...raw, solution: res.examples[0].moves.map(m => `${m.orig + 1} r${m.r} x${m.x}`) }, ...score, paths: res.paths };
+  }
+  return null;
 }

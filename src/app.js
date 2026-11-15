@@ -60,6 +60,8 @@ function route() {
       return showBoard();
     case 'req':
       return showRequest(Number(parts[1]));
+    case 'trial':
+      return showTrial(Number(parts[1]));
     default:
       return showTitle();
   }
@@ -254,6 +256,28 @@ function showPlay(i, n) {
 }
 
 // ── 依頼の掲示板 ──
+// 作り方の試作（テーマから作った問題を、人が遊んで確かめる）
+let trial = null;
+async function loadTrial() {
+  if (!trial) trial = (await fetchJSON('stages/board-trial.json').catch(() => [])).map(b => ({ ...b, stage: parseStage(b.text) }));
+  return trial;
+}
+
+async function showTrial(n) {
+  const list = await loadTrial();
+  const b = list[n - 1];
+  if (!b) return (location.hash = '#/board');
+  const st = b.stage;
+  const game = mountGame(st, { heading: escapeHTML(st.title), back: '<a href="#/board">← 依頼の掲示板</a>' }, () => {
+    save.markCleared(b.id);
+    const next = n < list.length ? `#/trial/${n + 1}` : null;
+    clearDialog('試作の依頼ができあがった。', [
+      { label: 'もう一度', run: () => game.reset() },
+      next ? { label: '次の試作へ', href: next, primary: true } : { label: '掲示板へ', href: '#/board', primary: true },
+    ]);
+  });
+}
+
 async function loadBoard() {
   if (!board) board = (await fetchJSON('stages/board.json')).map(b => ({ ...b, stage: parseStage(b.text) }));
   return board;
@@ -263,6 +287,7 @@ const THEME_MATS = mats => [...new Set(mats)].filter(m => m !== 'lead').map(m =>
 
 async function showBoard() {
   const list = await loadBoard();
+  const trials = await loadTrial();
   if (location.hash !== '#/board') return;
   const done = list.filter(b => save.isCleared(b.id)).length;
   view.innerHTML = `
@@ -270,6 +295,9 @@ async function showBoard() {
       <p class="back"><a href="#/">← タイトル</a></p>
       <h2>依頼の掲示板 <small>${done} / ${list.length}</small></h2>
       <p class="master-line">「腕の立つ錬金術師へ。どれも一筋縄ではいかない依頼ばかりだ。」</p>
+      ${trials.length ? `<h3>作り方の試作 <small>テーマから作った${trials.length}問。遊んで感想を聞かせてください</small></h3>
+      <ol class="stage-list board-list">${trials.map((b, k) => `<li><a class="stage-item${save.isCleared(b.id) ? ' cleared' : ''}" href="#/trial/${k + 1}"><span class="num">${k + 1}</span><span class="name">${escapeHTML(b.stage.title)}</span><span class="req">${THEME_MATS([...b.stage.hand.map(h => h.mat), ...b.stage.pieces.map(p => p.mat)])}</span></a></li>`).join('')}</ol>
+      <h3>依頼（前の作り方の100問）</h3>` : ''}
       <div class="board-new">
         <button id="find-new">新しい依頼を探す</button>
         <span id="find-status" class="ed-note">掲示板にない依頼を、ランダムに1つ出します（URLで人にも渡せます）</span>

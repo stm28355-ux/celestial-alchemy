@@ -550,3 +550,17 @@ test('依頼の掲示板：どの問題も読めて、狙いの手順でクリ�
     assert.ok(!r.truncated && r.finalStates === 1, `${b.id}：答えが1つでない（${r.finalStates}）`);
   }
 });
+
+test('作り方の試作：テーマの気付きを使い、メインの素材を鉛に替えると解けない', async () => {
+  const { THEMED } = await import('../src/core/generate.js');
+  const { FEATURES } = await import('../src/core/solver.js');
+  const trial = JSON.parse(await readFile(new URL('../stages/board-trial.json', import.meta.url), 'utf8'));
+  for (const b of trial) {
+    const st = parseStage(b.text);
+    const th = THEMED[b.theme];
+    const r = solveState(createState(st), { feature: FEATURES[th.feature] });
+    assert.ok(r.finalStates === 1 && r.pathsWithoutFeature === 0, `${b.id}：答えが1つで、どの答えも気付きを使う`);
+    const swapped = { ...st.raw, hand: st.raw.hand.map(h => (h.startsWith(`${th.main} `) ? `lead ${h.split(' ')[1]}` : h)) };
+    assert.equal(solve(parseStage(stageToText(swapped))).solvable, false, `${b.id}：鉛に替えても解ける`);
+  }
+});
