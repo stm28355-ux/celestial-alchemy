@@ -28,6 +28,7 @@
 //     swapUnsolvable [["ice", "lead"]] など。手持ちの素材を入れ替えると解けなくなる
 //     caught    true なら、どのクリア盤面にも「下に何もなく、ゼリーで宙に止まっている」ピースがある
 //     slimeMatters true なら、ゼリーを鉛に替えると解けなくなること（くっつくことが答えに要る）
+//     markMatters true なら、×印を空きマスに替えると答え（クリア盤面）が増えること（×印が置き方を縛っている）
 
 import { readFile } from 'node:fs/promises';
 import { parseStage } from '../src/core/stage.js';
@@ -118,6 +119,12 @@ for (const terrain of terrains) {
     if (req.slimeMatters) {
       const alt = parseStage([...head, 'hand:', ...hand.map(h => `  ${h}`)].join('\n').replace(/\bslime\b/g, 'lead'));
       if (solve(alt, { maxNodes: spec.maxNodes ?? 300000 }).solvable) continue;
+    }
+    if (req.markMatters) {
+      const altHead = head.map((l, i) => (i >= 2 && i < 2 + terrain.length ? l.replace(/x/g, '.') : l));
+      const alt = parseStage([...altHead, 'hand:', ...hand.map(h => `  ${h}`)].join('\n'));
+      const ra = solve(alt, { maxNodes: spec.maxNodes ?? 300000 });
+      if (!(ra.finalStates > r.finalStates)) continue;
     }
     const s0 = createState(st);
     let legal = 0;

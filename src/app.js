@@ -151,6 +151,7 @@ const RULES = {
     'ピースは形を保ったまま落ち、1マスでも支えがあれば止まる。',
   ],
   free: '刻印のないマスは、埋めなくてよい（はみ出してもよい）。',
+  mark: '×印のマスには、最後に何も残っていてはいけない（途中で通ったり、しばらく止まったりするのはよい）。',
   fire: 'サラマンダーの火種に触れた氷竜の鱗は、ピースごと溶けて消える。火種は残る。',
   fixed: '斜線の鱗は器の一部で、動かない。でも火種で溶ける。',
   water: 'ウンディーネの水玉がドリアードのつるに触れると、水玉は吸われて消え、つるがいちばん上の真上に1マス伸びる（ふさがっていたら伸びない）。',
@@ -163,6 +164,7 @@ const RULES = {
 function puzzleHTML(st, { heading, back, extra = '' }) {
   const rules = [...RULES.base];
   if (st.terrain.some(r => r.includes('.'))) rules.push(RULES.free);
+  if (st.terrain.some(r => r.includes('x'))) rules.push(RULES.mark);
   if (st.hand.some(h => h.mat === 'fire') || st.pieces.some(p => p.mat === 'fire')) rules.push(RULES.fire);
   if (st.pieces.some(p => p.fixed)) rules.push(RULES.fixed);
   const has = mat => st.hand.some(h => h.mat === mat) || st.pieces.some(p => p.mat === mat);

@@ -71,12 +71,13 @@ export function draw(ctx, L, view) {
         ctx.strokeRect(px + 0.5, py + 0.5, c - 1, c - 1);
         continue;
       }
-      ctx.fillStyle = t === '.' ? INSIDE_FREE : INSIDE;
+      ctx.fillStyle = t === '.' || t === 'x' ? INSIDE_FREE : INSIDE;
       ctx.fillRect(px, py, c, c);
       ctx.strokeStyle = 'rgba(120, 90, 50, 0.12)';
       ctx.lineWidth = 1;
       ctx.strokeRect(px + 0.5, py + 0.5, c - 1, c - 1);
       if (t === '+' || t === 'G' || t === 'L') drawRune(ctx, px, py, c, t);
+      if (t === 'x') drawCross(ctx, px, py, c);
     }
   }
 
@@ -143,6 +144,22 @@ function drawGlue(ctx, L, pieces, lift, stage) {
     ctx.fill();
     ctx.stroke();
   }
+}
+
+// ×印（空けておくマス）：最後に何も残っていてはいけない
+function drawCross(ctx, px, py, c) {
+  ctx.save();
+  ctx.strokeStyle = '#c0675a';
+  ctx.lineWidth = Math.max(2, c * 0.06);
+  ctx.lineCap = 'round';
+  const a = c * 0.27;
+  ctx.beginPath();
+  ctx.moveTo(px + a, py + a);
+  ctx.lineTo(px + c - a, py + c - a);
+  ctx.moveTo(px + c - a, py + a);
+  ctx.lineTo(px + a, py + c - a);
+  ctx.stroke();
+  ctx.restore();
 }
 
 function drawRune(ctx, px, py, c, t) {

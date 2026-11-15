@@ -15,6 +15,7 @@ const LETTERS = 'abcdefghijklmnopqrstuvwxyz';
 const TERRAIN_TOOLS = [
   ['+', '目標マス（刻印）'],
   ['.', '空きマス'],
+  ['x', '空けておくマス（×印）'],
   ['#', '壁'],
   ['G', '金で埋めるマス'],
   ['L', '鉛のまま残すマス'],

@@ -339,9 +339,18 @@ function splitGroups(s) {
   }
 }
 
-// クリア：手持ちを使い切り、目標マスが全部埋まっている（G は金、L は鉛で）。
+// クリア：手持ちを使い切り、目標マスが全部埋まっている（G は金、L は鉛で）。×印のマスには何も残っていない。
 export function isCleared(s) {
-  return s.hand.length === 0 && targetsFilled(s);
+  return s.hand.length === 0 && targetsFilled(s) && marksEmpty(s);
+}
+
+// ×印（空けておくマス）に何も残っていないか。途中で通ったり止まったりするのはよく、最後だけ見る。
+export function marksEmpty(s) {
+  const occ = occupancy(s);
+  for (let y = 0; y < s.H; y++) {
+    for (let x = 0; x < s.W; x++) if (s.terrain[y][x] === 'x' && occ[y * s.W + x]) return false;
+  }
+  return true;
 }
 
 export function targetsFilled(s) {

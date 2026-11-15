@@ -1,0 +1,13 @@
+# お手本 1-10：×印の間の柱
+format: 1
+id: note-1-10
+title: ×印の間の柱
+terrain:
+  +++
+  x.x
+hand:
+  lead #
+  lead ###
+solution:
+  1 r0 x1
+  2 r0 x0

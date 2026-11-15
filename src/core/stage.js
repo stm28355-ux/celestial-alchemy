@@ -34,7 +34,7 @@ import { material } from './materials.js';
 import { parseShape } from './shape.js';
 
 export const FORMAT = 1;
-const TERRAIN_CHARS = new Set(['#', '.', '+', 'G', 'L']);
+const TERRAIN_CHARS = new Set(['#', '.', '+', 'G', 'L', 'x']);
 const BLOCKS = new Set(['terrain', 'pieces', 'legend', 'hand', 'solution']);
 
 export function parseStageText(text) {

@@ -132,6 +132,18 @@ test('クリア：手持ちを使い切り、目標マスが全部埋まる。�
   assert.equal(isCleared(play(st2, [[0, 0, 0]]).s), false); // 手持ちが残っている
 });
 
+test('×印：最後に何も残っていてはいけない。途中で止まるのはよい', () => {
+  const st = stage(['terrain:', '  x.', '  ++', 'hand:', '  lead ##', '  lead #']);
+  assert.equal(isCleared(play(st, [[0, 0, 0], [0, 0, 1]]).s), true);
+  assert.equal(isCleared(play(st, [[0, 0, 0], [0, 0, 0]]).s), false); // ×印の上に残った
+  // 鱗を×印に仮置きして、あとで溶かす
+  const st2 = stage(['terrain:', '  x.', '  ++', 'hand:', '  lead ##', '  ice #', '  fire #']);
+  const r = play(st2, [[0, 0, 0], [0, 0, 0], [0, 0, 1]]);
+  assert.equal(r.s.pieces.some(p => p.mat === 'ice'), false);
+  assert.equal(isCleared(r.s), true);
+  assert.equal(solve(st2).solvable, true);
+});
+
 test('最初の盤面の確かめ：浮いている、もう反応する', () => {
   const st = stage(['terrain:', '  ..', '  ..', 'pieces:', '  a.', '  ..', 'legend:', '  a: lead']);
   assert.match(initialProblems(st)[0], /浮いている/);
@@ -168,11 +180,12 @@ test('ソルバー：行き止まりの見切りは、答えを取りこぼさ�
   };
   const SHAPES = ['#', '##', '###', '#/#', '##/#.', '#./##', '##/##', '#.#/###', '###/.#.'];
   const MATS = ['lead', 'lead', 'lead', 'ice', 'fire'];
+  for (const chars of ['++++.#', '+++..#x']) {
   let solvable = 0;
   for (let n = 0; n < 200; n++) {
     const W = 2 + rand(3), H = 2 + rand(2);
     const terrain = Array.from({ length: H }, () =>
-      Array.from({ length: W }, () => '++++.#'[rand(6)]).join(''),
+      Array.from({ length: W }, () => chars[rand(chars.length)]).join(''),
     ).map((row, y) => (y === 0 ? row.replace(/#/g, '.') : row));
     const hand = Array.from({ length: 2 + rand(3) }, () => `  ${MATS[rand(MATS.length)]} ${SHAPES[rand(SHAPES.length)]}`);
     const st = stage(['terrain:', ...terrain.map(r => `  ${r}`), 'hand:', ...hand]);
@@ -185,7 +198,8 @@ test('ソルバー：行き止まりの見切りは、答えを取りこぼさ�
     );
     if (a.solvable) solvable++;
   }
-  assert.ok(solvable > 10, `解けるものが少なすぎる：${solvable}`);
+  assert.ok(solvable > 10, `解けるものが少なすぎる：${solvable}（${chars}）`);
+  }
 });
 
 test('章のステージとお手本：読めて、最初の盤面に問題がなく、狙いの手順でクリアできる', async () => {

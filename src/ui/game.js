@@ -1,7 +1,7 @@
 // パズル画面：手持ちを選ぶ・列と向きを決める・落とす・1段ずつ見せる・一手戻す・やり直し・ヒント。
 // root の中に #board #hand #message と、ボタン（#btn-rotate #btn-drop #btn-undo #btn-reset #btn-hint）があること。
 
-import { createState, drop, landing, isCleared } from '../core/rules.js';
+import { createState, drop, landing, isCleared, targetsFilled } from '../core/rules.js';
 import { size } from '../core/shape.js';
 import { material } from '../core/materials.js';
 import { draw, layout, drawMini, SPAWN_GAP } from './render.js';
@@ -127,7 +127,7 @@ export class Game {
     const rest = s.hand.map(h => h.orig);
     const next = rest.find(o => o > this.sel) ?? rest[0] ?? null;
     this.select(next);
-    if (s.hand.length === 0) this.say('刻印が残りました。「一手戻す」か「やり直し」でもう一度。');
+    if (s.hand.length === 0) this.say(`${targetsFilled(s) ? '×印のマスにピースが残りました' : '刻印が残りました'}。「一手戻す」か「やり直し」でもう一度。`);
     this.render();
   }
 

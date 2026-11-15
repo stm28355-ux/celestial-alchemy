@@ -125,7 +125,8 @@ export function deadEnd(s) {
   let empty = 0;
   for (let y = 0; y < s.H; y++) for (let x = 0; x < s.W; x++) if (isTarget(x, y) && !occ[y * s.W + x]) empty++;
   if (empty > handCells) return true;
-  if (empty === 0) return false;
+  const marks = s.terrain.some(row => row.includes('x'));
+  if (empty === 0 && !marks) return false;
 
   // 2. もう動かないピース：消えることがなく、消えることのない物の上に（つながって）乗っている
   const fire = s.pieces.some(p => p.mat === 'fire') || s.hand.some(h => h.mat === 'fire');
@@ -144,6 +145,9 @@ export function deadEnd(s) {
       if (held) stuck[i] = changed = true;
     });
   }
+
+  // 2'. もう動かないピースが×印のマスにある → 最後まで残る
+  if (marks && s.pieces.some((p, i) => stuck[i] && p.cells.some(([x, y]) => s.terrain[y][x] === 'x'))) return true;
 
   // 3. 空いた目標マスの真上に、壁か、もう動かないピースがある → 上から何も入れない
   //    （間に動くかもしれないピースがあれば、それが落ちてくるかもしれないので捨てない）
