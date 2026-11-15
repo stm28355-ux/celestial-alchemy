@@ -156,7 +156,8 @@ const RULES = {
   water: 'ウンディーネの水玉がドリアードのつるに触れると、水玉は吸われて消え、つるがいちばん上の真上に1マス伸びる（ふさがっていたら伸びない）。',
   vine: 'つるは縦の棒で、回せない。火種に触れると燃えて消える。',
   steam: '火種と水玉が触れると、両方消える。',
-  slime: 'スライムゼリーは止まると、触れたピースとくっついて1つになる。くっついた形のまま落ちる。',
+  slime: 'スライムゼリーとは、横で触れ合うとそこで止まる（ゼリーが落ちるときも、ゼリーの横を物が落ちるときも）。止まると、触れたピースとくっついて1つになる。',
+  slip: '氷竜の鱗はつるつるで、ゼリーとくっつかない（触れても止まらない）。',
 };
 
 function puzzleHTML(st, { heading, back, extra = '' }) {
@@ -169,6 +170,7 @@ function puzzleHTML(st, { heading, back, extra = '' }) {
   if (has('vine')) rules.push(RULES.vine);
   if (has('water') && has('fire')) rules.push(RULES.steam);
   if (has('slime')) rules.push(RULES.slime);
+  if (has('slime') && has('ice')) rules.push(RULES.slip);
   return `
     <main class="puzzle">
       <section class="info">

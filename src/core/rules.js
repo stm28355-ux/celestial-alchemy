@@ -8,8 +8,11 @@
 //
 // ピースは1つの素材でできている。スライムゼリーでくっついたピースは同じ「組（group）」になり、
 // 組ごと1つの形として落ちる。組の中のピースが消えて離れ離れになったら、組は分かれる。
-// スライムゼリーは、落ちる途中で横（左右）に壁・器の枠・ピースが触れたら、そこでくっついて止まる。
-// 止まったあとも、横に触れている物があるかぎり落ちない（組ごと支えになる）。
+// スライムゼリーとは、横（左右）で触れ合うと、そこでくっついて止まる（2026-11-15 案B＋C）：
+//   ・落ちているゼリーの横に、壁・器の枠・ピースが触れたら止まる
+//   ・落ちているピースの横に、ゼリーが触れたら止まる
+//   ・氷竜の鱗はつるつるで、ゼリーとくっつかない（触れても止まらない。組にもならない）
+// 止まったあとも、横で触れ合っている支えのある物につかまって落ちない（組ごと支えになる）。
 //
 // 状態はそのつど作り直す（drop は新しい状態を返す）。一手戻すとソルバーのため。
 
@@ -67,7 +70,7 @@ function isWall(s, x, y) {
 }
 
 // 手持ちの形を、列 x の上から落としたときに止まる場所。置けないときは ok: false。
-// occ は同じ状態で何度も落とすとき（ソルバー）に渡すと速い。mat がゼリーなら、横に触れた所で止まる。
+// occ は同じ状態で何度も落とすとき（ソルバー）に渡すと速い。mat は落とす素材（ゼリーと横で触れ合うと止まる）。
 export function landing(s, cells, x, occ = occupancy(s), mat = null) {
   const { w, h } = size(cells);
   if (x < 0 || x + w > s.W) return { ok: false, reason: 'outside' };
@@ -76,11 +79,15 @@ export function landing(s, cells, x, occ = occupancy(s), mat = null) {
     if (isWall(s, px, py)) return false;
     return py < 0 || occ[py * s.W + px] === 0;
   });
-  const sticky = mat === 'slime';
-  const stuck = d => sticky && cells.some(([cx, cy]) => {
+  const stuck = d => mat !== null && mat !== 'ice' && cells.some(([cx, cy]) => {
     const px = cx + x, py = cy + d;
     if (py < 0) return false;
-    return [px - 1, px + 1].some(nx => isWall(s, nx, py) || occ[py * s.W + nx] !== 0);
+    return [px - 1, px + 1].some(nx => {
+      if (mat === 'slime' && isWall(s, nx, py)) return true;
+      if (nx < 0 || nx >= s.W) return false;
+      const o = occ[py * s.W + nx];
+      return o !== 0 && grips(mat, s.pieces[o - 1].mat);
+    });
   });
   let d = -h;
   while (!stuck(d) && free(d + 1)) d++;
@@ -148,21 +155,26 @@ function unsupported(s) {
     if (sup.get(g)) continue;
     if (idx.some(i => s.pieces[i].mat === 'slime' && s.pieces[i].cells.some(([x, y]) => sideWall(x - 1, y) || sideWall(x + 1, y)))) sup.set(g, true);
   }
+  const otherAt = (g, x, y) => {
+    if (x < 0 || x >= s.W || y < 0 || y >= s.H) return null;
+    const o = occ[y * s.W + x];
+    if (!o) return null;
+    const q = s.pieces[o - 1];
+    return q.group !== g && sup.get(q.group) ? q : null;
+  };
   let changed = true;
   while (changed) {
     changed = false;
     for (const [g, idx] of members) {
       if (sup.get(g)) continue;
-      const other = (x, y) => {
-        if (x < 0 || x >= s.W || y < 0 || y >= s.H) return false;
-        const o = occ[y * s.W + x];
-        return o !== 0 && s.pieces[o - 1].group !== g && sup.get(s.pieces[o - 1].group);
-      };
       const held = idx.some(i =>
         s.pieces[i].cells.some(([x, y]) => {
-          if (isWall(s, x, y + 1) || other(x, y + 1)) return true;
-          // ゼリーは、横に触れている支えのある物にもつかまる
-          return s.pieces[i].mat === 'slime' && (other(x - 1, y) || other(x + 1, y));
+          if (isWall(s, x, y + 1) || otherAt(g, x, y + 1)) return true;
+          // ゼリーと横で触れ合っていれば、支えのある物につかまる（鱗はのぞく）
+          return [x - 1, x + 1].some(nx => {
+            const q = otherAt(g, nx, y);
+            return q && grips(s.pieces[i].mat, q.mat);
+          });
         }),
       );
       if (held) {
@@ -175,6 +187,11 @@ function unsupported(s) {
 }
 
 const NEIGHBORS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+
+// 横で触れ合ったときに、くっついて止まる組み合わせか：どちらかがゼリーで、どちらも鱗ではない。
+export function grips(a, b) {
+  return (a === 'slime' || b === 'slime') && a !== 'ice' && b !== 'ice';
+}
 
 // となり合っている、別のピースどうしの組（添字の組、重なりなし）。
 function touching(s, occ) {
@@ -198,7 +215,7 @@ function touching(s, occ) {
 //   消える：火種 × 鱗 → 鱗が消える（溶ける）／火種 × つる → つるが消える（燃える）／火種 × 水玉 → 両方消える（蒸発）
 //   増える：つる × 水玉 → 水玉が消え、つるがいちばん上のマスの真上に1マス伸びる（触れた水玉1つにつき1マス。
 //           伸びる先がふさがっていたら伸びず、水玉も残る。器の上端より上には伸びない）
-//   変わる：スライムゼリーは、触れているピース（動かないピースはのぞく）とくっついて1つの組になる
+//   変わる：スライムゼリーは、触れているピース（動かないピースと鱗はのぞく）とくっついて1つの組になる
 export function react(s) {
   let occ = occupancy(s);
   const why = new Map(); // 消すピースの添字 → 理由
@@ -278,7 +295,7 @@ function glue(s) {
   for (const [i, j] of touching(s, occ)) {
     const a = s.pieces[i], b = s.pieces[j];
     if (a.mat !== 'slime' && b.mat !== 'slime') continue;
-    if (a.fixed || b.fixed || a.group === b.group) continue;
+    if (a.fixed || b.fixed || a.group === b.group || a.mat === 'ice' || b.mat === 'ice') continue; // 鱗はつるつるでくっつかない
     const from = Math.max(a.group, b.group), to = Math.min(a.group, b.group);
     for (const p of s.pieces) if (p.group === from) p.group = to;
     changed = true;

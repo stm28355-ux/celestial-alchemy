@@ -1,0 +1,18 @@
+# お手本 4-5：ゼリーの受け皿
+format: 1
+id: note-4-5
+title: ゼリーの受け皿
+terrain:
+  ...
+  ...
+  ...
+pieces:
+  a..
+  ...
+  ...
+legend:
+  a: slime
+hand:
+  lead #
+solution:
+  1 r0 x1

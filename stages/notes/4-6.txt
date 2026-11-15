@@ -1,0 +1,18 @@
+# お手本 4-6：つるつるの鱗
+format: 1
+id: note-4-6
+title: つるつるの鱗
+terrain:
+  ...
+  ...
+  ...
+pieces:
+  a..
+  ...
+  ...
+legend:
+  a: slime
+hand:
+  ice #
+solution:
+  1 r0 x1

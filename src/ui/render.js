@@ -130,7 +130,7 @@ function drawGlue(ctx, L, pieces, lift, stage) {
       for (const side of [-1, 1]) {
         const nx = x + side;
         const q = at.get(`${nx},${y}`);
-        const wall = nx < 0 || nx >= stage.W || (y >= 0 && stage.terrain[y]?.[nx] === '#') || (q && q.fixed);
+        const wall = nx < 0 || nx >= stage.W || (y >= 0 && stage.terrain[y]?.[nx] === '#') || (q && q.fixed && q.mat !== 'ice');
         if (!wall) continue;
         dot(L.left + (x + 0.5 + side * 0.5) * c, L.top + (y - dy + 0.5) * c);
       }

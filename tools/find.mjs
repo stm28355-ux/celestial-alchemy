@@ -25,6 +25,8 @@
 //     lastShape 最後に置くピースの形（例 "#.#/###"）。答えがすべてそれで終わる
 //     lastR     そのときの向き
 //     minTrap   落とせる最初の1手のうち、行き止まりの割合の下限（0〜1。大きいほど引っかけが多い）
+//     swapUnsolvable [["ice", "lead"]] など。手持ちの素材を入れ替えると解けなくなる
+//     caught    true なら、どのクリア盤面にも「下に何もなく、ゼリーで宙に止まっている」ピースがある
 //     slimeMatters true なら、ゼリーを鉛に替えると解けなくなること（くっつくことが答えに要る）
 
 import { readFile } from 'node:fs/promises';
@@ -105,6 +107,13 @@ for (const terrain of terrains) {
       });
       if (!ok) continue;
     }
+    // 素材を入れ替えると解けなくなること（その素材の性質が答えに要る）。例 [["ice", "lead"]]
+    if (req.swapUnsolvable && req.swapUnsolvable.some(([from, to]) => {
+      const alt = parseStage([...head, 'hand:', ...hand.map(h => `  ${h}`)].join('\n').replace(new RegExp(`\\b${from}\\b`, 'g'), to));
+      return solve(alt, { maxNodes: spec.maxNodes ?? 300000 }).solvable;
+    })) continue;
+    // ゼリーで宙に止まっているピース（下に何もない、ゼリー以外のピース）が、どのクリア盤面にもある
+    if (req.caught && !finals.every(s => caughtPiece(s))) continue;
     // ゼリーが要るか：ゼリーを鉛に替えると解けなくなること
     if (req.slimeMatters) {
       const alt = parseStage([...head, 'hand:', ...hand.map(h => `  ${h}`)].join('\n').replace(/\bslime\b/g, 'lead'));
@@ -130,6 +139,15 @@ for (const f of results.slice(0, Number(topArg))) {
   console.log(`      ${boardText(ex.state).join(' / ')}`);
   console.log('solution:');
   for (const m of ex.moves) console.log(`  ${m.orig + 1} r${m.r} x${m.x}`);
+}
+
+function caughtPiece(s) {
+  const occ = occupancy(s);
+  return s.pieces.some(p => p.mat !== 'slime' && !p.fixed && p.cells.every(([x, y]) => {
+    if (y + 1 >= s.H || s.terrain[y + 1][x] === '#') return false;
+    const o = occ[(y + 1) * s.W + x];
+    return !o || s.pieces[o - 1] === p;
+  }));
 }
 
 function overhangs(s) {
