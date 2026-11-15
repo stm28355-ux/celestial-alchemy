@@ -1,0 +1,11 @@
+# お手本 1-6：段差の床
+format: 1
+id: note-1-6
+title: 段差の床
+terrain:
+  ++.
+  #++
+hand:
+  lead ##./.##
+solution:
+  1 r0 x0

@@ -1,0 +1,14 @@
+# お手本 1-2：はみ出してもいい
+format: 1
+id: note-1-2
+title: はみ出してもいい
+terrain:
+  ...
+  +..
+  +++
+hand:
+  lead ###
+  lead ##
+solution:
+  1 r0 x0
+  2 r1 x0

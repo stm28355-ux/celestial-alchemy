@@ -1,0 +1,29 @@
+# 2-9 器の壁（枠側の氷）：溶かすと器が広がり、その下にも刻印がある（答えは1つ）。
+format: 1
+id: ch2-09
+title: 器の壁
+request: マルタが、鱗でできた壁の向こうまで鉛を詰めてみろと言っている。
+terrain:
+  ++++
+  ++++
+  ++++
+  ++++
+pieces:
+  ...a
+  ...a
+  ....
+  ....
+legend:
+  a: ice fixed
+hand:
+  fire #
+  lead ##/#.
+  lead ####
+  lead ##/##
+  lead #./#./##
+solution:
+  4 r0 x0
+  5 r2 x1
+  1 r0 x2
+  2 r0 x0
+  3 r1 x3

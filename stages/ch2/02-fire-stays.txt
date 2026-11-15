@@ -1,0 +1,21 @@
+# 2-2 火種は残る。火種も刻印を埋める1マスになる（答えは1つ）。
+format: 1
+id: ch2-02
+title: 火種も埋め草
+request: 鍛冶場の見習いが、火種を残したままの炉台を作ってほしいと言っている。
+terrain:
+  ++++
+  ++++
+  +#++
+hand:
+  ice ##
+  fire #
+  lead ###
+  lead ###
+  lead ##./.##
+solution:
+  3 r1 x0
+  5 r0 x1
+  2 r0 x3
+  1 r0 x2
+  4 r0 x1

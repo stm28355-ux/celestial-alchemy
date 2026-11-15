@@ -202,6 +202,9 @@ test('章のステージとお手本：読めて、最初の盤面に問題が�
       assert.deepEqual(initialProblems(st), [], path);
       const c = checkSolution(st);
       assert.ok(c.ok && c.cleared, `${path}：狙いの手順でクリアできない`);
+      // 答えが絞れていること（クリアしたときの盤面は2種類まで）
+      const r = solve(st);
+      assert.ok(!r.truncated && r.finalStates <= 2, `${path}：答えが多すぎる（${r.finalStates}）`);
     }
   }
   const notes = JSON.parse(await readFile(new URL('notes.json', root), 'utf8'));
@@ -213,7 +216,7 @@ test('章のステージとお手本：読めて、最初の盤面に問題が�
 });
 
 test('共有URL：ステージを文字にして、元に戻せる', async () => {
-  const text = await readFile(new URL('../stages/ch2/03-chain.txt', import.meta.url), 'utf8');
+  const text = await readFile(new URL('../stages/ch2/06-chain.txt', import.meta.url), 'utf8');
   const raw = parseStageText(text);
   const code = await encodeStage(raw);
   assert.match(code, /^[A-Za-z0-9_-]+$/);

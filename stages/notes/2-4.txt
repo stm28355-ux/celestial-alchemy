@@ -1,0 +1,18 @@
+# お手本 2-4：火種の通り道
+format: 1
+id: note-2-4
+title: 火種の通り道
+terrain:
+  ...
+  ...
+pieces:
+  ...
+  a..
+legend:
+  a: ice
+hand:
+  fire #
+  lead ##
+solution:
+  1 r0 x1
+  2 r0 x0

@@ -1,0 +1,15 @@
+# お手本 2-7：溶かさない勇気
+format: 1
+id: note-2-7
+title: 溶かさない勇気
+terrain:
+  ....
+  ....
+hand:
+  ice ##
+  lead #
+  fire #
+solution:
+  1 r0 x0
+  2 r0 x2
+  3 r0 x3

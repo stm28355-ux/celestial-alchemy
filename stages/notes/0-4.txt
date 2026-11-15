@@ -1,0 +1,16 @@
+# お手本 0-4：1マスの支え
+format: 1
+id: note-0-4
+title: 1マスの支え
+terrain:
+  +++
+  +++
+pieces:
+  ...
+  ..a
+legend:
+  a: lead
+hand:
+  lead ##
+solution:
+  1 r0 x1

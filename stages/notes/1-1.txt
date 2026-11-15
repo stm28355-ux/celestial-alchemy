@@ -1,0 +1,11 @@
+# お手本 1-1：埋めなくていい
+format: 1
+id: note-1-1
+title: 埋めなくていい
+terrain:
+  ++.
+  ++.
+hand:
+  lead ##/##
+solution:
+  1 r0 x0

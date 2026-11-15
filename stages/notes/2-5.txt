@@ -1,0 +1,19 @@
+# お手本 2-5：上から落ちる
+format: 1
+id: note-2-5
+title: 上から落ちる
+terrain:
+  ...
+  ...
+  ...
+pieces:
+  ...
+  .bb
+  .aa
+legend:
+  a: ice
+  b: lead
+hand:
+  fire #
+solution:
+  1 r0 x0

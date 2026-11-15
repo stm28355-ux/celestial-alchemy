@@ -1,0 +1,16 @@
+# お手本 1-3：穴をまたぐ
+format: 1
+id: note-1-3
+title: 穴をまたぐ
+terrain:
+  ...
+  +++
+  +.+
+hand:
+  lead #
+  lead #
+  lead ###
+solution:
+  1 r0 x0
+  2 r0 x2
+  3 r0 x0

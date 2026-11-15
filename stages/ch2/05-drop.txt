@@ -1,0 +1,30 @@
+# 2-5 溶けると、上に乗っていたピースが形を保ったまま落ちる。落ちた先を読む（答えは1つ）。
+format: 1
+id: ch2-05
+title: 上から落ちる
+request: 倉庫番が、鱗の上に積んだ鉛を床まで下ろしてほしいと言っている。
+terrain:
+  ++++
+  ++++
+  ++++
+  ++++
+pieces:
+  ....
+  ....
+  .bb.
+  .aa.
+legend:
+  a: ice
+  b: lead
+hand:
+  fire #
+  lead #
+  lead ####
+  lead #./#./##
+  lead ##./.##
+solution:
+  1 r0 x0
+  2 r0 x0
+  5 r0 x0
+  4 r2 x2
+  3 r0 x0

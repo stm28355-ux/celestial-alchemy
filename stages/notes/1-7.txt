@@ -1,0 +1,14 @@
+# お手本 1-7：くびれた器
+format: 1
+id: note-1-7
+title: くびれた器
+terrain:
+  +++
+  #+#
+  #+#
+hand:
+  lead ###
+  lead ##
+solution:
+  2 r1 x1
+  1 r0 x0

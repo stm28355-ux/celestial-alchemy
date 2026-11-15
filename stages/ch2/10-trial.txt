@@ -1,0 +1,31 @@
+# 2-10 まとめ：手持ちの鱗と、器の棚になっている鱗を、1つの火種でまとめて溶かす（答えは1つ）。
+format: 1
+id: ch2-10
+title: 火星の試験
+request: マルタが、最後の試験を出した。
+terrain:
+  ++++
+  ++++
+  ++++
+  ++++
+pieces:
+  ....
+  ....
+  aa..
+  ....
+legend:
+  a: ice fixed
+hand:
+  ice ##
+  fire #
+  lead ###
+  lead .#/.#/##
+  lead .##/##.
+  lead .##/##.
+solution:
+  1 r0 x2
+  2 r0 x2
+  3 r1 x3
+  5 r0 x0
+  6 r0 x1
+  4 r2 x0

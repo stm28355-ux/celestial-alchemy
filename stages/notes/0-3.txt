@@ -1,0 +1,13 @@
+# お手本 0-3：逆さの器
+format: 1
+id: note-0-3
+title: 逆さの器
+terrain:
+  +++
+  +++
+hand:
+  lead #
+  lead #.#/###
+solution:
+  1 r0 x1
+  2 r2 x0

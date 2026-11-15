@@ -5,7 +5,12 @@
     "place": "アステル学院",
     "master": "ノーム先生",
     "line": "落としたら、もう戻せない。順番をよく考えるんだよ、ノエル。",
-    "stages": ["ch0/01-lid.txt"]
+    "stages": [
+      "ch0/01-rotate.txt",
+      "ch0/02-lid.txt",
+      "ch0/03-flip.txt",
+      "ch0/04-hang.txt"
+    ]
   },
   {
     "id": 1,
@@ -14,7 +19,17 @@
     "master": "サトゥル",
     "title": "土星の錬金術師",
     "line": "すべてを埋める必要はない。埋めるべき所を見きわめよ。",
-    "stages": ["ch1/01-bump.txt", "ch1/02-step.txt", "ch1/03-overflow.txt", "ch1/04-gap.txt"]
+    "stages": [
+      "ch1/01-leave.txt",
+      "ch1/02-overflow.txt",
+      "ch1/03-bridge.txt",
+      "ch1/04-spill.txt",
+      "ch1/05-bump.txt",
+      "ch1/06-step.txt",
+      "ch1/07-waist.txt",
+      "ch1/08-last-t.txt",
+      "ch1/09-gap.txt"
+    ]
   },
   {
     "id": 2,
@@ -23,7 +38,18 @@
     "master": "マルタ",
     "title": "火星の錬金術師",
     "line": "……火は、鱗を溶かす。それだけ覚えておけ。",
-    "stages": ["ch2/01-melt.txt", "ch2/02-false-floor.txt", "ch2/03-chain.txt", "ch2/04-keep.txt", "ch2/05-frame.txt"]
+    "stages": [
+      "ch2/01-melt.txt",
+      "ch2/02-fire-stays.txt",
+      "ch2/03-long-ice.txt",
+      "ch2/04-path.txt",
+      "ch2/05-drop.txt",
+      "ch2/06-chain.txt",
+      "ch2/07-keep.txt",
+      "ch2/08-frame.txt",
+      "ch2/09-wall.txt",
+      "ch2/10-trial.txt"
+    ]
   },
   {
     "id": 3,

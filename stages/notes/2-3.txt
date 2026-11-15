@@ -1,0 +1,13 @@
+# お手本 2-3：長い鱗
+format: 1
+id: note-2-3
+title: 長い鱗
+terrain:
+  ....
+  ....
+hand:
+  ice ####
+  fire #
+solution:
+  1 r0 x0
+  2 r0 x0
