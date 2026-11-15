@@ -40,5 +40,59 @@
   "bits": 9.1,
   "seed": 1201,
   "text": "format: 1\nid: trial-6\ntitle: 試作6：星砂は真下に\nrequest: 星砂は止まるとばらけて、粒が真下に流れ込む。それを使う依頼。\nterrain:\n  ++++\n  ++++\n  ++#+\nhand:\n  lead #\n  sand ##\n  lead ###/.#.\n  lead ##./.##\nsolution:\n  3 r1 x2\n  2 r0 x1\n  4 r1 x0\n  1 r0 x0\n"
+ },
+ {
+  "id": "trial-7",
+  "theme": "melt",
+  "bits": 18.4,
+  "seed": 5029,
+  "big": true,
+  "finalStates": 6,
+  "text": "format: 1\nid: trial-7\ntitle: 試作7：溶けて落ちる（大きい器）\nrequest: 鱗が溶けると、上に乗っていた物が落ちる。それを使う依頼。答えはいくつかある。\nterrain:\n  ++++\n  ++++\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  ....\n  .b..\n  .aa.\nlegend:\n  a: ice\n  b: lead\nhand:\n  lead ###\n  lead ##/#.\n  lead #./#./##\n  fire #\n  lead .##/##.\n  ice ##\n  lead #./#./##\nsolution:\n  1 r1 x0\n  4 r0 x3\n  5 r1 x1\n  6 r1 x3\n  2 r1 x2\n  3 r3 x1\n  7 r1 x0\n"
+ },
+ {
+  "id": "trial-8",
+  "theme": "melt",
+  "bits": 22.3,
+  "seed": 5061,
+  "big": true,
+  "finalStates": 4,
+  "text": "format: 1\nid: trial-8\ntitle: 試作8：溶けて落ちる（大きい器）\nrequest: 鱗が溶けると、上に乗っていた物が落ちる。それを使う依頼。答えはいくつかある。\nterrain:\n  +++++\n  +++++\n  +++++\n  +++++\npieces:\n  .....\n  .....\n  ..bb.\n  .aa..\nlegend:\n  a: ice\n  b: lead\nhand:\n  lead ##\n  fire #\n  ice ###\n  lead #./##\n  lead ###/.#.\n  lead ##./.##\n  lead .##/##.\nsolution:\n  1 r1 x4\n  2 r0 x0\n  3 r0 x0\n  5 r0 x0\n  6 r1 x3\n  7 r0 x1\n  4 r1 x0\n"
+ },
+ {
+  "id": "trial-9",
+  "theme": "melt",
+  "bits": 15.5,
+  "seed": 5023,
+  "big": true,
+  "finalStates": 1,
+  "text": "format: 1\nid: trial-9\ntitle: 試作9：溶けて落ちる（大きい器）\nrequest: 鱗が溶けると、上に乗っていた物が落ちる。それを使う依頼。答えはいくつかある。\nterrain:\n  ++++\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  aaa.\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead .##/##.\n  lead #\n  lead ###\n  ice #\n  fire #\n  lead ###\n  lead .##/##.\nsolution:\n  3 r1 x3\n  4 r0 x1\n  5 r0 x2\n  1 r0 x0\n  6 r1 x0\n  7 r0 x1\n  2 r0 x1\n"
+ },
+ {
+  "id": "trial-10",
+  "theme": "sand",
+  "bits": 17.1,
+  "seed": 5062,
+  "big": true,
+  "finalStates": 4,
+  "text": "format: 1\nid: trial-10\ntitle: 試作10：星砂は真下に（大きい器）\nrequest: 星砂は止まるとばらけて、粒が真下に流れ込む。それを使う依頼。答えはいくつかある。\nterrain:\n  +++++\n  +++++\n  +++++\n  ++#++\nhand:\n  lead ##/##\n  lead ###/.#.\n  sand ##\n  lead ##\n  lead ###\n  lead ###/.#.\nsolution:\n  1 r0 x0\n  3 r0 x2\n  2 r1 x3\n  5 r0 x0\n  4 r0 x0\n  6 r0 x2\n"
+ },
+ {
+  "id": "trial-11",
+  "theme": "sand",
+  "bits": 10.3,
+  "seed": 5274,
+  "big": true,
+  "finalStates": 4,
+  "text": "format: 1\nid: trial-11\ntitle: 試作11：星砂は真下に（大きい器）\nrequest: 星砂は止まるとばらけて、粒が真下に流れ込む。それを使う依頼。答えはいくつかある。\nterrain:\n  ++++++\n  ++++++\n  #++#++\nhand:\n  lead ##\n  lead .#/.#/##\n  lead ###/.#.\n  sand ##\n  lead ##/##\nsolution:\n  1 r1 x2\n  2 r0 x4\n  4 r0 x0\n  3 r0 x0\n  5 r0 x3\n"
+ },
+ {
+  "id": "trial-12",
+  "theme": "sand",
+  "bits": 12.6,
+  "seed": 5092,
+  "big": true,
+  "finalStates": 3,
+  "text": "format: 1\nid: trial-12\ntitle: 試作12：星砂は真下に（大きい器）\nrequest: 星砂は止まるとばらけて、粒が真下に流れ込む。それを使う依頼。答えはいくつかある。\nterrain:\n  +++++\n  +++++\n  +++++\n  ++++#\nhand:\n  lead ##./.##\n  lead .#/.#/##\n  lead ##./.##\n  sand ####\n  lead ###\nsolution:\n  1 r1 x3\n  2 r1 x0\n  3 r0 x0\n  4 r0 x0\n  5 r0 x2\n"
  }
 ]

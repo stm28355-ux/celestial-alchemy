@@ -288,7 +288,7 @@ export const THEMED = {
     feature: 'meltFall',
     main: 'ice',
     hand: r => ['fire #', ...(r() < 0.3 ? [`ice ${pick(r, ['#', '##', '###'])}`] : [])],
-    size: r => [4, between(r, 3, 4)],
+    size: (r, big) => (big ? [between(r, 4, 6), between(r, 4, 5)] : [4, between(r, 3, 4)]),
     terrain(r, W, H) {
       return Array.from({ length: H }, () => Array(W).fill('+'));
     },
@@ -329,7 +329,7 @@ export const THEMED = {
     feature: 'sandFall',
     main: 'sand',
     hand: r => Array.from({ length: between(r, 1, 2) }, () => `sand ${pick(r, ['##', '###', '#./##', '##/#.', '####', '###/#..'])}`),
-    size: r => [between(r, 4, 5), 3],
+    size: (r, big) => (big ? [between(r, 5, 6), between(r, 3, 4)] : [between(r, 4, 5), 3]),
     terrain(r, W, H) {
       const t = Array.from({ length: H }, () => Array(W).fill('+'));
       // 床のでこぼこ：底の行に1〜2個の出っぱり（くぼみができる）
@@ -348,13 +348,15 @@ export const THEMED = {
 const cellsOf = sh => sh.split('').filter(c => c === '#').length;
 
 // テーマから1問作ってみる。だめなら null（why に理由を数える）
-export function makeThemed(r, key, { maxNodes = 200000, stats = null } = {}) {
+// big：答えは何個でもよい（テーマを使うことと、鉛に替えると解けないことだけを確かめる）。器を大きく、手持ちを多くする
+export function makeThemed(r, key, { maxNodes = 200000, stats = null, big = false } = {}) {
+  if (big) maxNodes = Math.max(maxNodes, 500000);
   const th = THEMED[key];
   const why = k => {
     if (stats) stats[k] = (stats[k] ?? 0) + 1;
     return null;
   };
-  const [W, H] = th.size(r);
+  const [W, H] = th.size(r, big);
   const grid = th.terrain(r, W, H);
   // 1列まるごと壁は作らない
   for (let x = 0; x < W; x++) if (grid.every(row => row[x] === '#')) grid[0][x] = '+';
@@ -371,7 +373,7 @@ export function makeThemed(r, key, { maxNodes = 200000, stats = null } = {}) {
   const combos = [];
   const rec = (start, sum, acc) => {
     if (sum === need && acc.length) combos.push([...acc]);
-    if (acc.length >= 4 || sum >= need) return;
+    if (acc.length >= (big ? 5 : 4) || sum >= need) return;
     for (let i = start; i < LEAD.length; i++) {
       acc.push(LEAD[i]);
       rec(i, sum + cellsOf(LEAD[i]), acc);
@@ -404,7 +406,7 @@ export function makeThemed(r, key, { maxNodes = 200000, stats = null } = {}) {
       why('解けない');
       continue;
     }
-    if (res.finalStates !== 1) {
+    if (!big && res.finalStates !== 1) {
       why('答えが2つ以上');
       continue;
     }
@@ -421,7 +423,7 @@ export function makeThemed(r, key, { maxNodes = 200000, stats = null } = {}) {
     }
     const score = difficulty(st, maxNodes);
     if (!score) continue;
-    return { theme: key, name: th.name, raw: { ...raw, solution: res.examples[0].moves.map(m => `${m.orig + 1} r${m.r} x${m.x}`) }, ...score, paths: res.paths };
+    return { theme: key, name: th.name, raw: { ...raw, solution: res.examples[0].moves.map(m => `${m.orig + 1} r${m.r} x${m.x}`) }, ...score, paths: res.paths, finalStates: res.finalStates };
   }
   return null;
 }
