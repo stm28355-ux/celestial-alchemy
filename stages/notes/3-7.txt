@@ -1,0 +1,17 @@
+# お手本 3-7：まとめて消す
+format: 1
+id: note-3-7
+title: まとめて消す
+terrain:
+  ...
+  ...
+pieces:
+  a..
+  a.c
+legend:
+  a: vine
+  c: water
+hand:
+  fire #
+solution:
+  1 r0 x1

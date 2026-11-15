@@ -97,7 +97,7 @@ export function draw(ctx, L, view) {
   }
 
   // くっついているピースどうしの境目に、ゼリーの「のり」を描く
-  drawGlue(ctx, L, view.pieces, view.lift);
+  drawGlue(ctx, L, view.pieces, view.lift, view.stage);
 
   // 着地点の影
   if (view.ghost) drawPiece(ctx, L, view.ghost.cells, view.ghost.mat, { ghost: true });
@@ -106,7 +106,7 @@ export function draw(ctx, L, view) {
   if (view.preview) drawPiece(ctx, L, view.preview.cells, view.preview.mat, { invalid: view.invalid, lift: SPAWN_GAP, icons: view.icons });
 }
 
-function drawGlue(ctx, L, pieces, lift) {
+function drawGlue(ctx, L, pieces, lift, stage) {
   const c = L.cell;
   const at = new Map();
   for (const p of pieces) for (const [x, y] of p.cells) at.set(`${x},${y}`, p);
@@ -123,14 +123,26 @@ function drawGlue(ctx, L, pieces, lift) {
         // 2つのマスの境目の真ん中に、小さな丸
         const cx = L.left + (x + 0.5 + dx * 0.5) * c;
         const cy = L.top + (y - dy + 0.5 + ddy * 0.5) * c;
-        ctx.beginPath();
-        ctx.arc(cx, cy, Math.max(3, c * 0.09), 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
+        dot(cx, cy);
+      }
+      // ゼリーが横で壁・器の枠・動かないピースにつかまっている所にも印を出す
+      if (p.mat !== 'slime' || !stage) continue;
+      for (const side of [-1, 1]) {
+        const nx = x + side;
+        const q = at.get(`${nx},${y}`);
+        const wall = nx < 0 || nx >= stage.W || (y >= 0 && stage.terrain[y]?.[nx] === '#') || (q && q.fixed);
+        if (!wall) continue;
+        dot(L.left + (x + 0.5 + side * 0.5) * c, L.top + (y - dy + 0.5) * c);
       }
     }
   }
   ctx.restore();
+  function dot(cx, cy) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, Math.max(3, c * 0.09), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+  }
 }
 
 function drawRune(ctx, px, py, c, t) {
