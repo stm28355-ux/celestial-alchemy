@@ -190,5 +190,5 @@ export function drawMini(canvas, cells, mat, cell = 16, dim = false) {
   const ctx = canvas.getContext('2d');
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   canvas.style.opacity = dim ? '0.25' : '1';
-  drawPiece(ctx, { cell, left: 2, top: 2 }, cells, mat);
+  drawPiece(ctx, { cell, left: 2, top: 2 }, cells, mat, { icons: true });
 }

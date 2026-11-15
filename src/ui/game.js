@@ -270,7 +270,7 @@ export class Game {
 
   render() {
     if (!this.L || this.anim) return;
-    const view = { stage: this.stage, pieces: this.state.pieces };
+    const view = { stage: this.stage, pieces: this.state.pieces, icons: true };
     const cur = this.done ? null : this.current();
     if (cur) {
       const { h } = size(cur.cells);
@@ -283,7 +283,7 @@ export class Game {
   }
 
   renderPieces(pieces, extra) {
-    draw(this.ctx, this.L, { stage: this.stage, pieces, ...extra });
+    draw(this.ctx, this.L, { stage: this.stage, pieces, icons: true, ...extra });
   }
 
   renderHand() {
@@ -297,7 +297,7 @@ export class Game {
       btn.disabled = used;
       btn.title = `${i + 1}：${material(h.mat).name}`;
       const cv = document.createElement('canvas');
-      drawMini(cv, h.cells, h.mat, 16, used);
+      drawMini(cv, h.cells, h.mat, 18, used);
       const label = document.createElement('span');
       label.textContent = `${i + 1} ${material(h.mat).short}`;
       btn.append(cv, label);
