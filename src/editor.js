@@ -101,7 +101,7 @@ export function openEditor(view) {
           <label><input type="checkbox" id="ed-fixed"> 動かない（器の一部）</label>
           <label><input type="radio" name="tool" value="erase"> 素材を消す</label>
         </fieldset>
-        <p class="ed-note">ドラッグで塗れます。まだルールのない素材（水玉など）は、その章のフェーズで使えるようになります。</p>
+        <p class="ed-note">ドラッグで塗れます。右クリック（右ボタンでなぞる）で素材を消せます。まだルールのない素材（水玉など）は、その章のフェーズで使えるようになります。</p>
       </section>
 
       <section class="ed-board">
@@ -166,11 +166,11 @@ export function openEditor(view) {
     if (!cell) return;
     const [x, y] = cell;
     const r = d.raw;
-    if (tool.kind === 'terrain') {
+    if (stroke.erase || tool.kind === 'erase') {
+      setChar(r.pieces, x, y, '.');
+    } else if (tool.kind === 'terrain') {
       setChar(r.terrain, x, y, tool.value);
       if (tool.value === '#') setChar(r.pieces, x, y, '.');
-    } else if (tool.kind === 'erase') {
-      setChar(r.pieces, x, y, '.');
     } else if (tool.kind === 'piece') {
       if (r.terrain[y][x] === '#') return;
       setChar(r.pieces, x, y, stroke.letter);
@@ -180,8 +180,9 @@ export function openEditor(view) {
     const cell = cellAt(ev);
     if (!cell) return;
     canvas.setPointerCapture(ev.pointerId);
-    stroke = {};
-    if (tool.kind === 'piece') {
+    // 右クリック（右ボタンでなぞる）は、どの道具を選んでいても素材を消す
+    stroke = { erase: ev.button === 2 };
+    if (!stroke.erase && tool.kind === 'piece') {
       stroke.letter = freeLetter(d.raw);
       if (!stroke.letter) {
         say('ピースは26個までです。');
@@ -204,6 +205,7 @@ export function openEditor(view) {
     changed();
   };
   canvas.addEventListener('pointerup', endStroke, on);
+  canvas.addEventListener('contextmenu', ev => ev.preventDefault(), on);
   canvas.addEventListener('pointercancel', endStroke, on);
 
   // ── 道具 ──
