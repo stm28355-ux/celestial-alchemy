@@ -1,11 +1,13 @@
-# お手本 1-4：余りの逃がし先
+# お手本 1-4：空きマスの土台
 format: 1
 id: note-1-4
-title: 余りの逃がし先
+title: 空きマスの土台
 terrain:
-  ..
-  ++
+  +++
+  ...
 hand:
-  lead ##/##
+  lead ###
+  lead ###
 solution:
   1 r0 x0
+  2 r0 x0

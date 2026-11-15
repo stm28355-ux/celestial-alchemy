@@ -27,15 +27,17 @@ const EDGE = 'rgba(40, 28, 18, 0.75)';
 export const SPAWN_GAP = 0.7;
 
 // 盤面の置き場所（マスの大きさと、盤の左上）。spawnRows は盤の上に空けておく行の数（落とす前のピース用）。
-export function layout(stage, spawnRows, cell) {
+// span は横に見せたいマス数。器より広いピースがあるときは、器の左右に余白を取って、はみ出したピースも見えるようにする。
+export function layout(stage, spawnRows, cell, span = stage.W) {
   const frame = Math.round(cell * 0.35);
   const top = Math.round((spawnRows + SPAWN_GAP) * cell + cell * 0.15);
+  const pad = Math.max(0, span - stage.W);
   return {
     cell,
     frame,
-    left: frame,
+    left: frame + Math.ceil(pad / 2) * cell,
     top,
-    width: stage.W * cell + frame * 2,
+    width: (stage.W + pad) * cell + frame * 2,
     height: top + stage.H * cell + frame,
   };
 }
@@ -47,12 +49,13 @@ export function draw(ctx, L, view) {
   ctx.clearRect(0, 0, L.width, L.height);
 
   // 器の外枠（左右と底）と、口のふち
+  const x0 = L.left - L.frame;
   ctx.fillStyle = WOOD;
-  ctx.fillRect(0, L.top, L.frame, stage.H * c + L.frame);
+  ctx.fillRect(x0, L.top, L.frame, stage.H * c + L.frame);
   ctx.fillRect(L.left + stage.W * c, L.top, L.frame, stage.H * c + L.frame);
-  ctx.fillRect(0, L.top + stage.H * c, L.width, L.frame);
+  ctx.fillRect(x0, L.top + stage.H * c, stage.W * c + L.frame * 2, L.frame);
   ctx.fillStyle = WOOD_DARK;
-  ctx.fillRect(0, L.top - 3, L.frame, 3);
+  ctx.fillRect(x0, L.top - 3, L.frame, 3);
   ctx.fillRect(L.left + stage.W * c, L.top - 3, L.frame, 3);
 
   // 器の中：空きマス・目標マス・壁

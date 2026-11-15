@@ -17,7 +17,9 @@ export class Game {
     this.ctx = this.canvas.getContext('2d');
     this.handBox = root.querySelector('#hand');
     this.msg = root.querySelector('#message');
+    // 回すと縦横が入れ替わるので、長い方の辺で考える
     this.spawnRows = Math.max(...stage.hand.map(h => Math.max(size(h.cells).w, size(h.cells).h)), 1);
+    this.span = Math.max(stage.W, this.spawnRows);
     this.reset();
     this.bind();
     this.resize();
@@ -66,8 +68,7 @@ export class Game {
   clampX() {
     const cur = this.current();
     if (!cur) return;
-    const { w } = size(cur.cells);
-    this.x = Math.max(0, Math.min(this.stage.W - w, this.x));
+    this.x = fitX(this.stage.W, size(cur.cells).w, this.x);
   }
 
   rotate(dir = 1) {
@@ -91,7 +92,7 @@ export class Game {
     const before = this.state;
     const d = drop(before, cur.idx, this.r, this.x);
     if (!d.ok) {
-      this.say(d.reason === 'above' ? 'そこに置くと、器の上にはみ出して止まります。' : 'そこには置けません。');
+      this.say(d.reason === 'above' ? 'そこに置くと、器の上にはみ出して止まります。' : size(cur.cells).w > this.stage.W ? 'この向きでは器に入りません。回してみましょう。' : 'そこには置けません。');
       this.shake();
       return;
     }
@@ -167,7 +168,7 @@ export class Game {
       const cur = this.current();
       if (!cur) return null;
       const { w } = size(cur.cells);
-      return Math.max(0, Math.min(this.stage.W - w, colAt(ev) - Math.floor((w - 1) / 2)));
+      return fitX(this.stage.W, w, colAt(ev) - Math.floor((w - 1) / 2));
     };
     cv.addEventListener('pointermove', ev => {
       if (ev.pointerType !== 'mouse' || this.anim) return;
@@ -245,8 +246,8 @@ export class Game {
     const box = this.canvas.parentElement.getBoundingClientRect();
     const availW = Math.max(200, box.width - 8);
     const availH = Math.max(240, window.innerHeight - 260);
-    const cell = Math.floor(Math.min(64, availW / (this.stage.W + 0.8), availH / (this.stage.H + this.spawnRows + 0.6)));
-    this.L = layout(this.stage, this.spawnRows, Math.max(28, cell));
+    const cell = Math.floor(Math.min(64, availW / (this.span + 0.8), availH / (this.stage.H + this.spawnRows + 0.6)));
+    this.L = layout(this.stage, this.spawnRows, Math.max(28, cell), this.span);
     const dpr = window.devicePixelRatio || 1;
     this.canvas.width = this.L.width * dpr;
     this.canvas.height = this.L.height * dpr;
@@ -308,4 +309,10 @@ export class Game {
     void this.canvas.offsetWidth;
     this.canvas.classList.add('shake');
   }
+}
+
+// 列の位置をそろえる。器より広いピースは、器の真ん中に合わせて左右にはみ出させる（置けない印が全部見えるように）。
+function fitX(W, w, x) {
+  if (w > W) return Math.floor((W - w) / 2);
+  return Math.max(0, Math.min(W - w, x));
 }
