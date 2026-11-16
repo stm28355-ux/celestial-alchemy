@@ -245,6 +245,16 @@ export const FEATURES = {
   },
   // 星砂がばらけた
   crumble: events => events.some(e => e.type === 'react' && e.split?.length),
+  // 押したあとで、鱗が溶けた（火種を押し当てる）
+  pushMelt: events => {
+    const i = events.findIndex(e => e.type === 'react' && e.pushed?.length);
+    return i >= 0 && events.slice(i).some(e => e.type === 'react' && e.removed.some(r => r.why === 'melt'));
+  },
+  // 角笛が星砂の粒を押した
+  pushSand: events => {
+    const grains = new Set(events.flatMap(e => (e.type === 'react' ? (e.split ?? []).flatMap(sp => sp.into.map(g => g.id)) : [])));
+    return events.some(e => e.type === 'react' && e.pushed?.some(p => p.ids.some(id => grains.has(id))));
+  },
   // ばらけた粒が、そのあと落ちた（形のままでは届かない所へ、粒が真下に流れ込む）
   sandFall: events => {
     const grains = new Set(events.flatMap(e => (e.type === 'react' ? (e.split ?? []).flatMap(sp => sp.into.map(g => g.id)) : [])));

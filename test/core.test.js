@@ -561,6 +561,7 @@ test('作り方の試作：テーマの気付きを使い、メインの素材�
     const r = solveState(createState(st), { feature: FEATURES[th.feature], maxNodes: 600000 });
     // 大きい器の試作（big）は答えがいくつあってもよい
     assert.ok(r.solvable && (b.big || r.finalStates === 1) && r.pathsWithoutFeature === 0, `${b.id}：どの答えも気付きを使う`);
+    if (!th.main) continue; // メインが最初から置く物のテーマ（高い鱗）は、器の形で確かめ済み
     const swapped = { ...st.raw, hand: st.raw.hand.map(h => (h.startsWith(`${th.main} `) ? `lead ${h.split(' ')[1]}` : h)) };
     assert.equal(solve(parseStage(stageToText(swapped))).solvable, false, `${b.id}：鉛に替えても解ける`);
   }

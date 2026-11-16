@@ -323,6 +323,73 @@ export const THEMED = {
       return { p, legend };
     },
   },
+  // 高い鱗：鱗（器の一部）が高い所にあり、上は壁でふさがっている。真上から火種は届かないので、
+  // どう積めば火種が鱗の横に届くかを考える。鱗の下のマスは、溶かさないと埋められない（2026-11-16 人の案）
+  tallIce: {
+    name: '高い鱗',
+    idea: '上がふさがった高い鱗に、横から火種を届かせる',
+    feature: 'frameMelt',
+    main: null,
+    maxLeads: 3,
+    hand: r => ['fire #', ...Array.from({ length: between(r, 0, 2) }, () => pick(r, ['ice ##', 'sand ##', 'ice #', 'sand ###']))],
+    size: r => [between(r, 4, 5), between(r, 4, 5)],
+    terrain(r, W, H) {
+      const t = Array.from({ length: H }, () => Array(W).fill('+'));
+      const c = between(r, 0, W - 1);
+      const len = between(r, 1, 2);
+      const y2 = between(r, len, H - 2); // 鱗のいちばん下（その下に1マス以上あける）
+      const y1 = y2 - len + 1;
+      // ふたの下は、溶けたあとも上から入れないので、鱗は×印（最後に空いている）、その下は空きマス
+      for (let y = 0; y < y1 - 1; y++) t[y][c] = '+';
+      t[y1 - 1][c] = '#';
+      for (let y = y1; y <= y2; y++) t[y][c] = 'x';
+      for (let y = y2 + 1; y < H; y++) t[y][c] = '.';
+      this._ice = { c, y1, y2 };
+      return t;
+    },
+    presets(r, W, H) {
+      const p = Array.from({ length: H }, () => Array(W).fill('.'));
+      const { c, y1, y2 } = this._ice;
+      for (let y = y1; y <= y2; y++) p[y][c] = 'a';
+      return { p, legend: { a: 'ice fixed' } };
+    },
+  },
+  // 角笛×鱗：鱗の上の角笛は、鱗が溶けて落ちると、落ちた先でもう一度押す（6-7）
+  hornMelt: {
+    name: '角笛と鱗',
+    idea: '鱗が溶けて角笛が落ちると、落ちた先でもう一度押す',
+    feature: 'meltPush',
+    main: 'horn',
+    maxLeads: 3,
+    hand: r => ['horn #', 'fire #', `ice ${pick(r, ['#', '##', '#/#'])}`, ...(r() < 0.4 ? ['horn #'] : [])],
+    size: r => [between(r, 4, 5), between(r, 3, 4)],
+    terrain: shoulderTerrain,
+  },
+  // 角笛×火種：肩の下の鱗（器の一部）に、角笛で火種を押し当てて溶かす（6-6）
+  hornFire: {
+    name: '角笛と火種',
+    idea: '上から届かない肩の下の鱗に、角笛で火種を押し当てる',
+    feature: 'pushMelt',
+    main: 'horn',
+    maxLeads: 3,
+    hand: r => ['horn #', 'fire #', ...(r() < 0.4 ? ['horn #'] : []), ...(r() < 0.3 ? [`ice ${pick(r, ['#', '##'])}`] : [])],
+    size: r => [between(r, 4, 5), between(r, 3, 4)],
+    terrain(r, W, H) {
+      const t = shoulderTerrain(r, W, H);
+      // 肩の下のいちばん奥に、器の一部の鱗。×印の上に置いて、溶かさないといけなくする
+      const side = t[0][0] === '#' ? 0 : W - 1;
+      let y = 0;
+      while (t[y][side] === '#') y++;
+      t[H - 1][side] = 'x';
+      this._ice = { c: side, y: H - 1 };
+      return t;
+    },
+    presets(r, W, H) {
+      const p = Array.from({ length: H }, () => Array(W).fill('.'));
+      p[this._ice.y][this._ice.c] = 'a';
+      return { p, legend: { a: 'ice fixed' } };
+    },
+  },
   sand: {
     name: '星砂は真下に',
     idea: '星砂は止まるとばらけて、粒が真下に流れ込む（形のままでは入らない所にも入る）',
@@ -347,6 +414,19 @@ export const THEMED = {
 
 const cellsOf = sh => sh.split('').filter(c => c === '#').length;
 
+// 肩のある器：左か右の上の方が壁（真上からは入れない肩の下ができる）
+function shoulderTerrain(r, W, H) {
+  const t = Array.from({ length: H }, () => Array(W).fill('+'));
+  const side = r() < 0.5 ? 0 : W - 1;
+  const depth = between(r, 1, H - 2);
+  for (let y = 0; y < depth; y++) t[y][side] = '#';
+  if (r() < 0.3) {
+    const other = side === 0 ? W - 1 : 0;
+    t[0][other] = '#';
+  }
+  return t;
+}
+
 // テーマから1問作ってみる。だめなら null（why に理由を数える）
 // big：答えは何個でもよい（テーマを使うことと、鉛に替えると解けないことだけを確かめる）。器を大きく、手持ちを多くする
 export function makeThemed(r, key, { maxNodes = 200000, stats = null, big = false } = {}) {
@@ -368,12 +448,12 @@ export function makeThemed(r, key, { maxNodes = 200000, stats = null, big = fals
   const mustCells = must.reduce((n, h) => n + (h.startsWith('ice') ? 0 : cellsOf(h.split(' ')[1])), 0);
   const preCells = pre ? pre.p.flat().filter(c => c !== '.' && pre.legend[c] === 'lead').length : 0;
   const need = targets - mustCells - preCells;
-  if (need < 2) return why('鉛が入らない');
+  if (need < 1) return why('鉛が入らない');
   // 鉛を1〜3個、合計がちょうど need マスになる組み合わせを全部挙げて、ランダムな順にためす
   const combos = [];
   const rec = (start, sum, acc) => {
     if (sum === need && acc.length) combos.push([...acc]);
-    if (acc.length >= (big ? 5 : 4) || sum >= need) return;
+    if (acc.length >= (th.maxLeads ?? (big ? 5 : 4)) || sum >= need) return;
     for (let i = start; i < LEAD.length; i++) {
       acc.push(LEAD[i]);
       rec(i, sum + cellsOf(LEAD[i]), acc);
@@ -414,16 +494,42 @@ export function makeThemed(r, key, { maxNodes = 200000, stats = null, big = fals
       why('気付きを使わずに解ける');
       continue;
     }
-    // メインの素材を、同じ形の鉛に替えると解けないこと
-    const swapped = { ...raw, hand: hand.map(h => (h.startsWith(`${th.main} `) ? `lead ${h.split(' ')[1]}` : h)) };
-    const rs = solveState(createState(parseStage(stageToText(swapped))), { maxNodes });
-    if (rs.truncated || rs.solvable) {
-      why('鉛に替えても解ける');
-      continue;
+    // メインの素材を、同じ形の鉛に替えると解けないこと（メインが最初から置く物のテーマは、形で確かめ済み）
+    if (th.main) {
+      const swapped = { ...raw, hand: hand.map(h => (h.startsWith(`${th.main} `) ? `lead ${h.split(' ')[1]}` : h)) };
+      const rs = solveState(createState(parseStage(stageToText(swapped))), { maxNodes });
+      if (rs.truncated || rs.solvable) {
+        why('鉛に替えても解ける');
+        continue;
+      }
     }
     const score = difficulty(st, maxNodes);
     if (!score) continue;
-    return { theme: key, name: th.name, raw: { ...raw, solution: res.examples[0].moves.map(m => `${m.orig + 1} r${m.r} x${m.x}`) }, ...score, paths: res.paths, finalStates: res.finalStates };
+    return { theme: key, name: th.name, raw: { ...raw, solution: res.examples[0].moves.map(m => `${m.orig + 1} r${m.r} x${m.x}`) }, ...score, paths: res.paths, finalStates: res.finalStates, early: earlyShare(st, maxNodes) };
   }
   return null;
+}
+
+// 特殊な素材（鉛以外の手持ち）を全部先に置いてから、鉛だけで解ける置き方の割合（判断材料。0 なら「適当に置いてから鉛パズル」ができない）
+export function earlyShare(stage, maxNodes = 200000) {
+  let frontier = [createState(stage)];
+  for (let guard = 0; guard < 8 && frontier.some(s => s.hand.some(h => h.mat !== 'lead')); guard++) {
+    const next = [];
+    for (const s of frontier) {
+      if (!s.hand.some(h => h.mat !== 'lead')) {
+        next.push(s);
+        continue;
+      }
+      for (const m of moves(s)) {
+        if (s.hand[m.hand].mat === 'lead') continue;
+        const d = drop(s, m.hand, m.r, m.x);
+        if (d.ok) next.push(d.state);
+      }
+    }
+    frontier = next;
+    if (frontier.length > 400) return null; // 多すぎるときは測らない
+  }
+  if (!frontier.length) return 0;
+  const ok = frontier.filter(s => solveState(s, { maxNodes }).solvable).length;
+  return Math.round((ok / frontier.length) * 100) / 100;
 }

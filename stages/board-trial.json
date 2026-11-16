@@ -94,5 +94,65 @@
   "big": true,
   "finalStates": 3,
   "text": "format: 1\nid: trial-12\ntitle: 試作12：星砂は真下に（大きい器）\nrequest: 星砂は止まるとばらけて、粒が真下に流れ込む。それを使う依頼。答えはいくつかある。\nterrain:\n  +++++\n  +++++\n  +++++\n  ++++#\nhand:\n  lead ##./.##\n  lead .#/.#/##\n  lead ##./.##\n  sand ####\n  lead ###\nsolution:\n  1 r1 x3\n  2 r1 x0\n  3 r0 x0\n  4 r0 x0\n  5 r0 x2\n"
+ },
+ {
+  "id": "trial-13",
+  "theme": "tallIce",
+  "bits": 20.2,
+  "seed": 8097,
+  "big": true,
+  "finalStates": 1,
+  "early": null,
+  "text": "format: 1\nid: trial-13\ntitle: 試作13：高い鱗\nrequest: 上がふさがった高い鱗に、横から火種を届かせる。そういう依頼。答えはいくつかあることもある。\nterrain:\n  +++++\n  +++#+\n  +++x+\n  +++.+\npieces:\n  .....\n  .....\n  ...a.\n  .....\nlegend:\n  a: ice fixed\nhand:\n  sand ##\n  lead ##/#.\n  sand ###\n  lead ###/.#.\n  fire #\n  lead .##/##.\nsolution:\n  3 r0 x2\n  5 r0 x4\n  1 r1 x4\n  6 r0 x0\n  4 r3 x0\n  2 r1 x1\n"
+ },
+ {
+  "id": "trial-14",
+  "theme": "tallIce",
+  "bits": 10.8,
+  "seed": 8078,
+  "big": true,
+  "finalStates": 50,
+  "early": 0.04,
+  "text": "format: 1\nid: trial-14\ntitle: 試作14：高い鱗\nrequest: 上がふさがった高い鱗に、横から火種を届かせる。そういう依頼。答えはいくつかあることもある。\nterrain:\n  #+++\n  x+++\n  x+++\n  .+++\npieces:\n  ....\n  a...\n  a...\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead ##\n  lead ##/##\n  sand ##\n  fire #\n  ice #\n  lead #./##\nsolution:\n  1 r0 x1\n  4 r0 x1\n  3 r1 x1\n  5 r0 x2\n  6 r2 x2\n  2 r0 x2\n"
+ },
+ {
+  "id": "trial-15",
+  "theme": "hornMelt",
+  "bits": 20.1,
+  "seed": 8375,
+  "big": true,
+  "finalStates": 4,
+  "early": null,
+  "text": "format: 1\nid: trial-15\ntitle: 試作15：角笛と鱗\nrequest: 鱗が溶けて角笛が落ちると、落ちた先でもう一度押す。そういう依頼。答えはいくつかあることもある。\nterrain:\n  ++++#\n  +++++\n  +++++\nhand:\n  ice #\n  fire #\n  lead ###\n  lead .##/##.\n  horn #\n  horn #\n  lead ##./.##\nsolution:\n  1 r0 x0\n  4 r1 x1\n  5 r0 x0\n  2 r0 x1\n  7 r0 x0\n  6 r0 x2\n  3 r0 x0\n"
+ },
+ {
+  "id": "trial-16",
+  "theme": "hornMelt",
+  "bits": 16.4,
+  "seed": 8325,
+  "big": true,
+  "finalStates": 1,
+  "early": null,
+  "text": "format: 1\nid: trial-16\ntitle: 試作16：角笛と鱗\nrequest: 鱗が溶けて角笛が落ちると、落ちた先でもう一度押す。そういう依頼。答えはいくつかあることもある。\nterrain:\n  #++++\n  +++++\n  +++++\nhand:\n  lead #./#./##\n  horn #\n  fire #\n  lead .##/##.\n  ice ##\n  lead ##./.##\nsolution:\n  5 r0 x3\n  6 r1 x2\n  2 r1 x4\n  3 r0 x3\n  4 r0 x2\n  1 r1 x2\n"
+ },
+ {
+  "id": "trial-17",
+  "theme": "hornFire",
+  "bits": 18.4,
+  "seed": 8255,
+  "big": true,
+  "finalStates": 2,
+  "early": null,
+  "text": "format: 1\nid: trial-17\ntitle: 試作17：角笛と火種\nrequest: 上から届かない肩の下の鱗に、角笛で火種を押し当てる。そういう依頼。答えはいくつかあることもある。\nterrain:\n  #++++\n  +++++\n  x++++\npieces:\n  .....\n  .....\n  a....\nlegend:\n  a: ice fixed\nhand:\n  horn #\n  lead ####\n  fire #\n  lead ##\n  ice ##\n  lead ##/##\n  horn #\nsolution:\n  5 r0 x3\n  4 r0 x2\n  1 r1 x4\n  3 r0 x3\n  6 r0 x2\n  7 r0 x4\n  2 r0 x1\n"
+ },
+ {
+  "id": "trial-18",
+  "theme": "hornFire",
+  "bits": 22.4,
+  "seed": 8263,
+  "big": true,
+  "finalStates": 2,
+  "early": null,
+  "text": "format: 1\nid: trial-18\ntitle: 試作18：角笛と火種\nrequest: 上から届かない肩の下の鱗に、角笛で火種を押し当てる。そういう依頼。答えはいくつかあることもある。\nterrain:\n  #++++\n  +++++\n  x++++\npieces:\n  .....\n  .....\n  a....\nlegend:\n  a: ice fixed\nhand:\n  lead ###/.#.\n  lead .##/##.\n  horn #\n  horn #\n  lead ##\n  fire #\n  ice ##\nsolution:\n  7 r0 x3\n  5 r0 x2\n  3 r1 x4\n  6 r0 x3\n  2 r0 x2\n  1 r0 x1\n  4 r0 x4\n"
  }
 ]
