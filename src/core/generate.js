@@ -8,7 +8,7 @@
 //   5. 難しさを測る：答えの道筋の1手ごとに「置ける手のうち、クリアにつながる手がどれだけ少ないか」を足す（迷いの量）
 
 import { createState, drop, initialProblems } from './rules.js';
-import { solveState, moves } from './solver.js';
+import { solveState, moves, exists } from './solver.js';
 import { parseStage, stageToText, FORMAT } from './stage.js';
 
 export function rng(seed) {
@@ -363,7 +363,7 @@ export const THEMED = {
     maxLeads: 3,
     hand: r => ['horn #', 'fire #', `ice ${pick(r, ['#', '##', '#/#'])}`, ...(r() < 0.4 ? ['horn #'] : [])],
     size: r => [between(r, 4, 5), between(r, 3, 4)],
-    terrain: shoulderTerrain,
+    terrain: hornTerrain,
   },
   // 角笛×火種：肩の下の鱗（器の一部）に、角笛で火種を押し当てて溶かす（6-6）
   hornFire: {
@@ -414,6 +414,32 @@ export const THEMED = {
 
 const cellsOf = sh => sh.split('').filter(c => c === '#').length;
 
+// 角笛の器：形の種類を増やして、同じ形ばかりにならないようにする（2026-11-17）
+//   肩（片方）・広い肩（2列）・両側の肩・真ん中の柱・角の段
+function hornTerrain(r, W, H) {
+  const kind = pick(r, ['shoulder', 'wide', 'both', 'pillar', 'step']);
+  if (kind === 'shoulder') return shoulderTerrain(r, W, H);
+  const t = Array.from({ length: H }, () => Array(W).fill('+'));
+  if (kind === 'wide') {
+    const side = r() < 0.5 ? 0 : W - 2;
+    const depth = between(r, 1, H - 2);
+    for (let y = 0; y < depth; y++) t[y][side] = t[y][side + 1] = '#';
+  } else if (kind === 'both') {
+    const d1 = between(r, 1, H - 2), d2 = between(r, 1, H - 2);
+    for (let y = 0; y < d1; y++) t[y][0] = '#';
+    for (let y = 0; y < d2; y++) t[y][W - 1] = '#';
+  } else if (kind === 'pillar') {
+    const x = between(r, 1, W - 2);
+    const h = between(r, 1, H - 1);
+    for (let y = H - h; y < H; y++) t[y][x] = '#';
+  } else {
+    const side = r() < 0.5 ? 0 : W - 2;
+    t[H - 1][side] = t[H - 1][side + 1] = '#';
+    if (r() < 0.5) t[H - 2][side === 0 ? 0 : W - 1] = '#';
+  }
+  return t;
+}
+
 // 肩のある器：左か右の上の方が壁（真上からは入れない肩の下ができる）
 function shoulderTerrain(r, W, H) {
   const t = Array.from({ length: H }, () => Array(W).fill('+'));
@@ -429,7 +455,8 @@ function shoulderTerrain(r, W, H) {
 
 // テーマから1問作ってみる。だめなら null（why に理由を数える）
 // big：答えは何個でもよい（テーマを使うことと、鉛に替えると解けないことだけを確かめる）。器を大きく、手持ちを多くする
-export function makeThemed(r, key, { maxNodes = 200000, stats = null, big = false } = {}) {
+// quickNodes：最初の「解けるか」は、この数だけ調べて見つからなければあきらめる（取りこぼしてもよい。次の候補へ早く移るため）
+export function makeThemed(r, key, { maxNodes = 200000, stats = null, big = false, measureEarly = false, quickNodes = 20000, maxCombos = 20 } = {}) {
   if (big) maxNodes = Math.max(maxNodes, 500000);
   const th = THEMED[key];
   const why = k => {
@@ -463,7 +490,7 @@ export function makeThemed(r, key, { maxNodes = 200000, stats = null, big = fals
   rec(0, 0, []);
   if (!combos.length) return why('鉛の数が合わない');
   combos.sort(() => r() - 0.5);
-  for (const leads of combos.slice(0, 60)) {
+  for (const leads of combos.slice(0, maxCombos)) {
     const hand = [...must, ...leads.map(s => `lead ${s}`)].sort(() => r() - 0.5);
     const raw = { format: FORMAT, terrain, hand, solution: [] };
     if (pre) {
@@ -477,35 +504,50 @@ export function makeThemed(r, key, { maxNodes = 200000, stats = null, big = fals
       return why('形');
     }
     if (initialProblems(st).length) return why('最初の盤面がおかしい');
-    const res = solveState(createState(st), { maxNodes, examples: 1, feature: FEATURES[th.feature] });
-    if (res.truncated) {
-      why('調べきれない');
+    // ふるい分けは「見つかったら止める」探し方で（速い）。全部数えるのは、残ったものだけ
+    const root = createState(st);
+    const clock = (k, t0) => stats && (stats['時間:' + k] = (stats['時間:' + k] ?? 0) + Date.now() - t0);
+    let t0 = Date.now();
+    const any = exists(root, { maxNodes: quickNodes });
+    clock('解けるか', t0);
+    if (!any.found) {
+      why(any.truncated ? 'すぐには見つからない' : '解けない');
       continue;
     }
-    if (!res.solvable) {
-      why('解けない');
+    t0 = Date.now();
+    const plain = exists(root, { maxNodes, avoid: FEATURES[th.feature] });
+    clock('気付きなしで解けるか', t0);
+    if (plain.found || plain.truncated) {
+      why(plain.found ? '気付きを使わずに解ける' : '調べきれない');
+      continue;
+    }
+    // メインの素材を、同じ形の鉛に替えると解けないこと（メインが最初から置く物のテーマは、形で確かめ済み）
+    if (th.main) {
+      const swapped = { ...raw, hand: hand.map(h => (h.startsWith(`${th.main} `) ? `lead ${h.split(' ')[1]}` : h)) };
+      t0 = Date.now();
+      const rs = exists(createState(parseStage(stageToText(swapped))), { maxNodes });
+      clock('鉛に替えて解けるか', t0);
+      if (rs.found || rs.truncated) {
+        why('鉛に替えても解ける');
+        continue;
+      }
+    }
+    t0 = Date.now();
+    const res = solveState(root, { maxNodes, examples: 1 });
+    clock('全部数える', t0);
+    if (res.truncated) {
+      why('調べきれない');
       continue;
     }
     if (!big && res.finalStates !== 1) {
       why('答えが2つ以上');
       continue;
     }
-    if (res.pathsWithoutFeature > 0) {
-      why('気付きを使わずに解ける');
-      continue;
-    }
-    // メインの素材を、同じ形の鉛に替えると解けないこと（メインが最初から置く物のテーマは、形で確かめ済み）
-    if (th.main) {
-      const swapped = { ...raw, hand: hand.map(h => (h.startsWith(`${th.main} `) ? `lead ${h.split(' ')[1]}` : h)) };
-      const rs = solveState(createState(parseStage(stageToText(swapped))), { maxNodes });
-      if (rs.truncated || rs.solvable) {
-        why('鉛に替えても解ける');
-        continue;
-      }
-    }
+    t0 = Date.now();
     const score = difficulty(st, maxNodes);
+    clock('難しさ', t0);
     if (!score) continue;
-    return { theme: key, name: th.name, raw: { ...raw, solution: res.examples[0].moves.map(m => `${m.orig + 1} r${m.r} x${m.x}`) }, ...score, paths: res.paths, finalStates: res.finalStates, early: earlyShare(st, maxNodes) };
+    return { theme: key, name: th.name, raw: { ...raw, solution: res.examples[0].moves.map(m => `${m.orig + 1} r${m.r} x${m.x}`) }, ...score, paths: res.paths, finalStates: res.finalStates, early: measureEarly ? earlyShare(st, maxNodes) : undefined };
   }
   return null;
 }

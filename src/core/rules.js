@@ -250,7 +250,8 @@ function touching(s, occ) {
         const o = occ[ny * s.W + nx];
         if (!o || o - 1 === i) continue;
         const j = o - 1;
-        pairs.set(i < j ? `${i},${j}` : `${j},${i}`, i < j ? [i, j] : [j, i]);
+        const key = i < j ? i * 4096 + j : j * 4096 + i;
+        if (!pairs.has(key)) pairs.set(key, i < j ? [i, j] : [j, i]);
       }
     }
   });
@@ -265,7 +266,10 @@ function touching(s, occ) {
 export function react(s) {
   let occ = occupancy(s);
   const why = new Map(); // 消すピースの添字 → 理由
-  for (const [i, j] of touching(s, occ)) {
+  // 火種と、消える物（鱗・つる・水玉）の両方があるときだけ、となり合わせを調べる（速くするため）
+  const hasFire = s.pieces.some(p => p.mat === 'fire');
+  const burnable = hasFire && s.pieces.some(p => p.mat === 'ice' || p.mat === 'vine' || p.mat === 'water');
+  for (const [i, j] of burnable ? touching(s, occ) : []) {
     const a = s.pieces[i], b = s.pieces[j];
     for (const [p, q, pi, qi] of [[a, b, i, j], [b, a, j, i]]) {
       if (p.mat !== 'fire') continue;
@@ -468,6 +472,7 @@ function info(p, why) {
 
 // ゼリーに触れているピースを同じ組にする。組が変わったら true。
 function glue(s) {
+  if (!s.pieces.some(p => p.mat === 'slime')) return false; // ゼリーがなければ何もくっつかない
   const occ = occupancy(s);
   let changed = false;
   for (const [i, j] of touching(s, occ)) {

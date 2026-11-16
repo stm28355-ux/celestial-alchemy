@@ -566,3 +566,38 @@ test('作り方の試作：テーマの気付きを使い、メインの素材�
     assert.equal(solve(parseStage(stageToText(swapped))).solvable, false, `${b.id}：鉛に替えても解ける`);
   }
 });
+
+test('どの素材でも使う見切りと「見つかったら止める」探し方は、答えを取りこぼさない（いろいろな素材の盤面300個）', async () => {
+  const { exists } = await import('../src/core/solver.js');
+  const { FEATURES } = await import('../src/core/solver.js');
+  let seed = 99;
+  const rand = n => {
+    seed = (seed * 1103515245 + 12345) % 2147483648;
+    return seed % n;
+  };
+  const HAND = ['lead #', 'lead ##', 'lead #/#', 'lead ##/#.', 'fire #', 'ice ##', 'ice #', 'water #', 'vine #', 'vine #/#', 'slime #', 'slime ##', 'sand ##', 'sand ###', 'horn #', 'stone #'];
+  let solvable = 0;
+  let compared = 0;
+  for (let n = 0; n < 300; n++) {
+    const W = 2 + rand(3), H = 2 + rand(2);
+    const terrain = Array.from({ length: H }, () => Array.from({ length: W }, () => '+++.x#GL'[rand(8)]).join('')).map((row, y) => (y === 0 ? row.replace(/#/g, '.') : row));
+    const hand = Array.from({ length: 2 + rand(3) }, () => `  ${HAND[rand(HAND.length)]}`);
+    let st;
+    try {
+      st = stage(['terrain:', ...terrain.map(r => `  ${r}`), 'hand:', ...hand]);
+    } catch {
+      continue;
+    }
+    const a = solve(st);
+    const b = solve(st, { prune: false });
+    assert.deepEqual([a.paths, a.finalStates], [b.paths, b.finalStates], terrain.join('/') + ' ' + hand.join(','));
+    const e = exists(createState(st));
+    assert.equal(e.found, b.solvable, '見つかったら止める探し方：' + terrain.join('/') + ' ' + hand.join(','));
+    // 気付きを使わない答えがあるか（反応を使わない答え）
+    const f = solveState(createState(st), { prune: false, feature: FEATURES.react });
+    assert.equal(exists(createState(st), { avoid: FEATURES.react }).found, f.pathsWithoutFeature > 0, '気付きを避ける探し方：' + terrain.join('/') + ' ' + hand.join(','));
+    if (b.solvable) solvable++;
+    compared++;
+  }
+  assert.ok(compared > 200 && solvable > 20, `比べた ${compared}、解けた ${solvable}`);
+});

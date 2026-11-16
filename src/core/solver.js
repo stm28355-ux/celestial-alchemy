@@ -21,6 +21,7 @@ export function solve(stage, opts) {
 //   渡すと pathsWithoutFeature（その気付きを一度も使わない道筋の数）も数える。0 なら気付きが必要。
 export function solveState(root, { maxNodes = 2_000_000, prune: usePrune = true, examples = 0, feature = null } = {}) {
   const prune = usePrune && canPrune(root);
+  const pruneAny = usePrune; // どの素材でも成り立つ見切り（deadEndAny）
   const memo = new Map();
   const cleared = new Set();
   let nodes = 0;
@@ -35,7 +36,7 @@ export function solveState(root, { maxNodes = 2_000_000, prune: usePrune = true,
       return { total: 0, noReact: 0, noFeat: 0 };
     }
     let res;
-    if (prune && deadEnd(s)) {
+    if ((pruneAny && deadEndAny(s)) || (prune && deadEnd(s))) {
       res = { total: 0, noReact: 0, noFeat: 0 };
     } else if (s.hand.length === 0) {
       const ok = isCleared(s);
@@ -111,6 +112,66 @@ export function solveState(root, { maxNodes = 2_000_000, prune: usePrune = true,
 //   ピースは真下にしか動かない／マスが増える素材がない／消えるのは鱗だけ
 // つる（上に伸びる）・角笛（横に押す）などを足すときは、ここを見直す。
 const PRUNE_SAFE = new Set(['lead', 'fire', 'ice']);
+
+// どの素材でも成り立つ見切り：空いた刻印の数が、これから刻印に入りうるマスの数より多ければ、もう埋めきれない。
+// 入りうるマス＝手持ちのマス＋刻印でないマスにある、動けるピースのマス（落ちる・押される・伸びる・ばらけるで移るかもしれない）。
+// 素材の数は、溶ける・燃える・蒸発で減ることはあっても、増えることはない（つるが伸びても水玉が消える。金・粒は数が同じ）。
+export function deadEndAny(s) {
+  const occ = occupancy(s);
+  let empty = 0;
+  for (let y = 0; y < s.H; y++) {
+    for (let x = 0; x < s.W; x++) {
+      const t = s.terrain[y][x];
+      if ((t === '+' || t === 'G' || t === 'L') && !occ[y * s.W + x]) empty++;
+    }
+  }
+  if (empty === 0) return false;
+  let room = s.hand.reduce((n, h) => n + h.cells.length, 0);
+  if (room >= empty) return false;
+  for (const p of s.pieces) {
+    if (p.fixed) continue;
+    for (const [x, y] of p.cells) {
+      const t = y >= 0 && y < s.H ? s.terrain[y][x] : '.';
+      if (t !== '+' && t !== 'G' && t !== 'L') room++;
+    }
+  }
+  return room < empty;
+}
+
+// あるかないかだけを調べる（見つかったらすぐ止める）。生成のふるい分け用。
+//   avoid を渡すと、その気付きを使う手は通らない＝「気付きを使わない答えがあるか」になる
+// 返すもの：{ found, truncated, nodes }。found が false で truncated なら、調べきれていない。
+export function exists(root, { maxNodes = 2_000_000, avoid = null } = {}) {
+  const prune = canPrune(root);
+  const dead = new Set();
+  let nodes = 0;
+  let truncated = false;
+  const go = s => {
+    if (s.hand.length === 0) return isCleared(s);
+    const key = stateKey(s);
+    if (dead.has(key)) return false;
+    if (++nodes > maxNodes) {
+      truncated = true;
+      return false;
+    }
+    if (deadEndAny(s) || (prune && deadEnd(s))) {
+      dead.add(key);
+      return false;
+    }
+    const occ = occupancy(s);
+    for (const m of moves(s)) {
+      const d = drop(s, m.hand, m.r, m.x, occ);
+      if (!d.ok) continue;
+      if (avoid && avoid(d.events, d.state)) continue;
+      if (go(d.state)) return true;
+      if (truncated) return false;
+    }
+    dead.add(key);
+    return false;
+  };
+  const found = go(root);
+  return { found, truncated: !found && truncated, nodes };
+}
 
 function canPrune(s) {
   return s.pieces.every(p => PRUNE_SAFE.has(p.mat)) && s.hand.every(h => PRUNE_SAFE.has(h.mat));

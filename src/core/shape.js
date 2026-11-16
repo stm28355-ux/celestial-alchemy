@@ -26,11 +26,20 @@ export function rotate(cells, r) {
   return normalize(out);
 }
 
+// 同じ形（同じ配列）は何度も聞かれるので、覚えておく（ソルバーで多く呼ばれる）
+const sizeMemo = new WeakMap();
 export function size(cells) {
-  return {
-    w: Math.max(...cells.map(c => c[0])) + 1,
-    h: Math.max(...cells.map(c => c[1])) + 1,
-  };
+  let v = sizeMemo.get(cells);
+  if (!v) {
+    let w = 0, h = 0;
+    for (const [x, y] of cells) {
+      if (x + 1 > w) w = x + 1;
+      if (y + 1 > h) h = y + 1;
+    }
+    v = { w, h };
+    sizeMemo.set(cells, v);
+  }
+  return v;
 }
 
 export function shapeKey(cells) {
