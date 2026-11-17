@@ -534,7 +534,9 @@ test('生成：作った問題は狙いの手順でクリアでき、答えが1�
 });
 
 // 全問の確かめは時間がかかる（数分）。ふだんは10問おきに1問、BOARD_ALL=1（npm run test:board）で全問
-test('依頼の掲示板：どの問題も読めて、狙いの手順でクリアでき、答えが1つ', async () => {
+test('依頼の掲示板：どの問題も読めて、狙いの手順でクリアでき、テーマの気付きを使い、メインの素材を鉛に替えると解けない', async () => {
+  const { THEMED } = await import('../src/core/generate.js');
+  const { FEATURES, exists } = await import('../src/core/solver.js');
   const board = JSON.parse(await readFile(new URL('../stages/board.json', import.meta.url), 'utf8'));
   assert.ok(board.length >= 100, `問題が足りない（${board.length}）`);
   const ids = new Set();
@@ -546,8 +548,15 @@ test('依頼の掲示板：どの問題も読めて、狙いの手順でクリ�
     const c = checkSolution(st);
     assert.ok(c.ok && c.cleared, `${b.id}：狙いの手順でクリアできない`);
     if (!process.env.BOARD_ALL && k % 10 !== 0) continue;
-    const r = solve(st, { maxNodes: 400000 });
-    assert.ok(!r.truncated && r.finalStates === 1, `${b.id}：答えが1つでない（${r.finalStates}）`);
+    // テーマから作った問題（2026-11-18〜）は、答えはいくつでもよい。どの答えもテーマの気付きを使うこと
+    const th = THEMED[b.theme];
+    assert.ok(th, `${b.id}：知らないテーマ ${b.theme}`);
+    const plain = exists(createState(st), { avoid: FEATURES[th.feature], maxNodes: 600000 });
+    assert.ok(!plain.found && !plain.truncated, `${b.id}：気付きを使わずに解ける`);
+    if (th.main) {
+      const swapped = { ...st.raw, hand: st.raw.hand.map(h => (h.startsWith(`${th.main} `) ? `lead ${h.split(' ')[1]}` : h)) };
+      assert.equal(exists(createState(parseStage(stageToText(swapped))), { maxNodes: 600000 }).found, false, `${b.id}：鉛に替えても解ける`);
+    }
   }
 });
 

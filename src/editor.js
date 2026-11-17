@@ -75,6 +75,7 @@ export function openEditor(view) {
   let tool = { kind: 'terrain', value: '+' };
   let pieceMat = 'lead';
   let pieceFixed = false;
+  let pieceLeft = false; // 最初から置く角笛の口の向き
   let newShape = new Set(); // 手持ちに足す形（"x,y"）
   let newMat = 'lead';
   const ac = new AbortController();
@@ -106,6 +107,7 @@ export function openEditor(view) {
           <label><input type="radio" name="tool" value="piece"> 置く</label>
           <select id="ed-piece-mat">${readyMats.map(([k, m]) => `<option value="${k}">${m.name}</option>`).join('')}</select>
           <label><input type="checkbox" id="ed-fixed"> 動かない（器の一部）</label>
+          <label><input type="checkbox" id="ed-left"> 角笛の口を左に向ける（ないときは右）</label>
           <label><input type="radio" name="tool" value="erase"> 素材を消す</label>
         </fieldset>
         <p class="ed-note">ドラッグで塗れます。右クリック（右ボタンでなぞる）で素材を消せます。まだルールのない素材（水玉など）は、その章のフェーズで使えるようになります。</p>
@@ -207,7 +209,7 @@ export function openEditor(view) {
         stroke = null;
         return;
       }
-      d.raw.legend[stroke.letter] = pieceMat + (pieceFixed ? ' fixed' : '');
+      d.raw.legend[stroke.letter] = pieceMat + (pieceFixed ? ' fixed' : '') + (pieceMat === 'horn' && pieceLeft ? ' left' : '');
     }
     paint(cell);
     renderBoard();
@@ -239,6 +241,10 @@ export function openEditor(view) {
   }, on);
   $('#ed-fixed').addEventListener('change', ev => {
     pieceFixed = ev.target.checked;
+    view.querySelector('input[value="piece"]').click();
+  }, on);
+  $('#ed-left').addEventListener('change', ev => {
+    pieceLeft = ev.target.checked;
     view.querySelector('input[value="piece"]').click();
   }, on);
 
@@ -524,7 +530,7 @@ function freeLetter(r) {
 function piecesOf(r) {
   return [...letterCells(r)].map(([letter, cells], i) => {
     const [mat, ...flags] = (r.legend[letter] ?? 'lead').split(/\s+/);
-    return { id: i + 1, mat, cells, fixed: flags.includes('fixed') };
+    return { id: i + 1, mat, cells, fixed: flags.includes('fixed'), ...(mat === 'horn' ? { dir: flags.includes('left') ? -1 : 1 } : {}) };
   });
 }
 
