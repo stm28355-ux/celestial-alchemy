@@ -51,7 +51,7 @@ export function solveState(root, { maxNodes = 2_000_000, prune: usePrune = true,
         const c = count(d.state);
         total += c.total;
         if (!d.events.some(e => e.type === 'react')) noReact += c.noReact;
-        if (feature && !feature(d.events)) noFeat += c.noFeat;
+        if (feature && !feature(d.events, d.state)) noFeat += c.noFeat;
       }
       res = { total, noReact, noFeat };
     }
@@ -138,16 +138,61 @@ export function deadEndAny(s) {
   return room < empty;
 }
 
+// ── 鉛だけの詰め込みを覚えておく ──
+// 手持ちが鉛だけで、盤の上にゼリー・賢者の石・金がなく、金の刻印・鉛の刻印もないとき、
+// 残りは「空いたマスに鉛を詰める」だけになる（鉛は反応しないので、盤の上の物はもう動かない）。
+// 盤の上の物は、まとめて動かない壁と同じに扱える。
+const leadMemo = new Map();
+
+function packKey(s) {
+  if (!s.hand.length || !s.hand.every(h => h.mat === 'lead')) return null;
+  if (s.pieces.some(p => p.mat === 'slime' || p.mat === 'stone' || p.mat === 'gold')) return null;
+  if (s.terrain.some(row => row.includes('G') || row.includes('L'))) return null;
+  const occ = occupancy(s);
+  let grid = '';
+  for (let y = 0; y < s.H; y++) for (let x = 0; x < s.W; x++) grid += occ[y * s.W + x] ? '@' : s.terrain[y][x];
+  const open = s.open ? `${s.open.left}|${s.open.right}|${s.open.floor}` : '';
+  return `${s.W}x${s.H}|${grid}|${open}|${s.hand.map(h => h.key).sort().join(',')}`;
+}
+
+// 盤の上の物を、動かない鉛1つにまとめた状態（詰め込みだけを調べる用）
+function packState(s) {
+  const cells = s.pieces.flatMap(p => p.cells.map(c => [...c]));
+  return {
+    ...s,
+    pieces: cells.length ? [{ id: 1, group: 1, mat: 'lead', cells, fixed: true }] : [],
+    nextId: 2,
+  };
+}
+
 // あるかないかだけを調べる（見つかったらすぐ止める）。生成のふるい分け用。
 //   avoid を渡すと、その気付きを使う手は通らない＝「気付きを使わない答えがあるか」になる
 // 返すもの：{ found, truncated, nodes }。found が false で truncated なら、調べきれていない。
-export function exists(root, { maxNodes = 2_000_000, avoid = null } = {}) {
+export function exists(root, { maxNodes = 2_000_000, avoid = null, packed = false } = {}) {
   const prune = canPrune(root);
   const dead = new Set();
   let nodes = 0;
   let truncated = false;
   const go = s => {
     if (s.hand.length === 0) return isCleared(s);
+    // 手持ちが鉛だけで、盤の上の物がもう動かない（鉛を落としても反応しない）なら、ただの詰め込み。
+    // 同じ空き方・同じ手持ちの答えは、ほかの候補でも同じなので覚えておく（leadMemo）
+    if (!avoid && !packed) {
+      const pk = packKey(s);
+      if (pk) {
+        const known = leadMemo.get(pk);
+        if (known !== undefined) return known;
+        const r = exists(packState(s), { maxNodes: Math.max(1000, maxNodes - nodes), packed: true });
+        nodes += r.nodes;
+        if (r.truncated) {
+          truncated = true;
+          return false;
+        }
+        if (leadMemo.size > 200000) leadMemo.clear();
+        leadMemo.set(pk, r.found);
+        return r.found;
+      }
+    }
     const key = stateKey(s);
     if (dead.has(key)) return false;
     if (++nodes > maxNodes) {
@@ -310,6 +355,15 @@ export const FEATURES = {
   pushMelt: events => {
     const i = events.findIndex(e => e.type === 'react' && e.pushed?.length);
     return i >= 0 && events.slice(i).some(e => e.type === 'react' && e.removed.some(r => r.why === 'melt'));
+  },
+  // 鱗が溶けた（どの鱗でも）
+  melt: events => events.some(e => e.type === 'react' && e.removed.some(r => r.why === 'melt')),
+  // 鱗が溶けたあとで、星砂の粒が落ちた（2つ目の引数は、その手のあとの状態）
+  meltSandFall: (events, state) => {
+    const i = events.findIndex(e => e.type === 'react' && e.removed.some(r => r.why === 'melt'));
+    if (i < 0 || !state) return false;
+    const sand = new Set(state.pieces.filter(p => p.mat === 'sand').map(p => p.id));
+    return events.slice(i + 1).some(e => e.type === 'fall' && e.ids.some(id => sand.has(id)));
   },
   // 角笛が星砂の粒を押した
   pushSand: events => {

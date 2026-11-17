@@ -390,6 +390,51 @@ export const THEMED = {
       return { p, legend: { a: 'ice fixed' } };
     },
   },
+  // 鱗×ゼリー：ゼリーでくっついた組は、下の鱗が溶けても落ちない（2026-11-17）
+  iceSlime: {
+    name: '鱗とゼリー',
+    idea: 'ゼリーでくっついた組は、下の鱗が溶けても落ちない',
+    feature: 'melt',
+    main: 'slime',
+    maxLeads: 3,
+    hand: r => ['fire #', `slime ${pick(r, ['#', '##', '#/#'])}`, ...(r() < 0.3 ? [`ice ${pick(r, ['#', '##'])}`] : [])],
+    size: r => [between(r, 4, 5), between(r, 3, 4)],
+    terrain(r, W, H) {
+      return Array.from({ length: H }, () => Array(W).fill('+'));
+    },
+    presets(r, W, H) {
+      // 底の鱗（動く）。鉛は乗せない（上はゼリーで支える物を、自分で積む）
+      const p = Array.from({ length: H }, () => Array(W).fill('.'));
+      const w = between(r, 1, 2);
+      const x0 = between(r, 0, W - w);
+      for (let x = x0; x < x0 + w; x++) p[H - 1][x] = 'a';
+      return { p, legend: { a: 'ice' } };
+    },
+    // 鱗のマスは×印：溶かさないといけないが、その上に積んだ物は落とせない（ゼリーで支える）
+    finish(grid, pre) {
+      pre.p.forEach((row, y) => row.forEach((c, x) => {
+        if (c !== '.') grid[y][x] = 'x';
+      }));
+    },
+  },
+  // 鱗×星砂：下の鱗が溶けると、上の粒が1つずつ落ちる（5-5）（2026-11-17）
+  sandMelt: {
+    name: '鱗と星砂',
+    idea: '下の鱗が溶けると、その上の星砂の粒が1つずつ落ちる',
+    feature: 'meltSandFall',
+    main: 'sand',
+    maxLeads: 3,
+    hand: r => ['fire #', `sand ${pick(r, ['##', '###', '#./##'])}`, ...(r() < 0.3 ? [`ice ${pick(r, ['#', '##'])}`] : [])],
+    size: r => [between(r, 4, 5), between(r, 3, 4)],
+    terrain(r, W, H) {
+      const t = Array.from({ length: H }, () => Array(W).fill('+'));
+      if (r() < 0.4) t[H - 1][between(r, 0, W - 1)] = '#';
+      return t;
+    },
+    presets(r, W, H) {
+      return THEMED.melt.presets(r, W, H);
+    },
+  },
   sand: {
     name: '星砂は真下に',
     idea: '星砂は止まるとばらけて、粒が真下に流れ込む（形のままでは入らない所にも入る）',
@@ -467,8 +512,10 @@ export function makeThemed(r, key, { maxNodes = 200000, stats = null, big = fals
   const grid = th.terrain(r, W, H);
   // 1列まるごと壁は作らない
   for (let x = 0; x < W; x++) if (grid.every(row => row[x] === '#')) grid[0][x] = '+';
-  const terrain = grid.map(row => row.join(''));
   const pre = th.presets ? th.presets(r, W, H) : null;
+  // 最初から置く物に合わせて、器を直す（例：溶かす鱗のマスを×印に）
+  if (th.finish && pre) th.finish(grid, pre);
+  const terrain = grid.map(row => row.join(''));
   const targets = terrain.join('').split('').filter(c => c === '+').length;
   const must = th.hand(r);
   // 鱗は溶けて消えるので、刻印を埋めるマスには数えない（最初から置く鉛は数える）
