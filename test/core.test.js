@@ -535,7 +535,7 @@ test('生成：作った問題は狙いの手順でクリアでき、答えが1�
 
 // 全問の確かめは時間がかかる（数分）。ふだんは10問おきに1問、BOARD_ALL=1（npm run test:board）で全問
 test('依頼の掲示板：どの問題も読めて、狙いの手順でクリアでき、テーマの気付きを使い、メインの素材を鉛に替えると解けない', async () => {
-  const { THEMED } = await import('../src/core/generate.js');
+  const { THEMED, mainsOf } = await import('../src/core/generate.js');
   const { FEATURES, exists } = await import('../src/core/solver.js');
   const board = JSON.parse(await readFile(new URL('../stages/board.json', import.meta.url), 'utf8'));
   assert.ok(board.length >= 100, `問題が足りない（${board.length}）`);
@@ -553,15 +553,15 @@ test('依頼の掲示板：どの問題も読めて、狙いの手順でクリ�
     assert.ok(th, `${b.id}：知らないテーマ ${b.theme}`);
     const plain = exists(createState(st), { avoid: FEATURES[th.feature], maxNodes: 600000 });
     assert.ok(!plain.found && !plain.truncated, `${b.id}：気付きを使わずに解ける`);
-    if (th.main) {
-      const swapped = { ...st.raw, hand: st.raw.hand.map(h => (h.startsWith(`${th.main} `) ? `lead ${h.split(' ')[1]}` : h)) };
-      assert.equal(exists(createState(parseStage(stageToText(swapped))), { maxNodes: 600000 }).found, false, `${b.id}：鉛に替えても解ける`);
+    for (const m of mainsOf(th, st.raw.hand)) {
+      const swapped = { ...st.raw, hand: st.raw.hand.map(h => (h.startsWith(`${m} `) ? `lead ${h.split(' ')[1]}` : h)) };
+      assert.equal(exists(createState(parseStage(stageToText(swapped))), { maxNodes: 600000 }).found, false, `${b.id}：${m}を鉛に替えても解ける`);
     }
   }
 });
 
 test('作り方の試作：テーマの気付きを使い、メインの素材を鉛に替えると解けない', async () => {
-  const { THEMED } = await import('../src/core/generate.js');
+  const { THEMED, mainsOf } = await import('../src/core/generate.js');
   const { FEATURES } = await import('../src/core/solver.js');
   const trial = JSON.parse(await readFile(new URL('../stages/board-trial.json', import.meta.url), 'utf8'));
   for (const b of trial) {
@@ -570,9 +570,11 @@ test('作り方の試作：テーマの気付きを使い、メインの素材�
     const r = solveState(createState(st), { feature: FEATURES[th.feature], maxNodes: 600000 });
     // 大きい器の試作（big）は答えがいくつあってもよい
     assert.ok(r.solvable && (b.big || r.finalStates === 1) && r.pathsWithoutFeature === 0, `${b.id}：どの答えも気付きを使う`);
-    if (!th.main) continue; // メインが最初から置く物のテーマ（高い鱗）は、器の形で確かめ済み
-    const swapped = { ...st.raw, hand: st.raw.hand.map(h => (h.startsWith(`${th.main} `) ? `lead ${h.split(' ')[1]}` : h)) };
-    assert.equal(solve(parseStage(stageToText(swapped))).solvable, false, `${b.id}：鉛に替えても解ける`);
+    // メインが最初から置く物のテーマ（高い鱗）は、器の形で確かめ済み（mains が空）
+    for (const m of mainsOf(th, st.raw.hand)) {
+      const swapped = { ...st.raw, hand: st.raw.hand.map(h => (h.startsWith(`${m} `) ? `lead ${h.split(' ')[1]}` : h)) };
+      assert.equal(solve(parseStage(stageToText(swapped))).solvable, false, `${b.id}：${m}を鉛に替えても解ける`);
+    }
   }
 });
 

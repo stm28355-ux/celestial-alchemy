@@ -435,6 +435,95 @@ export const THEMED = {
       return THEMED.melt.presets(r, W, H);
     },
   },
+  // つると水玉（棚の下）：上がふさがった列の底につるがあり、水玉で伸ばして棚の下を埋める（3-1）（2026-11-18）
+  vineShelf: {
+    name: 'つると水玉',
+    idea: '上から入れない棚の下を、つるを伸ばして埋める',
+    feature: 'grow',
+    main: ['water'],
+    maxLeads: 4,
+    size: r => [between(r, 5, 6), between(r, 3, 4)],
+    terrain(r, W, H) {
+      const t = Array.from({ length: H }, () => Array(W).fill('+'));
+      // 棚は1つか2つ（違う列）。上から roof 段がふさがっていて、いちばん下につる
+      const cols = [between(r, 0, W - 1)];
+      if (r() < 0.4) {
+        const c2 = between(r, 0, W - 1);
+        if (Math.abs(c2 - cols[0]) >= 2) cols.push(c2);
+      }
+      let gap = 0;
+      for (const c of cols) {
+        const roof = between(r, 1, H - 2);
+        for (let y = 0; y < roof; y++) t[y][c] = '#';
+        gap += H - 1 - roof;
+      }
+      this._vine = { cols, gap };
+      return t;
+    },
+    presets(r, W, H) {
+      const p = Array.from({ length: H }, () => Array(W).fill('.'));
+      const legend = {};
+      this._vine.cols.forEach((c, i) => {
+        const k = 'ab'[i];
+        p[H - 1][c] = k;
+        legend[k] = 'vine';
+      });
+      return { p, legend };
+    },
+    // 伸ばす数だけ水玉
+    hand(r) {
+      const n = this._vine.gap;
+      return Array.from({ length: n }, () => `water ${pick(r, ['#', '#', '##'])}`);
+    },
+  },
+  // 賢者の石（区切り）：金の刻印と鉛の刻印の間を、鉛でない素材で区切る（7-3・7-8）（2026-11-18）
+  goldSep: {
+    name: '賢者の石',
+    idea: '金の刻印と鉛の刻印の間を、鉛でない素材で区切る',
+    feature: 'gild',
+    main: hand => hand.map(h => h.split(' ')[0]).filter(m => m !== 'lead' && m !== 'stone').slice(0, 1),
+    maxLeads: 3,
+    size: r => [between(r, 4, 5), between(r, 3, 4)],
+    terrain(r, W, H) {
+      // いちばん上は空きマス（石を置く所）。区切りの列の左が金、右が鉛（左右は入れ替えることもある）
+      const s = between(r, 1, W - 2);
+      const flip = r() < 0.5;
+      const t = Array.from({ length: H }, (_, y) =>
+        Array.from({ length: W }, (_, x) => (y === 0 ? '.' : x === s ? '+' : (x < s) !== flip ? 'G' : 'L')),
+      );
+      this._sep = { s, h: H - 1 };
+      return t;
+    },
+    hand(r) {
+      const h = this._sep.h;
+      // 区切りの列の高さちょうどの縦棒（星砂は縦に落ちて、粒もその列に積もる）
+      const sep = pick(r, ['ice', 'sand', 'slime']);
+      return ['stone #', `${sep} ${Array(h).fill('#').join('/')}`];
+    },
+  },
+  // 角笛とつる（組み合わせ）：水玉でつるを伸ばして、角笛で押したピースを止める「止め木」にする（2026-11-18 人の案）
+  hornVine: {
+    name: '角笛とつる',
+    idea: 'つるを伸ばして、角笛で押したピースを途中で止める',
+    feature: 'push',
+    main: ['horn', 'water'],
+    maxLeads: 3,
+    size: r => [between(r, 4, 5), between(r, 3, 4)],
+    terrain(r, W, H) {
+      const t = hornTerrain(r, W, H);
+      // つるを置く列（いちばん下が壁でない列）
+      const cols = [];
+      for (let x = 0; x < W; x++) if (t[H - 1][x] !== '#') cols.push(x);
+      this._vine = { c: pick(r, cols) };
+      return t;
+    },
+    presets(r, W, H) {
+      const p = Array.from({ length: H }, () => Array(W).fill('.'));
+      p[H - 1][this._vine.c] = 'a';
+      return { p, legend: { a: 'vine' } };
+    },
+    hand: r => ['horn #', 'water #', ...(r() < 0.5 ? ['water #'] : []), ...(r() < 0.3 ? ['horn #'] : [])],
+  },
   sand: {
     name: '星砂は真下に',
     idea: '星砂は止まるとばらけて、粒が真下に流れ込む（形のままでは入らない所にも入る）',
@@ -516,11 +605,18 @@ export function makeThemed(r, key, { maxNodes = 200000, stats = null, big = fals
   // 最初から置く物に合わせて、器を直す（例：溶かす鱗のマスを×印に）
   if (th.finish && pre) th.finish(grid, pre);
   const terrain = grid.map(row => row.join(''));
-  const targets = terrain.join('').split('').filter(c => c === '+').length;
+  const targets = terrain.join('').split('').filter(c => '+GL'.includes(c)).length;
   const must = th.hand(r);
-  // 鱗は溶けて消えるので、刻印を埋めるマスには数えない（最初から置く鉛は数える）
-  const mustCells = must.reduce((n, h) => n + (h.startsWith('ice') ? 0 : cellsOf(h.split(' ')[1])), 0);
-  const preCells = pre ? pre.p.flat().filter(c => c !== '.' && pre.legend[c] === 'lead').length : 0;
+  // 刻印を埋めるマスの数え方：鱗は溶けて消えるので0、水玉は吸われてつるが1マス伸びるので1つで1、
+  // 賢者の石は刻印のない所に置くので0。最初から置く物（鱗のほか）が刻印のマスにあれば、その分は埋まっている
+  const fillOf = h => {
+    const [m, sh] = h.split(' ');
+    return m === 'ice' || m === 'stone' ? 0 : m === 'water' ? 1 : cellsOf(sh);
+  };
+  const mustCells = must.reduce((n, h) => n + fillOf(h), 0);
+  const preCells = pre
+    ? pre.p.reduce((n, row, y) => n + row.filter((c, x) => c !== '.' && !pre.legend[c].startsWith('ice') && '+GL'.includes(grid[y][x])).length, 0)
+    : 0;
   const need = targets - mustCells - preCells;
   if (need < 1) return why('鉛が入らない');
   // 鉛を1〜3個、合計がちょうど need マスになる組み合わせを全部挙げて、ランダムな順にためす
@@ -569,15 +665,22 @@ export function makeThemed(r, key, { maxNodes = 200000, stats = null, big = fals
       continue;
     }
     // メインの素材を、同じ形の鉛に替えると解けないこと（メインが最初から置く物のテーマは、形で確かめ済み）
-    if (th.main) {
-      const swapped = { ...raw, hand: hand.map(h => (h.startsWith(`${th.main} `) ? `lead ${h.split(' ')[1]}` : h)) };
+    // main は1つの素材か、素材の並び（どれを鉛に替えても解けないこと）
+    const mains = mainsOf(th, hand);
+    let replaceable = false;
+    for (const m of mains) {
+      const swapped = { ...raw, hand: hand.map(h => (h.startsWith(`${m} `) ? `lead ${h.split(' ')[1]}` : h)) };
       t0 = Date.now();
       const rs = exists(createState(parseStage(stageToText(swapped))), { maxNodes });
       clock('鉛に替えて解けるか', t0);
       if (rs.found || rs.truncated) {
-        why('鉛に替えても解ける');
-        continue;
+        replaceable = true;
+        break;
       }
+    }
+    if (replaceable) {
+      why('鉛に替えても解ける');
+      continue;
     }
     t0 = Date.now();
     const res = solveState(root, { maxNodes, examples: 1 });
@@ -621,4 +724,9 @@ export function earlyShare(stage, maxNodes = 200000) {
   if (!frontier.length) return 0;
   const ok = frontier.filter(s => solveState(s, { maxNodes }).solvable).length;
   return Math.round((ok / frontier.length) * 100) / 100;
+}
+
+// テーマの「鉛に替えると解けないはずの素材」の並び（main は素材名・並び・手持ちから決める関数のどれか）
+export function mainsOf(th, hand) {
+  return typeof th.main === 'function' ? th.main(hand) : Array.isArray(th.main) ? th.main : th.main ? [th.main] : [];
 }

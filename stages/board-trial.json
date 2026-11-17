@@ -1,1 +1,83 @@
-[]
+[
+ {
+  "id": "trial-35",
+  "theme": "hornVine",
+  "bits": 13.6,
+  "seed": 13087111,
+  "big": true,
+  "finalStates": 1,
+  "text": "format: 1\nid: trial-35\ntitle: 試作35\nrequest: 森の薬師が、台座を作ってほしいと言っている。\nterrain:\n  ++++#\n  +++++\n  +++++\npieces:\n  .....\n  .....\n  .a...\nlegend:\n  a: vine\nhand:\n  lead ##./.##\n  lead ###\n  water #\n  lead ###\n  water #\n  horn #\nsolution:\n  3 r0 x0\n  6 r0 x0\n  1 r0 x0\n  2 r1 x3\n  5 r0 x2\n  4 r0 x0\n"
+ },
+ {
+  "id": "trial-36",
+  "theme": "vineShelf",
+  "bits": 10.3,
+  "seed": 13047515,
+  "big": true,
+  "finalStates": 2,
+  "text": "format: 1\nid: trial-36\ntitle: 試作36\nrequest: 王立図書館の司書が、踏み台を作ってほしいと言っている。\nterrain:\n  +++#+\n  +++#+\n  +++++\n  +++++\npieces:\n  .....\n  .....\n  .....\n  ...a.\nlegend:\n  a: vine\nhand:\n  lead ##/##\n  water #\n  lead ####\n  lead .#/.#/##\n  lead #./#./##\nsolution:\n  2 r0 x2\n  3 r1 x4\n  4 r1 x0\n  1 r0 x1\n  5 r1 x0\n"
+ },
+ {
+  "id": "trial-37",
+  "theme": "goldSep",
+  "bits": 12.6,
+  "seed": 13007925,
+  "big": true,
+  "finalStates": 4,
+  "text": "format: 1\nid: trial-37\ntitle: 試作37\nrequest: 王立図書館の司書が、文鎮を作ってほしいと言っている。\nterrain:\n  ....\n  L+GG\n  L+GG\n  L+GG\nhand:\n  lead ###\n  lead ##/#.\n  sand #/#/#\n  stone #\n  lead ##/#.\nsolution:\n  1 r1 x0\n  2 r2 x2\n  3 r0 x1\n  5 r0 x2\n  4 r0 x2\n"
+ },
+ {
+  "id": "trial-38",
+  "theme": "hornVine",
+  "bits": 13.8,
+  "seed": 13039602,
+  "big": true,
+  "finalStates": 20,
+  "text": "format: 1\nid: trial-38\ntitle: 試作38\nrequest: 宝石商が、台座を作ってほしいと言っている。\nterrain:\n  #+++#\n  +++++\n  +++++\npieces:\n  .....\n  .....\n  ...a.\nlegend:\n  a: vine\nhand:\n  horn #\n  water #\n  lead #./##\n  water #\n  horn #\n  lead ##./.##\n  lead #\nsolution:\n  2 r0 x2\n  1 r1 x3\n  3 r0 x1\n  4 r0 x1\n  5 r0 x2\n  6 r0 x1\n  7 r0 x3\n"
+ },
+ {
+  "id": "trial-39",
+  "theme": "goldSep",
+  "bits": 13.2,
+  "seed": 13126705,
+  "big": true,
+  "finalStates": 1,
+  "text": "format: 1\nid: trial-39\ntitle: 試作39\nrequest: 城の庭師が、鋳型を作ってほしいと言っている。\nterrain:\n  .....\n  LLL+G\n  LLL+G\nhand:\n  lead ###\n  lead ###/.#.\n  lead ###\n  stone #\n  ice #/#\nsolution:\n  1 r0 x0\n  2 r2 x0\n  3 r1 x4\n  5 r0 x3\n  4 r0 x3\n"
+ },
+ {
+  "id": "trial-40",
+  "theme": "vineShelf",
+  "bits": 8.8,
+  "seed": 13118785,
+  "big": true,
+  "finalStates": 4,
+  "text": "format: 1\nid: trial-40\ntitle: 試作40\nrequest: 宝石商が、留め金を作ってほしいと言っている。\nterrain:\n  #+#+++\n  ++++++\n  ++++++\npieces:\n  ......\n  ......\n  a.b...\nlegend:\n  a: vine\n  b: vine\nhand:\n  water ##\n  water ##\n  lead #\n  lead .#/.#/##\n  lead ##./.##\n  lead ###\nsolution:\n  1 r0 x3\n  2 r1 x1\n  3 r0 x3\n  5 r0 x3\n  4 r3 x3\n  6 r1 x1\n"
+ },
+ {
+  "id": "trial-41",
+  "theme": "hornVine",
+  "bits": 12.8,
+  "seed": 13158381,
+  "big": true,
+  "finalStates": 2,
+  "text": "format: 1\nid: trial-41\ntitle: 試作41\nrequest: 王立図書館の司書が、踏み台を作ってほしいと言っている。\nterrain:\n  ##++\n  ##++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  ....\n  ..a.\nlegend:\n  a: vine\nhand:\n  lead ##\n  horn #\n  horn #\n  lead ###/.#.\n  water #\n  lead #\n  water #\nsolution:\n  5 r0 x3\n  1 r1 x2\n  2 r1 x3\n  3 r1 x3\n  6 r0 x2\n  4 r3 x2\n  7 r0 x3\n"
+ },
+ {
+  "id": "trial-42",
+  "theme": "vineShelf",
+  "bits": 10.7,
+  "seed": 13071275,
+  "big": true,
+  "finalStates": 8,
+  "text": "format: 1\nid: trial-42\ntitle: 試作42\nrequest: 山あいの鍛冶屋が、留め金を作ってほしいと言っている。\nterrain:\n  ++++#\n  +++++\n  +++++\npieces:\n  .....\n  .....\n  ....a\nlegend:\n  a: vine\nhand:\n  lead ###\n  lead .#/.#/##\n  lead #\n  lead ##./.##\n  water #\nsolution:\n  1 r1 x0\n  3 r0 x1\n  5 r0 x3\n  4 r0 x1\n  2 r3 x1\n"
+ },
+ {
+  "id": "trial-43",
+  "theme": "goldSep",
+  "bits": 11.3,
+  "seed": 13007930,
+  "big": true,
+  "finalStates": 1,
+  "text": "format: 1\nid: trial-43\ntitle: 試作43\nrequest: 岬の灯台守が、留め金を作ってほしいと言っている。\nterrain:\n  ....\n  GG+L\n  GG+L\nhand:\n  stone #\n  ice #/#\n  lead #\n  lead #./##\n  lead ##/##\nsolution:\n  2 r0 x2\n  3 r0 x3\n  4 r2 x2\n  5 r0 x0\n  1 r0 x0\n"
+ }
+]
