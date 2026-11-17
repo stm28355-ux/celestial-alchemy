@@ -295,8 +295,8 @@ async function showBoard() {
       <p class="back"><a href="#/">← タイトル</a></p>
       <h2>依頼の掲示板 <small>${done} / ${list.length}</small></h2>
       <p class="master-line">「腕の立つ錬金術師へ。どれも一筋縄ではいかない依頼ばかりだ。」</p>
-      ${trials.length ? `<h3>作り方の試作 <small>テーマから作った${trials.length}問。遊んで感想を聞かせてください</small></h3>
-      <ol class="stage-list board-list">${trials.map((b, k) => `<li><a class="stage-item${save.isCleared(b.id) ? ' cleared' : ''}" href="#/trial/${k + 1}"><span class="num">${k + 1}</span><span class="name">${escapeHTML(b.stage.title)}</span><span class="req">${THEME_MATS([...b.stage.hand.map(h => h.mat), ...b.stage.pieces.map(p => p.mat)])}</span></a></li>`).join('')}</ol>
+      ${trials.length ? `<h3>作り方の試作 <small>テーマから作った${trials.length}問（テーマと素材は伏せています）。遊んで感想を聞かせてください</small></h3>
+      <ol class="stage-list board-list">${trials.map((b, k) => `<li><a class="stage-item${save.isCleared(b.id) ? ' cleared' : ''}" href="#/trial/${k + 1}"><span class="num">${k + 1}</span><span class="name">${escapeHTML(b.stage.title)}</span><span class="req">${escapeHTML(b.stage.request)}</span></a></li>`).join('')}</ol>
       <h3>依頼（前の作り方の100問）</h3>` : ''}
       <div class="board-new">
         <button id="find-new">新しい依頼を探す</button>

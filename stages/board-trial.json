@@ -1,158 +1,74 @@
 [
  {
-  "id": "trial-1",
-  "theme": "melt",
-  "bits": 12.2,
-  "seed": 1121,
-  "text": "format: 1\nid: trial-1\ntitle: 試作1：溶けて落ちる\nrequest: 鱗が溶けると、上に乗っていた物が落ちる。それを使う依頼。\nterrain:\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  .b..\n  aa..\nlegend:\n  a: ice\n  b: lead\nhand:\n  ice ###\n  lead ##./.##\n  fire #\n  lead ##/#.\n  lead #./##\nsolution:\n  3 r0 x0\n  1 r0 x0\n  2 r0 x1\n  4 r0 x0\n  5 r2 x2\n"
- },
- {
-  "id": "trial-2",
-  "theme": "melt",
-  "bits": 17.1,
-  "seed": 1219,
-  "text": "format: 1\nid: trial-2\ntitle: 試作2：溶けて落ちる\nrequest: 鱗が溶けると、上に乗っていた物が落ちる。それを使う依頼。\nterrain:\n  ++++\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  aaa.\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead .#/.#/##\n  lead .##/##.\n  ice ###\n  fire #\n  lead ##./.##\n  lead #./##\nsolution:\n  3 r0 x0\n  4 r0 x0\n  5 r0 x0\n  2 r1 x2\n  6 r0 x0\n  1 r3 x1\n"
- },
- {
-  "id": "trial-3",
-  "theme": "melt",
-  "bits": 9.7,
-  "seed": 1045,
-  "text": "format: 1\nid: trial-3\ntitle: 試作3：溶けて落ちる\nrequest: 鱗が溶けると、上に乗っていた物が落ちる。それを使う依頼。\nterrain:\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  aaaa\n  ....\nlegend:\n  a: ice fixed\nhand:\n  ice ##\n  fire #\n  lead ##/#.\n  lead ####\n  lead ##./.##\nsolution:\n  1 r0 x1\n  2 r0 x0\n  5 r0 x0\n  3 r1 x2\n  4 r0 x0\n"
- },
- {
-  "id": "trial-4",
-  "theme": "sand",
-  "bits": 12.7,
-  "seed": 1147,
-  "text": "format: 1\nid: trial-4\ntitle: 試作4：星砂は真下に\nrequest: 星砂は止まるとばらけて、粒が真下に流れ込む。それを使う依頼。\nterrain:\n  +++++\n  +++++\n  ++#++\nhand:\n  lead ##./.##\n  lead ##\n  sand ###\n  lead ##./.##\n  lead #\nsolution:\n  1 r0 x2\n  2 r1 x4\n  3 r0 x1\n  4 r1 x0\n  5 r0 x0\n"
- },
- {
-  "id": "trial-5",
-  "theme": "sand",
-  "bits": 5.8,
-  "seed": 1191,
-  "text": "format: 1\nid: trial-5\ntitle: 試作5：星砂は真下に\nrequest: 星砂は止まるとばらけて、粒が真下に流れ込む。それを使う依頼。\nterrain:\n  ++++\n  ++++\n  #+++\nhand:\n  lead ###/.#.\n  sand ###\n  lead ###/.#.\nsolution:\n  2 r0 x0\n  1 r1 x2\n  3 r0 x0\n"
- },
- {
-  "id": "trial-6",
-  "theme": "sand",
-  "bits": 9.1,
-  "seed": 1201,
-  "text": "format: 1\nid: trial-6\ntitle: 試作6：星砂は真下に\nrequest: 星砂は止まるとばらけて、粒が真下に流れ込む。それを使う依頼。\nterrain:\n  ++++\n  ++++\n  ++#+\nhand:\n  lead #\n  sand ##\n  lead ###/.#.\n  lead ##./.##\nsolution:\n  3 r1 x2\n  2 r0 x1\n  4 r1 x0\n  1 r0 x0\n"
- },
- {
-  "id": "trial-7",
-  "theme": "melt",
-  "bits": 18.4,
-  "seed": 5029,
-  "big": true,
-  "finalStates": 6,
-  "text": "format: 1\nid: trial-7\ntitle: 試作7：溶けて落ちる（大きい器）\nrequest: 鱗が溶けると、上に乗っていた物が落ちる。それを使う依頼。答えはいくつかある。\nterrain:\n  ++++\n  ++++\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  ....\n  .b..\n  .aa.\nlegend:\n  a: ice\n  b: lead\nhand:\n  lead ###\n  lead ##/#.\n  lead #./#./##\n  fire #\n  lead .##/##.\n  ice ##\n  lead #./#./##\nsolution:\n  1 r1 x0\n  4 r0 x3\n  5 r1 x1\n  6 r1 x3\n  2 r1 x2\n  3 r3 x1\n  7 r1 x0\n"
- },
- {
-  "id": "trial-8",
-  "theme": "melt",
-  "bits": 22.3,
-  "seed": 5061,
-  "big": true,
-  "finalStates": 4,
-  "text": "format: 1\nid: trial-8\ntitle: 試作8：溶けて落ちる（大きい器）\nrequest: 鱗が溶けると、上に乗っていた物が落ちる。それを使う依頼。答えはいくつかある。\nterrain:\n  +++++\n  +++++\n  +++++\n  +++++\npieces:\n  .....\n  .....\n  ..bb.\n  .aa..\nlegend:\n  a: ice\n  b: lead\nhand:\n  lead ##\n  fire #\n  ice ###\n  lead #./##\n  lead ###/.#.\n  lead ##./.##\n  lead .##/##.\nsolution:\n  1 r1 x4\n  2 r0 x0\n  3 r0 x0\n  5 r0 x0\n  6 r1 x3\n  7 r0 x1\n  4 r1 x0\n"
- },
- {
-  "id": "trial-9",
-  "theme": "melt",
-  "bits": 15.5,
-  "seed": 5023,
+  "id": "trial-19",
+  "theme": "hornMelt",
+  "bits": 15,
+  "seed": 5166306,
   "big": true,
   "finalStates": 1,
-  "text": "format: 1\nid: trial-9\ntitle: 試作9：溶けて落ちる（大きい器）\nrequest: 鱗が溶けると、上に乗っていた物が落ちる。それを使う依頼。答えはいくつかある。\nterrain:\n  ++++\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  aaa.\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead .##/##.\n  lead #\n  lead ###\n  ice #\n  fire #\n  lead ###\n  lead .##/##.\nsolution:\n  3 r1 x3\n  4 r0 x1\n  5 r0 x2\n  1 r0 x0\n  6 r1 x0\n  7 r0 x1\n  2 r0 x1\n"
+  "text": "format: 1\nid: trial-19\ntitle: 試作19\nrequest: 鉱山の親方が、重しを作ってほしいと言っている。\nterrain:\n  #++++\n  +++++\n  +++++\nhand:\n  horn #\n  fire #\n  lead ###/.#.\n  lead #./#./##\n  ice #/#\n  lead ##./.##\nsolution:\n  5 r0 x3\n  6 r1 x1\n  1 r1 x3\n  2 r0 x2\n  3 r3 x2\n  4 r2 x3\n"
  },
  {
-  "id": "trial-10",
-  "theme": "sand",
-  "bits": 17.1,
-  "seed": 5062,
+  "id": "trial-20",
+  "theme": "tallIce",
+  "bits": 14.7,
+  "seed": 5158382,
   "big": true,
-  "finalStates": 4,
-  "text": "format: 1\nid: trial-10\ntitle: 試作10：星砂は真下に（大きい器）\nrequest: 星砂は止まるとばらけて、粒が真下に流れ込む。それを使う依頼。答えはいくつかある。\nterrain:\n  +++++\n  +++++\n  +++++\n  ++#++\nhand:\n  lead ##/##\n  lead ###/.#.\n  sand ##\n  lead ##\n  lead ###\n  lead ###/.#.\nsolution:\n  1 r0 x0\n  3 r0 x2\n  2 r1 x3\n  5 r0 x0\n  4 r0 x0\n  6 r0 x2\n"
+  "finalStates": 2,
+  "text": "format: 1\nid: trial-20\ntitle: 試作20\nrequest: 時計塔の番人が、留め金を作ってほしいと言っている。\nterrain:\n  ++++\n  +#++\n  +x++\n  +.++\npieces:\n  ....\n  ....\n  .a..\n  ....\nlegend:\n  a: ice fixed\nhand:\n  fire #\n  lead #\n  sand ###\n  lead .##/##.\n  ice ##\n  lead .#/.#/##\nsolution:\n  2 r0 x0\n  3 r1 x0\n  5 r0 x2\n  1 r0 x2\n  4 r1 x2\n  6 r3 x1\n"
  },
  {
-  "id": "trial-11",
+  "id": "trial-21",
   "theme": "sand",
-  "bits": 10.3,
-  "seed": 5274,
-  "big": true,
-  "finalStates": 4,
-  "text": "format: 1\nid: trial-11\ntitle: 試作11：星砂は真下に（大きい器）\nrequest: 星砂は止まるとばらけて、粒が真下に流れ込む。それを使う依頼。答えはいくつかある。\nterrain:\n  ++++++\n  ++++++\n  #++#++\nhand:\n  lead ##\n  lead .#/.#/##\n  lead ###/.#.\n  sand ##\n  lead ##/##\nsolution:\n  1 r1 x2\n  2 r0 x4\n  4 r0 x0\n  3 r0 x0\n  5 r0 x3\n"
- },
- {
-  "id": "trial-12",
-  "theme": "sand",
-  "bits": 12.6,
-  "seed": 5092,
+  "bits": 15.2,
+  "seed": 5031676,
   "big": true,
   "finalStates": 3,
-  "text": "format: 1\nid: trial-12\ntitle: 試作12：星砂は真下に（大きい器）\nrequest: 星砂は止まるとばらけて、粒が真下に流れ込む。それを使う依頼。答えはいくつかある。\nterrain:\n  +++++\n  +++++\n  +++++\n  ++++#\nhand:\n  lead ##./.##\n  lead .#/.#/##\n  lead ##./.##\n  sand ####\n  lead ###\nsolution:\n  1 r1 x3\n  2 r1 x0\n  3 r0 x0\n  4 r0 x0\n  5 r0 x2\n"
+  "text": "format: 1\nid: trial-21\ntitle: 試作21\nrequest: 森の薬師が、型板を作ってほしいと言っている。\nterrain:\n  ++++++\n  ++++++\n  +++++#\n  #++++#\nhand:\n  lead ###\n  lead ###/.#.\n  lead ###/.#.\n  sand ###\n  lead ###\n  lead .##/##.\nsolution:\n  1 r0 x2\n  2 r3 x1\n  4 r0 x3\n  5 r1 x0\n  6 r0 x3\n  3 r0 x1\n"
  },
  {
-  "id": "trial-13",
-  "theme": "tallIce",
-  "bits": 20.2,
-  "seed": 8097,
-  "big": true,
-  "finalStates": 1,
-  "early": null,
-  "text": "format: 1\nid: trial-13\ntitle: 試作13：高い鱗\nrequest: 上がふさがった高い鱗に、横から火種を届かせる。そういう依頼。答えはいくつかあることもある。\nterrain:\n  +++++\n  +++#+\n  +++x+\n  +++.+\npieces:\n  .....\n  .....\n  ...a.\n  .....\nlegend:\n  a: ice fixed\nhand:\n  sand ##\n  lead ##/#.\n  sand ###\n  lead ###/.#.\n  fire #\n  lead .##/##.\nsolution:\n  3 r0 x2\n  5 r0 x4\n  1 r1 x4\n  6 r0 x0\n  4 r3 x0\n  2 r1 x1\n"
- },
- {
-  "id": "trial-14",
-  "theme": "tallIce",
-  "bits": 10.8,
-  "seed": 8078,
-  "big": true,
-  "finalStates": 50,
-  "early": 0.04,
-  "text": "format: 1\nid: trial-14\ntitle: 試作14：高い鱗\nrequest: 上がふさがった高い鱗に、横から火種を届かせる。そういう依頼。答えはいくつかあることもある。\nterrain:\n  #+++\n  x+++\n  x+++\n  .+++\npieces:\n  ....\n  a...\n  a...\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead ##\n  lead ##/##\n  sand ##\n  fire #\n  ice #\n  lead #./##\nsolution:\n  1 r0 x1\n  4 r0 x1\n  3 r1 x1\n  5 r0 x2\n  6 r2 x2\n  2 r0 x2\n"
- },
- {
-  "id": "trial-15",
-  "theme": "hornMelt",
-  "bits": 20.1,
-  "seed": 8375,
-  "big": true,
-  "finalStates": 4,
-  "early": null,
-  "text": "format: 1\nid: trial-15\ntitle: 試作15：角笛と鱗\nrequest: 鱗が溶けて角笛が落ちると、落ちた先でもう一度押す。そういう依頼。答えはいくつかあることもある。\nterrain:\n  ++++#\n  +++++\n  +++++\nhand:\n  ice #\n  fire #\n  lead ###\n  lead .##/##.\n  horn #\n  horn #\n  lead ##./.##\nsolution:\n  1 r0 x0\n  4 r1 x1\n  5 r0 x0\n  2 r0 x1\n  7 r0 x0\n  6 r0 x2\n  3 r0 x0\n"
- },
- {
-  "id": "trial-16",
-  "theme": "hornMelt",
-  "bits": 16.4,
-  "seed": 8325,
-  "big": true,
-  "finalStates": 1,
-  "early": null,
-  "text": "format: 1\nid: trial-16\ntitle: 試作16：角笛と鱗\nrequest: 鱗が溶けて角笛が落ちると、落ちた先でもう一度押す。そういう依頼。答えはいくつかあることもある。\nterrain:\n  #++++\n  +++++\n  +++++\nhand:\n  lead #./#./##\n  horn #\n  fire #\n  lead .##/##.\n  ice ##\n  lead ##./.##\nsolution:\n  5 r0 x3\n  6 r1 x2\n  2 r1 x4\n  3 r0 x3\n  4 r0 x2\n  1 r1 x2\n"
- },
- {
-  "id": "trial-17",
+  "id": "trial-22",
   "theme": "hornFire",
-  "bits": 18.4,
-  "seed": 8255,
+  "bits": 17.7,
+  "seed": 5055438,
   "big": true,
   "finalStates": 2,
-  "early": null,
-  "text": "format: 1\nid: trial-17\ntitle: 試作17：角笛と火種\nrequest: 上から届かない肩の下の鱗に、角笛で火種を押し当てる。そういう依頼。答えはいくつかあることもある。\nterrain:\n  #++++\n  +++++\n  x++++\npieces:\n  .....\n  .....\n  a....\nlegend:\n  a: ice fixed\nhand:\n  horn #\n  lead ####\n  fire #\n  lead ##\n  ice ##\n  lead ##/##\n  horn #\nsolution:\n  5 r0 x3\n  4 r0 x2\n  1 r1 x4\n  3 r0 x3\n  6 r0 x2\n  7 r0 x4\n  2 r0 x1\n"
+  "text": "format: 1\nid: trial-22\ntitle: 試作22\nrequest: 王立図書館の司書が、型板を作ってほしいと言っている。\nterrain:\n  +++#\n  ++++\n  ++++\n  +++x\npieces:\n  ....\n  ....\n  ....\n  ...a\nlegend:\n  a: ice fixed\nhand:\n  horn #\n  horn #\n  fire #\n  lead ##./.##\n  lead .##/##.\n  lead ##/#.\nsolution:\n  3 r0 x1\n  6 r2 x0\n  1 r0 x0\n  5 r1 x0\n  4 r0 x0\n  2 r0 x2\n"
  },
  {
-  "id": "trial-18",
-  "theme": "hornFire",
-  "bits": 22.4,
-  "seed": 8263,
+  "id": "trial-23",
+  "theme": "melt",
+  "bits": 18.7,
+  "seed": 5102958,
   "big": true,
-  "finalStates": 2,
-  "early": null,
-  "text": "format: 1\nid: trial-18\ntitle: 試作18：角笛と火種\nrequest: 上から届かない肩の下の鱗に、角笛で火種を押し当てる。そういう依頼。答えはいくつかあることもある。\nterrain:\n  #++++\n  +++++\n  x++++\npieces:\n  .....\n  .....\n  a....\nlegend:\n  a: ice fixed\nhand:\n  lead ###/.#.\n  lead .##/##.\n  horn #\n  horn #\n  lead ##\n  fire #\n  ice ##\nsolution:\n  7 r0 x3\n  5 r0 x2\n  3 r1 x4\n  6 r0 x3\n  2 r0 x2\n  1 r0 x1\n  4 r0 x4\n"
+  "finalStates": 5,
+  "text": "format: 1\nid: trial-23\ntitle: 試作23\nrequest: 時計塔の番人が、蓋を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  ....\n  .bb.\n  ..aa\nlegend:\n  a: ice\n  b: lead\nhand:\n  lead .##/##.\n  lead ##/#.\n  fire #\n  lead ###/.#.\n  ice ###\n  lead ##/##\n  lead ##\nsolution:\n  3 r0 x3\n  4 r3 x0\n  1 r1 x0\n  5 r1 x3\n  6 r0 x2\n  2 r1 x1\n  7 r1 x3\n"
+ },
+ {
+  "id": "trial-24",
+  "theme": "tallIce",
+  "bits": 13.6,
+  "seed": 5000003,
+  "big": true,
+  "finalStates": 1,
+  "text": "format: 1\nid: trial-24\ntitle: 試作24\nrequest: 港の船大工が、台座を作ってほしいと言っている。\nterrain:\n  #+++\n  x+++\n  .+++\n  .+++\npieces:\n  ....\n  a...\n  ....\n  ....\nlegend:\n  a: ice fixed\nhand:\n  ice #\n  fire #\n  lead ##/#.\n  lead ##./.##\n  lead #./#./##\nsolution:\n  5 r3 x1\n  1 r0 x1\n  2 r0 x1\n  4 r1 x2\n  3 r0 x1\n"
+ },
+ {
+  "id": "trial-25",
+  "theme": "hornFire",
+  "bits": 19,
+  "seed": 5055453,
+  "big": true,
+  "finalStates": 1,
+  "text": "format: 1\nid: trial-25\ntitle: 試作25\nrequest: 天文台の学者が、重しを作ってほしいと言っている。\nterrain:\n  #++++\n  +++++\n  x++++\npieces:\n  .....\n  .....\n  a....\nlegend:\n  a: ice fixed\nhand:\n  ice ##\n  lead ##/#.\n  horn #\n  lead ##/##\n  lead .#/.#/##\n  fire #\nsolution:\n  1 r0 x3\n  2 r2 x2\n  3 r1 x4\n  6 r0 x3\n  4 r0 x2\n  5 r3 x2\n"
+ },
+ {
+  "id": "trial-26",
+  "theme": "hornMelt",
+  "bits": 17.1,
+  "seed": 5166312,
+  "big": true,
+  "finalStates": 1,
+  "text": "format: 1\nid: trial-26\ntitle: 試作26\nrequest: 城の庭師が、鋳型を作ってほしいと言っている。\nterrain:\n  +++##\n  +++++\n  +++++\nhand:\n  lead ##/#.\n  horn #\n  lead #./#./##\n  ice ##\n  fire #\n  lead .##/##.\nsolution:\n  4 r0 x0\n  1 r1 x1\n  2 r0 x0\n  5 r0 x1\n  6 r1 x0\n  3 r2 x1\n"
  }
 ]
