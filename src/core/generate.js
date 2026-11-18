@@ -824,6 +824,127 @@ export const THEMED = {
     },
     hand: r => ['horn #', ...(r() < 0.4 ? ['horn #'] : [])],
   },
+  // ── 2026-11-19 新しい器の形と、別のパターンの試作 ──
+  // 角笛と水玉・ゼリーと角笛を、新しい形の器で（今の器の形では、解ける形が3〜5種類しかなかった）
+  hornWaterX: {
+    name: '角笛と水玉（新しい器）',
+    idea: '水玉が火種と一緒に消えて、落ちた角笛がもう一度押す',
+    feature: 'steamPush',
+    main: ['horn', 'water'],
+    maxLeads: 3,
+    hand: r => ['horn #', 'fire #', `water ${pick(r, ['#', '#', '##', '#/#'])}`, ...(r() < 0.4 ? ['horn #'] : [])],
+    size: r => [between(r, 5, 6), between(r, 3, 4)],
+    // 新しい器のうち角笛で解けたのは段の肩だけだったので、段の肩と、幅の広い器の肩
+    terrain: (r, W, H) => (r() < 0.5 ? newHornTerrain(r, W, H, 'stair') : shoulderTerrain(r, W, H)),
+    fill: m => (m === 'fire' || m === 'water' ? 0 : null),
+    spread: () => [-1, 0],
+  },
+  slimeHornX: {
+    name: 'ゼリーと角笛（新しい器）',
+    idea: 'ゼリーでくっついた組は、角笛にまとめて押される',
+    feature: ['push', 'glue'],
+    main: ['horn', 'slime'],
+    maxLeads: 3,
+    hand: r => ['horn #', `slime ${pick(r, ['#', '##', '#/#'])}`, ...(r() < 0.3 ? ['slime #'] : []), ...(r() < 0.3 ? ['horn #'] : [])],
+    size: r => [between(r, 4, 6), between(r, 3, 4)],
+    terrain: newHornTerrain,
+    fill: (m, sh) => cellsOf(sh),
+  },
+  // 水玉の仮の床：水玉の上に積んでから、火種で水玉を消す。鱗と違って火種も一緒に消えるので、火種のいた所も空く
+  steamFall: {
+    name: '水玉の仮の床',
+    idea: '水玉の上に積んでから火種で消すと、上の物が落ちる（火種も消える）',
+    feature: 'steamFall',
+    main: ['water', 'fire'],
+    maxLeads: 3,
+    hand: r => ['fire #', `water ${pick(r, ['##', '#/#', '#', '###'])}`],
+    size: r => [between(r, 4, 5), between(r, 3, 4)],
+    terrain(r, W, H) {
+      const t = Array.from({ length: H }, () => Array(W).fill('+'));
+      if (r() < 0.5) t[H - 1][between(r, 0, W - 1)] = '#';
+      return t;
+    },
+    // 火種と水玉は消える
+    fill: m => (m === 'fire' || m === 'water' ? 0 : null),
+  },
+  // 伸ばして燃やす：つるを水玉で伸ばして足場にし、上に積んでから火種で燃やして落とす
+  vineScaffold: {
+    name: '伸ばして燃やす',
+    idea: 'つるを伸ばして足場にし、あとで燃やして上の物を落とす',
+    feature: 'burnFall',
+    main: ['fire'],
+    maxLeads: 3,
+    size: r => [between(r, 4, 5), between(r, 3, 4)],
+    // つるのマスは×印（最後には燃やして空ける）。伸びた分のマスは、上から落ちてきた物で埋める
+    terrain(r, W, H) {
+      const t = Array.from({ length: H }, () => Array(W).fill('+'));
+      this._vine = between(r, 0, W - 1);
+      t[H - 1][this._vine] = 'x';
+      return t;
+    },
+    presets(r, W, H) {
+      const p = Array.from({ length: H }, () => Array(W).fill('.'));
+      p[H - 1][this._vine] = 'a';
+      return { p, legend: { a: 'vine' } };
+    },
+    hand: r => ['fire #', ...Array.from({ length: between(r, 1, 2) }, () => 'water #')],
+    // つるは燃えて消え、水玉は吸われる。火種は残る
+    fill: (m, sh) => (m === 'water' ? 0 : cellsOf(sh)),
+    spread: () => [0, 1],
+    keepIce: true,
+  },
+  // 賢者の石と鱗：鱗が溶けると、上の鉛が落ちて石（金）に触れ、金になる
+  goldMelt: {
+    name: '賢者の石と鱗',
+    idea: '鱗が溶けて落ちた鉛が、石や金に触れて金になる',
+    feature: 'meltGild',
+    main: ['ice'],
+    maxLeads: 3,
+    quickNodes: 100000,
+    size: r => [between(r, 4, 5), 4],
+    terrain(r, W, H) {
+      const t = THEMED.goldFew.terrain.call(this, r, W, H);
+      this._vine = null;
+      return t;
+    },
+    hand: r => ['stone #', 'fire #', `ice ${pick(r, ['#', '##', '#/#'])}`],
+    fill: (m, sh) => (m === 'stone' || m === 'ice' ? 0 : cellsOf(sh)),
+    spread: () => [-1, 0],
+  },
+  // 角笛と火種の使い道：肩の器で、角笛で火種を運ぶ。鱗・つる・水玉のどれを減らすかは、どの答えでも同じ
+  hornChoice: {
+    name: '角笛と火種の使い道',
+    idea: '角笛で火種を運び、鱗・つる・水玉のどれを減らすかを選ぶ',
+    feature: 'push',
+    main: ['horn'],
+    maxLeads: 3,
+    keepIce: true,
+    size: r => [between(r, 4, 5), between(r, 3, 4)],
+    terrain: shoulderTerrain,
+    presets(r, W, H) {
+      return THEMED.fireChoice.presets(r, W, H);
+    },
+    hand: r => ['horn #', 'fire #', ...Array.from({ length: between(r, 1, 2) }, () => pick(r, ['ice #', 'water #', 'vine #', 'ice ##']))],
+    fill: (m, sh) => cellsOf(sh),
+    spread(must, pre) {
+      return THEMED.fireChoice.spread(must, pre);
+    },
+    check(ctx) {
+      return THEMED.fireChoice.check(ctx);
+    },
+  },
+  // 角笛とゼリーと鱗：ゼリーでくっついた組を押す・鱗が溶けても組は落ちない、を肩の器で
+  hornSlimeIce: {
+    name: '角笛とゼリーと鱗',
+    idea: 'ゼリーでくっついた組を角笛で押し、鱗を溶かしても組は落ちない',
+    feature: ['push', 'glue', 'melt'],
+    main: ['horn', 'slime'],
+    maxLeads: 3,
+    size: r => [between(r, 4, 5), between(r, 3, 4)],
+    terrain: shoulderTerrain,
+    hand: r => ['horn #', 'fire #', `slime ${pick(r, ['#', '#/#'])}`, `ice ${pick(r, ['#', '##'])}`],
+    fill: (m, sh) => (m === 'ice' ? 0 : cellsOf(sh)),
+  },
   sand: {
     name: '星砂は真下に',
     idea: '星砂は止まるとばらけて、粒が真下に流れ込む（形のままでは入らない所にも入る）',
@@ -1079,4 +1200,37 @@ export function verifyThemed(key, st, { maxNodes = 600000 } = {}) {
 // テーマの「鉛に替えると解けないはずの素材」の並び（main は素材名・並び・手持ちから決める関数のどれか）
 export function mainsOf(th, hand) {
   return typeof th.main === 'function' ? th.main(hand) : Array.isArray(th.main) ? th.main : th.main ? [th.main] : [];
+}
+
+// 角笛の新しい器（2026-11-19）：真上からは入れず、押さないと埋まらない所の作り方を増やす
+//   つらら（上から垂れた壁）・浮いた棚・段の肩（2列で深さが違う）・上が開いた肩（枠の途中に出っぱり）
+function newHornTerrain(r, W, H, only = null) {
+  const t = Array.from({ length: H }, () => Array(W).fill('+'));
+  const kind = only ?? pick(r, ['hang', 'ledge', 'stair', 'lip']);
+  if (kind === 'hang') {
+    // 上から垂れた壁（1〜2列）。その下と横は押して入れる
+    const w = between(r, 1, 2);
+    const x = between(r, 1, W - 1 - w);
+    const d = between(r, 1, H - 2);
+    for (let y = 0; y < d; y++) for (let k = 0; k < w; k++) t[y][x + k] = '#';
+  } else if (kind === 'ledge') {
+    // 宙に浮いた棚（1〜2マス）。上には積めて、下は押して入れる
+    const w = between(r, 1, 2);
+    const x = between(r, 0, W - w);
+    const y = between(r, 1, H - 2);
+    for (let k = 0; k < w; k++) t[y][x + k] = '#';
+  } else if (kind === 'stair') {
+    // 段の肩：端の列は深く、となりの列は浅い
+    const left = r() < 0.5;
+    const d = between(r, 2, H - 1);
+    for (let y = 0; y < d; y++) t[y][left ? 0 : W - 1] = '#';
+    for (let y = 0; y < d - 1; y++) t[y][left ? 1 : W - 2] = '#';
+  } else {
+    // 上が開いた肩：端の列の途中に出っぱり（上は真上から入れ、下は押して入れる）
+    const left = r() < 0.5;
+    const y = between(r, 1, H - 2);
+    t[y][left ? 0 : W - 1] = '#';
+    if (r() < 0.5) t[y][left ? 1 : W - 2] = '#';
+  }
+  return t;
 }

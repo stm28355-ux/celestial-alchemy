@@ -21,13 +21,6 @@
   "text": "format: 1\nid: job-091\ntitle: 温室の番人の台座\nrequest: 温室の番人が、台座を作ってほしいと言っている。\nterrain:\n  #++++\n  +++++\n  x++++\npieces:\n  .....\n  .....\n  a....\nlegend:\n  a: ice fixed\nhand:\n  ice ##\n  lead ##\n  lead ##./.##\n  fire #\n  horn #\n  lead #./#./##\n  horn #\nsolution:\n  1 r0 x3\n  2 r0 x2\n  4 r0 x3\n  5 r1 x4\n  3 r1 x3\n  6 r2 x1\n  7 r0 x3\n"
  },
  {
-  "id": "job-087",
-  "theme": "hornFire",
-  "bits": 19.4,
-  "finalStates": 1,
-  "text": "format: 1\nid: job-087\ntitle: 人形師の台座\nrequest: 人形師が、台座を作ってほしいと言っている。\nterrain:\n  #++++\n  +++++\n  x++++\npieces:\n  .....\n  .....\n  a....\nlegend:\n  a: ice fixed\nhand:\n  fire #\n  ice ##\n  lead ###/.#.\n  horn #\n  lead ##/#.\n  lead #./#./##\nsolution:\n  2 r0 x2\n  5 r2 x1\n  4 r1 x3\n  1 r0 x2\n  3 r3 x2\n  6 r2 x3\n"
- },
- {
   "id": "job-080",
   "theme": "hornFire",
   "bits": 19.3,
@@ -75,6 +68,13 @@
   "bits": 18.6,
   "finalStates": 1,
   "text": "format: 1\nid: job-063\ntitle: 橋の番人の箱の底板\nrequest: 橋の番人が、箱の底板を作ってほしいと言っている。\nterrain:\n  #++++\n  +++++\n  x++++\npieces:\n  .....\n  .....\n  a....\nlegend:\n  a: ice fixed\nhand:\n  fire #\n  lead .##/##.\n  horn #\n  ice ##\n  lead #./##\n  lead #./#./##\nsolution:\n  4 r0 x3\n  5 r3 x2\n  3 r1 x4\n  1 r0 x3\n  2 r0 x2\n  6 r1 x2\n"
+ },
+ {
+  "id": "job-051",
+  "theme": "hornFire",
+  "bits": 18,
+  "finalStates": 8,
+  "text": "format: 1\nid: job-051\ntitle: 城の庭師の蓋\nrequest: 城の庭師が、蓋を作ってほしいと言っている。\nterrain:\n  #+++\n  ++++\n  ++++\n  x+++\npieces:\n  ....\n  ....\n  ....\n  a...\nlegend:\n  a: ice fixed\nhand:\n  ice ##\n  horn #\n  fire #\n  horn #\n  lead ##/#.\n  lead ##/##\n  lead ##./.##\nsolution:\n  1 r0 x1\n  3 r0 x2\n  5 r3 x2\n  2 r1 x3\n  7 r1 x2\n  4 r0 x3\n  6 r0 x1\n"
  },
  {
   "id": "job-036",
@@ -365,13 +365,6 @@
   "text": "format: 1\nid: more-224\ntitle: 織物屋の重し\nrequest: 織物屋が、重しを作ってほしいと言っている。\nterrain:\n  ++++#\n  +++++\n  +++++\nhand:\n  horn #\n  lead ###\n  slime #\n  horn #\n  lead ###/.#.\n  lead ##./.##\nsolution:\n  3 r0 x2\n  5 r3 x1\n  1 r0 x0\n  6 r0 x0\n  4 r0 x2\n  2 r0 x0\n"
  },
  {
-  "id": "job-123",
-  "theme": "slimeHorn",
-  "bits": 17.6,
-  "finalStates": 1,
-  "text": "format: 1\nid: job-123\ntitle: 鉱山の親方の台座\nrequest: 鉱山の親方が、台座を作ってほしいと言っている。\nterrain:\n  #++++\n  +++++\n  +++++\nhand:\n  lead ###\n  slime #\n  horn #\n  lead ##./.##\n  lead ####\n  slime #\nsolution:\n  2 r0 x2\n  4 r0 x2\n  3 r1 x4\n  6 r0 x3\n  1 r0 x2\n  5 r0 x1\n"
- },
- {
   "id": "more-225",
   "theme": "slimeHorn",
   "bits": 17.6,
@@ -412,13 +405,6 @@
   "bits": 17,
   "finalStates": 2,
   "text": "format: 1\nid: more-228\ntitle: 漁師の親方の箱の底板\nrequest: 漁師の親方が、箱の底板を作ってほしいと言っている。\nterrain:\n  +++##\n  +++++\n  +++++\nhand:\n  lead ##./.##\n  horn #\n  slime #\n  lead ##/#.\n  horn #\n  lead ##/#.\nsolution:\n  2 r0 x0\n  3 r0 x1\n  4 r1 x1\n  5 r0 x0\n  1 r1 x1\n  6 r0 x0\n"
- },
- {
-  "id": "more-181",
-  "theme": "slimeHorn",
-  "bits": 16.7,
-  "finalStates": 12,
-  "text": "format: 1\nid: more-181\ntitle: 森の薬師の仕切り板\nrequest: 森の薬師が、仕切り板を作ってほしいと言っている。\nterrain:\n  +++#\n  ++++\n  ++++\n  ++++\nhand:\n  lead ##/#.\n  slime #\n  slime #\n  horn #\n  horn #\n  lead ####\n  lead ###/.#.\nsolution:\n  2 r0 x1\n  4 r0 x0\n  7 r1 x1\n  5 r0 x1\n  1 r2 x1\n  6 r1 x0\n  3 r0 x1\n"
  },
  {
   "id": "more-229",
@@ -545,13 +531,6 @@
   "bits": 14.2,
   "finalStates": 4,
   "text": "format: 1\nid: more-239\ntitle: 劇場の座長の鋳型\nrequest: 劇場の座長が、鋳型を作ってほしいと言っている。\nterrain:\n  ++++#\n  +++++\n  +++++\nhand:\n  horn #\n  horn #\n  slime #\n  lead ###\n  lead .##/##.\n  lead .##/##.\nsolution:\n  3 r0 x2\n  4 r1 x1\n  5 r1 x2\n  1 r0 x0\n  6 r1 x0\n  2 r0 x1\n"
- },
- {
-  "id": "more-189",
-  "theme": "slimeHorn",
-  "bits": 14.1,
-  "finalStates": 1,
-  "text": "format: 1\nid: more-189\ntitle: 王立図書館の司書の飾り板\nrequest: 王立図書館の司書が、飾り板を作ってほしいと言っている。\nterrain:\n  #+++\n  #+++\n  ++++\n  ++++\nhand:\n  horn #\n  lead #./#./##\n  slime #\n  lead .##/##.\n  lead .#/.#/##\nsolution:\n  5 r1 x1\n  3 r0 x2\n  4 r1 x2\n  1 r1 x3\n  2 r2 x2\n"
  },
  {
   "id": "more-240",

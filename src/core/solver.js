@@ -424,6 +424,17 @@ FEATURES.growPush = events => {
   return i >= 0 && events.slice(i + 1).some(e => e.type === 'react' && e.pushed?.length);
 };
 
+// 火種と水玉が消えたあとで、ピースが落ちた（水玉の仮の床）
+FEATURES.steamFall = events => {
+  const i = events.findIndex(e => e.type === 'react' && e.removed.some(r => r.why === 'steam'));
+  return i >= 0 && events.slice(i + 1).some(e => e.type === 'fall');
+};
+// つるが燃えたあとで、ピースが落ちた（伸ばしたつるを足場にして、燃やして落とす）
+FEATURES.burnFall = events => {
+  const i = events.findIndex(e => e.type === 'react' && e.removed.some(r => r.why === 'burn'));
+  return i >= 0 && events.slice(i + 1).some(e => e.type === 'fall');
+};
+
 // 1つの火種で、つるを燃やすのと水玉の蒸発を、同じ段で一度に起こす（まとめて消す）
 FEATURES.burnSteam = events => events.some(e => e.type === 'react' && e.removed.some(r => r.why === 'burn') && e.removed.some(r => r.why === 'steam'));
 

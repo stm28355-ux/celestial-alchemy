@@ -39,8 +39,9 @@ for (const c of all.sort((a, b) => b.bits - a.bits)) {
 // テーマの中で、器の形と特殊な素材（鉛以外）の種類が同じものは1つだけ（6と94・46と53がほぼ同じだった）。
 // 器の形は左右反転も同じとみなす（54は47の反転だった）。
 // 角笛のテーマは、まず器の形が違うものから選び、足りなければ素材の違うものから（ほかのテーマは目安の高い順のまま）
-const DISTINCT_SHAPE = new Set(['hornMelt', 'hornFire', 'hornWater', 'slimeHorn', 'hornVine2']);
-const specials = c => [...new Set([...c.raw.hand].map(h => h.split(' ')[0]).filter(m => m !== 'lead'))].sort().join(',');
+const DISTINCT_SHAPE = new Set(['hornMelt', 'hornFire', 'hornWater', 'slimeHorn', 'slimeHornX', 'hornVine2']);
+// 角笛の数（1つか2つか）が違えば別の問題とみなす（2つの角笛が同時に動く問題は、1つのものと考え方が違う。2026-11-19）
+const specials = c => [...new Set([...c.raw.hand].map(h => h.split(' ')[0]).filter(m => m !== 'lead'))].sort().join(',') + ':' + c.raw.hand.filter(h => h.startsWith('horn ')).length;
 const flipOpen = o => o.replace(/^left/, 'L').replace(/^right/, 'left').replace(/^L/, 'right');
 const shapeKey = c => {
   const k = (t, p, o) => [...t, '|', ...(p ?? []), '|', ...[...(o ?? [])].sort()].join('/');
