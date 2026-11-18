@@ -416,6 +416,14 @@ FEATURES.steamPush = events => {
   return i >= 0 && events.slice(i + 1).some(e => e.type === 'react' && e.pushed?.length);
 };
 
+// つるが燃えたか、火種と水玉が消えた（火種で何かを抜いた）
+FEATURES.burnOrSteam = events => events.some(e => e.type === 'react' && e.removed.some(r => r.why === 'burn' || r.why === 'steam'));
+// つるが水玉を吸ったあとで、角笛が押した（下の水玉が吸われて落ちた角笛が、もう一度押す）
+FEATURES.growPush = events => {
+  const i = events.findIndex(e => e.type === 'react' && e.grown?.length);
+  return i >= 0 && events.slice(i + 1).some(e => e.type === 'react' && e.pushed?.length);
+};
+
 // 1つの火種で、つるを燃やすのと水玉の蒸発を、同じ段で一度に起こす（まとめて消す）
 FEATURES.burnSteam = events => events.some(e => e.type === 'react' && e.removed.some(r => r.why === 'burn') && e.removed.some(r => r.why === 'steam'));
 

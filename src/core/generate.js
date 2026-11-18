@@ -740,6 +740,90 @@ export const THEMED = {
     terrain: shoulderTerrain,
     fill: (m, sh) => cellsOf(sh),
   },
+  // ── 2026-11-18 試作44〜59のあとに足したテーマ（掲示板の残りの枠のための試作） ──
+  // ゼリーと火種：ゼリーでくっついた組から、燃える物（つる・水玉）を火種で抜く。抜けた所の上は、組なら落ちない
+  slimeFire: {
+    name: 'ゼリーと火種',
+    idea: 'ゼリーでくっついた組から、つるや水玉を火種で抜く',
+    feature: ['glue', 'burnOrSteam'],
+    main: ['slime', 'fire'],
+    maxLeads: 3,
+    keepIce: true,
+    size: r => [between(r, 4, 5), between(r, 3, 4)],
+    terrain(r, W, H) {
+      return Array.from({ length: H }, () => Array(W).fill('+'));
+    },
+    presets(r, W, H) {
+      const p = Array.from({ length: H }, () => Array(W).fill('.'));
+      const legend = {};
+      if (r() < 0.6) {
+        p[H - 1][between(r, 0, W - 1)] = 'a';
+        legend.a = 'vine';
+      }
+      return { p, legend };
+    },
+    hand: r => ['fire #', `slime ${pick(r, ['#', '##', '#/#'])}`, ...(r() < 0.6 ? [`water ${pick(r, ['#', '##'])}`] : []), ...(r() < 0.3 ? ['vine #'] : [])],
+    fill: (m, sh) => cellsOf(sh),
+    spread(must, pre) {
+      const burn = must.filter(h => /^(vine|water|fire) /.test(h)).reduce((n, h) => n + cellsOf(h.split(' ')[1]), 0);
+      return [0, burn + pre.p.flat().filter(c => c !== '.').length];
+    },
+  },
+  // 角笛と水玉とつる：角笛の下の水玉がつるに吸われると、角笛が落ちてもう一度押す（火種の代わりに、つるで水玉を消す）
+  hornGrow: {
+    name: '角笛と水玉とつる',
+    idea: '角笛の下の水玉がつるに吸われて、落ちた角笛がもう一度押す',
+    feature: 'growPush',
+    main: ['horn', 'water'],
+    maxLeads: 3,
+    size: r => [between(r, 4, 5), between(r, 3, 4)],
+    terrain(r, W, H) {
+      return THEMED.hornVine.terrain.call(this, r, W, H);
+    },
+    presets(r, W, H) {
+      return THEMED.hornVine.presets.call(this, r, W, H);
+    },
+    hand: r => ['horn #', 'water #', ...(r() < 0.5 ? ['water #'] : []), ...(r() < 0.4 ? ['horn #'] : [])],
+  },
+  // 賢者の石と角笛：肩の下に金の刻印。真上からは入れないので、角笛で鉛や石を押し込み、金にする
+  stoneHorn: {
+    name: '賢者の石と角笛',
+    idea: '肩の下の金の刻印へ、角笛で鉛や賢者の石を押し込む',
+    feature: ['push', 'gild'],
+    main: ['horn'],
+    maxLeads: 3,
+    size: r => [between(r, 4, 5), between(r, 4, 5)],
+    terrain(r, W, H) {
+      // いちばん上は空きマス（石を置く所）。肩の下の列は金の刻印、ほかは何でもよいマス
+      const t = shoulderTerrain(r, W, H - 1).map(row => row.slice());
+      const side = t[0][0] === '#' ? 0 : W - 1;
+      let y = 0;
+      while (t[y][side] === '#') y++;
+      for (let yy = y; yy < H - 1; yy++) t[yy][side] = 'G';
+      return [Array(W).fill('.'), ...t];
+    },
+    hand: r => ['stone #', 'horn #', ...(r() < 0.3 ? ['horn #'] : [])],
+    fill: (m, sh) => (m === 'stone' ? 0 : cellsOf(sh)),
+    spread: () => [-1, 0],
+  },
+  // 向かい合う角笛：最初から置いた角笛と、手持ちの角笛。向かい合って両側から押すと、押し合って動かない
+  hornFace: {
+    name: '向かい合う角笛',
+    idea: '両側から押すと押し合って動かない。どちら向きに、いつ置くか',
+    feature: 'push',
+    main: ['horn'],
+    maxLeads: 3,
+    size: r => [between(r, 4, 5), between(r, 3, 4)],
+    terrain: hornTerrain,
+    presets(r, W, H) {
+      // 底の端に、内側を向いた角笛を1つ
+      const p = Array.from({ length: H }, () => Array(W).fill('.'));
+      const left = r() < 0.5;
+      p[H - 1][left ? 0 : W - 1] = 'a';
+      return { p, legend: { a: left ? 'horn' : 'horn left' } };
+    },
+    hand: r => ['horn #', ...(r() < 0.4 ? ['horn #'] : [])],
+  },
   sand: {
     name: '星砂は真下に',
     idea: '星砂は止まるとばらけて、粒が真下に流れ込む（形のままでは入らない所にも入る）',

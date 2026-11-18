@@ -1,5 +1,34 @@
 [
  {
+  "id": "more-099",
+  "theme": "iceSlime",
+  "bits": 13.4,
+  "finalStates": 1,
+  "text": "format: 1\nid: more-099\ntitle: 港の船大工の鋳型\nrequest: 港の船大工が、鋳型を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  x+++\npieces:\n  ....\n  ....\n  a...\nlegend:\n  a: ice\nhand:\n  lead ####\n  lead .##/##.\n  lead #\n  slime #\n  fire #\nsolution:\n  3 r0 x3\n  2 r0 x1\n  4 r0 x1\n  5 r0 x0\n  1 r0 x0\n"
+ },
+ {
+  "id": "more-069",
+  "theme": "tallIce",
+  "bits": 9.9,
+  "finalStates": 3,
+  "text": "format: 1\nid: more-069\ntitle: 鉱山の親方の箱の底板\nrequest: 鉱山の親方が、箱の底板を作ってほしいと言っている。\nterrain:\n  +#+++\n  +x+++\n  +x+++\n  +.+++\npieces:\n  .....\n  .a...\n  .a...\n  .....\nlegend:\n  a: ice fixed\nhand:\n  lead #./#./##\n  ice #\n  lead ####\n  fire #\n  sand ###\n  lead .#/.#/##\nsolution:\n  1 r0 x3\n  2 r0 x2\n  3 r1 x0\n  4 r0 x2\n  5 r1 x4\n  6 r2 x2\n"
+ },
+ {
+  "id": "more-030",
+  "theme": "sand",
+  "bits": 13.1,
+  "finalStates": 3,
+  "text": "format: 1\nid: more-030\ntitle: 錬金ギルドの受付の飾り板\nrequest: 錬金ギルドの受付が、飾り板を作ってほしいと言っている。\nterrain:\n  +++++\n  +++++\n  ++#++\n  ++#++\nhand:\n  lead ##/#.\n  lead ##/#.\n  lead ###/.#.\n  lead ###/.#.\n  sand ###/#..\nsolution:\n  1 r2 x0\n  2 r3 x3\n  3 r3 x0\n  5 r1 x3\n  4 r0 x1\n"
+ },
+ {
+  "id": "job-101",
+  "theme": "fireChoice",
+  "note": "一部（つる×・鱗○）",
+  "bits": 11.5,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-101\ntitle: 城の庭師の箱の底板\nrequest: 城の庭師が、箱の底板を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  ab..\nlegend:\n  a: vine\n  b: ice\nhand:\n  vine #\n  fire #\n  vine #\n  lead ##/#.\n  lead ####\n  fire #\nsolution:\n  1 r0 x0\n  2 r0 x3\n  3 r0 x2\n  4 r1 x1\n  6 r0 x3\n  5 r0 x0\n"
+ },
+ {
   "id": "more-098",
   "theme": "iceSlime",
   "bits": 13.7,
@@ -7,39 +36,33 @@
   "text": "format: 1\nid: more-098\ntitle: 王立図書館の司書の留め金\nrequest: 王立図書館の司書が、留め金を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  xx++\npieces:\n  ....\n  ....\n  aa..\nlegend:\n  a: ice\nhand:\n  slime #\n  fire #\n  lead #\n  lead ##/#.\n  lead ##/##\nsolution:\n  2 r0 x2\n  3 r0 x3\n  1 r0 x2\n  4 r1 x2\n  5 r0 x0\n"
  },
  {
-  "id": "more-066",
-  "theme": "tallIce",
-  "bits": 11.1,
-  "finalStates": 53,
-  "text": "format: 1\nid: more-066\ntitle: 雑貨屋の店主の箱の底板\nrequest: 雑貨屋の店主が、箱の底板を作ってほしいと言っている。\nterrain:\n  #++++\n  x++++\n  x++++\n  .++++\npieces:\n  .....\n  a....\n  a....\n  .....\nlegend:\n  a: ice fixed\nhand:\n  sand ###\n  lead .#/.#/##\n  fire #\n  sand ###\n  lead #\n  lead ###/.#.\nsolution:\n  1 r0 x1\n  3 r0 x1\n  4 r1 x4\n  2 r2 x3\n  6 r1 x1\n  5 r0 x1\n"
+  "id": "job-102",
+  "theme": "goldFew",
+  "note": "つると水玉",
+  "bits": 16.3,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-102\ntitle: 鉱山の親方の錘\nrequest: 鉱山の親方が、錘を作ってほしいと言っている。\nterrain:\n  .....\n  +++++\n  ++++L\n  G++++\npieces:\n  .....\n  .....\n  .....\n  ....a\nlegend:\n  a: vine\nhand:\n  water #\n  lead .#/.#/##\n  lead ###/.#.\n  water #\n  stone #\n  lead .#/.#/##\nsolution:\n  2 r1 x1\n  1 r0 x3\n  3 r1 x3\n  5 r0 x2\n  4 r0 x2\n  6 r2 x0\n"
  },
  {
-  "id": "job-003",
-  "theme": "sand",
-  "bits": 13.2,
-  "finalStates": 33,
-  "text": "format: 1\nid: job-003\ntitle: 鉱山の親方の鋳型\nrequest: 鉱山の親方が、鋳型を作ってほしいと言っている。\nterrain:\n  ++++++\n  ++++++\n  +++#++\nhand:\n  sand ##\n  sand ####\n  lead .##/##.\n  lead #\n  lead ##\n  lead ####\nsolution:\n  1 r0 x1\n  2 r0 x1\n  3 r1 x4\n  4 r0 x5\n  5 r1 x0\n  6 r0 x0\n"
- },
- {
-  "id": "job-001",
-  "theme": "iceSlime",
-  "bits": 14.3,
-  "finalStates": 2,
-  "text": "format: 1\nid: job-001\ntitle: 錬金ギルドの受付の鋳型\nrequest: 錬金ギルドの受付が、鋳型を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  +xx+\npieces:\n  ....\n  ....\n  .aa.\nlegend:\n  a: ice\nhand:\n  ice #\n  lead #\n  fire #\n  lead ####\n  slime #\n  lead #./##\nsolution:\n  1 r0 x0\n  3 r0 x0\n  2 r0 x0\n  5 r0 x1\n  6 r2 x2\n  4 r0 x0\n"
- },
- {
-  "id": "job-038",
+  "id": "job-024",
   "theme": "sandMelt",
-  "bits": 10.1,
+  "bits": 9.4,
   "finalStates": 1,
-  "text": "format: 1\nid: job-038\ntitle: 学院の先輩の重し\nrequest: 学院の先輩が、重しを作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  .aa.\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead .#/.#/##\n  sand ###\n  lead .##/##.\n  fire #\n  ice ##\nsolution:\n  2 r0 x1\n  4 r0 x3\n  5 r0 x1\n  3 r0 x1\n  1 r2 x0\n"
+  "text": "format: 1\nid: job-024\ntitle: 城の庭師の台座\nrequest: 城の庭師が、台座を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  .aaa\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead #./#./##\n  lead ##./.##\n  sand ###\n  fire #\n  ice ##\nsolution:\n  3 r0 x0\n  4 r0 x0\n  5 r0 x0\n  2 r0 x0\n  1 r2 x2\n"
  },
  {
-  "id": "more-065",
+  "id": "more-067",
   "theme": "tallIce",
-  "bits": 11.7,
+  "bits": 10.3,
+  "finalStates": 77,
+  "text": "format: 1\nid: more-067\ntitle: 時計塔の番人の錘\nrequest: 時計塔の番人が、錘を作ってほしいと言っている。\nterrain:\n  #+++\n  x+++\n  x+++\n  .+++\npieces:\n  ....\n  a...\n  a...\n  ....\nlegend:\n  a: ice fixed\nhand:\n  fire #\n  lead ##/#.\n  ice ##\n  sand ###\n  lead ##/#.\n  lead ##\nsolution:\n  2 r2 x1\n  1 r0 x1\n  3 r0 x1\n  4 r1 x3\n  5 r0 x2\n  6 r1 x1\n"
+ },
+ {
+  "id": "job-103",
+  "theme": "hornVine2",
+  "bits": 15,
   "finalStates": 1,
-  "text": "format: 1\nid: more-065\ntitle: 学院の先輩の重し\nrequest: 学院の先輩が、重しを作ってほしいと言っている。\nterrain:\n  +++#\n  +++x\n  +++x\n  +++.\npieces:\n  ....\n  ...a\n  ...a\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead ###\n  fire #\n  lead .##/##.\n  ice #\n  lead ##/##\nsolution:\n  4 r0 x2\n  2 r0 x2\n  3 r0 x0\n  1 r1 x0\n  5 r0 x1\n"
+  "text": "format: 1\nid: job-103\ntitle: 橋の番人の鋳型\nrequest: 橋の番人が、鋳型を作ってほしいと言っている。\nterrain:\n  +++##\n  +++++\n  +++++\npieces:\n  .....\n  .....\n  ....a\nlegend:\n  a: vine\nhand:\n  lead .#/.#/##\n  horn #\n  water #\n  horn #\n  water #\n  lead ##/##\nsolution:\n  3 r0 x1\n  2 r0 x0\n  6 r0 x1\n  4 r0 x0\n  1 r2 x1\n  5 r0 x0\n"
  },
  {
   "id": "job-012",
@@ -49,39 +72,76 @@
   "text": "format: 1\nid: job-012\ntitle: 織物屋の台座\nrequest: 織物屋が、台座を作ってほしいと言っている。\nterrain:\n  ++++++\n  ++++++\n  +#++#+\nhand:\n  lead #./#./##\n  lead #\n  sand #./##\n  lead .##/##.\n  sand ###/#..\nsolution:\n  4 r0 x2\n  1 r2 x4\n  2 r0 x3\n  5 r2 x0\n  3 r1 x0\n"
  },
  {
-  "id": "job-014",
+  "id": "job-104",
+  "theme": "fireChoice",
+  "note": "全部（つる×・水玉×）",
+  "bits": 11.8,
+  "finalStates": 2,
+  "text": "format: 1\nid: job-104\ntitle: 宝石商の鋳型\nrequest: 宝石商が、鋳型を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  ...a\nlegend:\n  a: vine\nhand:\n  water #\n  lead .#/.#/##\n  fire #\n  lead ###/.#.\n  lead ###/.#.\nsolution:\n  1 r0 x1\n  3 r0 x2\n  2 r1 x0\n  4 r1 x2\n  5 r0 x0\n"
+ },
+ {
+  "id": "job-114",
+  "theme": "slimeHorn",
+  "bits": 16.5,
+  "finalStates": 2,
+  "text": "format: 1\nid: job-114\ntitle: 時計塔の番人の文鎮\nrequest: 時計塔の番人が、文鎮を作ってほしいと言っている。\nterrain:\n  +++#\n  +++#\n  ++++\n  ++++\nhand:\n  lead .#/.#/##\n  horn #\n  slime #\n  lead ###\n  lead .##/##.\n  horn #\nsolution:\n  2 r0 x0\n  3 r0 x1\n  5 r1 x1\n  6 r0 x0\n  1 r2 x1\n  4 r1 x0\n"
+ },
+ {
+  "id": "job-001",
   "theme": "iceSlime",
-  "bits": 14.5,
-  "finalStates": 1,
-  "text": "format: 1\nid: job-014\ntitle: 劇場の座長の鋳型\nrequest: 劇場の座長が、鋳型を作ってほしいと言っている。\nterrain:\n  +++++\n  +++++\n  x++++\npieces:\n  .....\n  .....\n  a....\nlegend:\n  a: ice\nhand:\n  lead #./##\n  slime #/#\n  fire #\n  lead ####\n  lead ####\nsolution:\n  4 r0 x1\n  1 r3 x3\n  2 r1 x1\n  3 r0 x0\n  5 r0 x0\n"
+  "bits": 14.3,
+  "finalStates": 2,
+  "text": "format: 1\nid: job-001\ntitle: 錬金ギルドの受付の鋳型\nrequest: 錬金ギルドの受付が、鋳型を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  +xx+\npieces:\n  ....\n  ....\n  .aa.\nlegend:\n  a: ice\nhand:\n  ice #\n  lead #\n  fire #\n  lead ####\n  slime #\n  lead #./##\nsolution:\n  1 r0 x0\n  3 r0 x0\n  2 r0 x0\n  5 r0 x1\n  6 r2 x2\n  4 r0 x0\n"
  },
  {
-  "id": "job-070",
+  "id": "job-105",
+  "theme": "goldFew",
+  "note": "つると水玉",
+  "bits": 16.7,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-105\ntitle: 王立図書館の司書の台座\nrequest: 王立図書館の司書が、台座を作ってほしいと言っている。\nterrain:\n  ....\n  +++L\n  ++L+\n  +G++\npieces:\n  ....\n  ....\n  ....\n  ..a.\nlegend:\n  a: vine\nhand:\n  lead .##/##.\n  lead #\n  water #\n  lead ##/#.\n  water #\n  stone #\nsolution:\n  1 r1 x2\n  2 r0 x3\n  4 r3 x0\n  3 r0 x1\n  5 r0 x1\n  6 r0 x0\n"
+ },
+ {
+  "id": "more-019",
   "theme": "hornMelt",
-  "bits": 17.1,
-  "finalStates": 1,
-  "text": "format: 1\nid: job-070\ntitle: 学院の先輩の飾り板\nrequest: 学院の先輩が、飾り板を作ってほしいと言っている。\nterrain:\n  +++#\n  ++++\n  ++++\n  ++++\nhand:\n  horn #\n  horn #\n  lead .##/##.\n  lead ##/##\n  fire #\n  ice #/#\n  lead #./#./##\nsolution:\n  4 r0 x1\n  6 r1 x0\n  1 r0 x0\n  2 r0 x1\n  5 r0 x2\n  3 r0 x0\n  7 r1 x0\n"
+  "bits": 13.6,
+  "finalStates": 2,
+  "text": "format: 1\nid: more-019\ntitle: 王立図書館の司書の蓋\nrequest: 王立図書館の司書が、蓋を作ってほしいと言っている。\nterrain:\n  +++#\n  +++#\n  ++++\n  ++++\nhand:\n  lead ###\n  horn #\n  horn #\n  ice ##\n  fire #\n  lead ####\n  lead .##/##.\nsolution:\n  4 r0 x0\n  7 r1 x1\n  2 r0 x0\n  3 r0 x2\n  5 r0 x1\n  1 r1 x0\n  6 r1 x1\n"
  },
  {
-  "id": "job-047",
+  "id": "job-011",
   "theme": "hornFire",
-  "bits": 17.6,
+  "bits": 16.4,
   "finalStates": 2,
-  "text": "format: 1\nid: job-047\ntitle: 学院の先輩の仕切り板\nrequest: 学院の先輩が、仕切り板を作ってほしいと言っている。\nterrain:\n  #+++\n  #+++\n  ++++\n  x+++\npieces:\n  ....\n  ....\n  ....\n  a...\nlegend:\n  a: ice fixed\nhand:\n  fire #\n  ice ##\n  lead ##/##\n  horn #\n  lead ##/#.\n  horn #\n  lead ##/#.\nsolution:\n  2 r0 x2\n  5 r2 x1\n  1 r0 x2\n  4 r1 x3\n  6 r0 x1\n  7 r0 x2\n  3 r0 x2\n"
+  "text": "format: 1\nid: job-011\ntitle: 城の庭師の箱の底板\nrequest: 城の庭師が、箱の底板を作ってほしいと言っている。\nterrain:\n  +++#\n  ++++\n  +++x\npieces:\n  ....\n  ....\n  ...a\nlegend:\n  a: ice fixed\nhand:\n  ice ##\n  lead #./##\n  horn #\n  fire #\n  lead .##/##.\n  horn #\nsolution:\n  1 r0 x0\n  2 r0 x1\n  3 r0 x0\n  4 r0 x1\n  5 r1 x0\n  6 r0 x1\n"
  },
  {
-  "id": "job-044",
-  "theme": "sandMelt",
-  "bits": 10.3,
-  "finalStates": 1,
-  "text": "format: 1\nid: job-044\ntitle: 岬の灯台守の重し\nrequest: 岬の灯台守が、重しを作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  +#++\npieces:\n  ....\n  .aaa\n  ....\nlegend:\n  a: ice fixed\nhand:\n  sand ###\n  ice ##\n  lead #./##\n  lead ####\n  fire #\nsolution:\n  1 r0 x0\n  5 r0 x0\n  2 r0 x0\n  3 r2 x2\n  4 r0 x0\n"
- },
- {
-  "id": "job-017",
+  "id": "more-065",
   "theme": "tallIce",
-  "bits": 12.3,
-  "finalStates": 2,
-  "text": "format: 1\nid: job-017\ntitle: 橋の番人の錘\nrequest: 橋の番人が、錘を作ってほしいと言っている。\nterrain:\n  ++++#\n  ++++x\n  ++++x\n  ++++.\npieces:\n  .....\n  ....a\n  ....a\n  .....\nlegend:\n  a: ice fixed\nhand:\n  lead #./#./##\n  lead #./#./##\n  fire #\n  sand ###\n  lead ##/##\nsolution:\n  1 r0 x0\n  5 r0 x2\n  3 r0 x3\n  4 r0 x0\n  2 r1 x1\n"
+  "bits": 11.7,
+  "finalStates": 1,
+  "text": "format: 1\nid: more-065\ntitle: 学院の先輩の重し\nrequest: 学院の先輩が、重しを作ってほしいと言っている。\nterrain:\n  +++#\n  +++x\n  +++x\n  +++.\npieces:\n  ....\n  ...a\n  ...a\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead ###\n  fire #\n  lead .##/##.\n  ice #\n  lead ##/##\nsolution:\n  4 r0 x2\n  2 r0 x2\n  3 r0 x0\n  1 r1 x0\n  5 r0 x1\n"
+ },
+ {
+  "id": "job-107",
+  "theme": "slimeSand",
+  "bits": 13,
+  "finalStates": 17,
+  "text": "format: 1\nid: job-107\ntitle: 山あいの鍛冶屋の文鎮\nrequest: 山あいの鍛冶屋が、文鎮を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++xx\nhand:\n  lead #\n  lead #\n  slime #\n  slime #\n  sand ####\n  lead #\n  lead #\nsolution:\n  1 r0 x0\n  2 r0 x0\n  6 r0 x1\n  3 r0 x1\n  4 r0 x2\n  5 r0 x0\n  7 r0 x3\n"
+ },
+ {
+  "id": "job-038",
+  "theme": "sandMelt",
+  "bits": 10.1,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-038\ntitle: 学院の先輩の重し\nrequest: 学院の先輩が、重しを作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  .aa.\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead .#/.#/##\n  sand ###\n  lead .##/##.\n  fire #\n  ice ##\nsolution:\n  2 r0 x1\n  4 r0 x3\n  5 r0 x1\n  3 r0 x1\n  1 r2 x0\n"
+ },
+ {
+  "id": "job-108",
+  "theme": "hornWater",
+  "bits": 15.4,
+  "finalStates": 4,
+  "text": "format: 1\nid: job-108\ntitle: 時計塔の番人の台座\nrequest: 時計塔の番人が、台座を作ってほしいと言っている。\nterrain:\n  +++#\n  ++++\n  ++++\nhand:\n  fire #\n  horn #\n  water #/#\n  lead .##/##.\n  lead ###/.#.\n  lead #\n  horn #\nsolution:\n  2 r0 x1\n  3 r0 x0\n  4 r1 x1\n  7 r0 x0\n  1 r0 x1\n  5 r1 x0\n  6 r0 x0\n"
  },
  {
   "id": "job-021",
@@ -91,25 +151,41 @@
   "text": "format: 1\nid: job-021\ntitle: 人形師の蓋\nrequest: 人形師が、蓋を作ってほしいと言っている。\nterrain:\n  ++++++\n  ++++++\n  ++#+++\n  ++#+++\nhand:\n  lead #./##\n  lead #./##\n  sand ####\n  lead #./##\n  sand ##/#.\n  lead #./##\n  lead #./##\nsolution:\n  1 r0 x0\n  2 r1 x1\n  3 r1 x5\n  4 r1 x0\n  6 r3 x3\n  5 r1 x2\n  7 r2 x3\n"
  },
  {
-  "id": "job-025",
+  "id": "job-109",
+  "theme": "fireChoice",
+  "note": "全部（つる×・鱗×）",
+  "bits": 12.1,
+  "finalStates": 11,
+  "text": "format: 1\nid: job-109\ntitle: 天文台の学者の箱の底板\nrequest: 天文台の学者が、箱の底板を作ってほしいと言っている。\nterrain:\n  +++++\n  +++++\n  +++++\npieces:\n  .....\n  .....\n  ...ab\nlegend:\n  a: vine\n  b: ice\nhand:\n  fire #\n  lead .#/.#/##\n  fire #\n  ice #\n  lead ##./.##\n  lead .##/##.\nsolution:\n  1 r0 x0\n  3 r0 x3\n  5 r0 x0\n  2 r3 x0\n  6 r1 x3\n  4 r0 x4\n"
+ },
+ {
+  "id": "job-014",
   "theme": "iceSlime",
-  "bits": 14.6,
+  "bits": 14.5,
   "finalStates": 1,
-  "text": "format: 1\nid: job-025\ntitle: 郵便屋の箱の底板\nrequest: 郵便屋が、箱の底板を作ってほしいと言っている。\nterrain:\n  +++++\n  +++++\n  +x+++\npieces:\n  .....\n  .....\n  .a...\nlegend:\n  a: ice\nhand:\n  slime #\n  fire #\n  lead .##/##.\n  lead #./#./##\n  lead #./#./##\nsolution:\n  2 r0 x0\n  4 r3 x2\n  3 r0 x2\n  1 r0 x1\n  5 r1 x0\n"
+  "text": "format: 1\nid: job-014\ntitle: 劇場の座長の鋳型\nrequest: 劇場の座長が、鋳型を作ってほしいと言っている。\nterrain:\n  +++++\n  +++++\n  x++++\npieces:\n  .....\n  .....\n  a....\nlegend:\n  a: ice\nhand:\n  lead #./##\n  slime #/#\n  fire #\n  lead ####\n  lead ####\nsolution:\n  4 r0 x1\n  1 r3 x3\n  2 r1 x1\n  3 r0 x0\n  5 r0 x0\n"
  },
  {
-  "id": "job-058",
-  "theme": "sandMelt",
-  "bits": 11.3,
+  "id": "job-110",
+  "theme": "goldFew",
+  "note": "つると水玉",
+  "bits": 17.5,
   "finalStates": 1,
-  "text": "format: 1\nid: job-058\ntitle: 人形師の箱の底板\nrequest: 人形師が、箱の底板を作ってほしいと言っている。\nterrain:\n  +++++\n  +++++\n  ++++#\npieces:\n  .....\n  .aaaa\n  .....\nlegend:\n  a: ice fixed\nhand:\n  sand ###\n  lead ##./.##\n  fire #\n  lead ##./.##\n  lead ##\nsolution:\n  1 r0 x0\n  3 r0 x0\n  2 r0 x0\n  4 r1 x3\n  5 r0 x2\n"
+  "text": "format: 1\nid: job-110\ntitle: 港の船大工の飾り板\nrequest: 港の船大工が、飾り板を作ってほしいと言っている。\nterrain:\n  ....\n  ++++\n  ++L+\n  +G++\npieces:\n  ....\n  ....\n  ....\n  ..a.\nlegend:\n  a: vine\nhand:\n  stone #\n  lead .#/.#/##\n  water #\n  lead #\n  water #\n  lead #./#./##\nsolution:\n  4 r0 x3\n  2 r0 x2\n  3 r0 x2\n  6 r0 x0\n  5 r0 x1\n  1 r0 x1\n"
  },
  {
-  "id": "job-028",
+  "id": "job-017",
   "theme": "tallIce",
-  "bits": 12.6,
-  "finalStates": 1,
-  "text": "format: 1\nid: job-028\ntitle: 修道院の写本係の鋳型\nrequest: 修道院の写本係が、鋳型を作ってほしいと言っている。\nterrain:\n  ++++#\n  ++++x\n  ++++.\n  ++++.\npieces:\n  .....\n  ....a\n  .....\n  .....\nlegend:\n  a: ice fixed\nhand:\n  lead ###/.#.\n  lead .##/##.\n  sand ###\n  fire #\n  lead #./#./##\nsolution:\n  1 r2 x0\n  2 r1 x2\n  3 r1 x0\n  4 r0 x3\n  5 r1 x1\n"
+  "bits": 12.3,
+  "finalStates": 2,
+  "text": "format: 1\nid: job-017\ntitle: 橋の番人の錘\nrequest: 橋の番人が、錘を作ってほしいと言っている。\nterrain:\n  ++++#\n  ++++x\n  ++++x\n  ++++.\npieces:\n  .....\n  ....a\n  ....a\n  .....\nlegend:\n  a: ice fixed\nhand:\n  lead #./#./##\n  lead #./#./##\n  fire #\n  sand ###\n  lead ##/##\nsolution:\n  1 r0 x0\n  5 r0 x2\n  3 r0 x3\n  4 r0 x0\n  2 r1 x1\n"
+ },
+ {
+  "id": "job-111",
+  "theme": "hornVine2",
+  "bits": 15.7,
+  "finalStates": 4,
+  "text": "format: 1\nid: job-111\ntitle: 橋の番人の仕切り板\nrequest: 橋の番人が、仕切り板を作ってほしいと言っている。\nterrain:\n  #+++#\n  #+++#\n  +++++\n  +++++\npieces:\n  .....\n  .....\n  .....\n  ....a\nlegend:\n  a: vine\nhand:\n  horn #\n  horn #\n  water #\n  lead .##/##.\n  water #\n  lead ##/#.\n  lead .##/##.\nsolution:\n  3 r0 x3\n  6 r3 x1\n  1 r1 x3\n  4 r1 x1\n  2 r0 x1\n  7 r1 x2\n  5 r0 x3\n"
  },
  {
   "id": "job-032",
@@ -119,39 +195,62 @@
   "text": "format: 1\nid: job-032\ntitle: 天文台の学者の重し\nrequest: 天文台の学者が、重しを作ってほしいと言っている。\nterrain:\n  ++++++\n  ++++++\n  ++#+++\nhand:\n  lead ###\n  sand ##\n  lead ##/##\n  lead #./#./##\n  lead ##./.##\nsolution:\n  3 r0 x0\n  5 r0 x2\n  1 r0 x0\n  2 r0 x3\n  4 r2 x4\n"
  },
  {
-  "id": "job-034",
-  "theme": "iceSlime",
-  "bits": 14.7,
-  "finalStates": 1,
-  "text": "format: 1\nid: job-034\ntitle: 温室の番人の重し\nrequest: 温室の番人が、重しを作ってほしいと言っている。\nterrain:\n  +++++\n  +++++\n  xx+++\npieces:\n  .....\n  .....\n  aa...\nlegend:\n  a: ice\nhand:\n  lead #./#./##\n  lead ###/.#.\n  fire #\n  slime ##\n  lead ##\nsolution:\n  1 r3 x2\n  4 r0 x1\n  2 r0 x2\n  3 r0 x0\n  5 r0 x0\n"
+  "id": "job-112",
+  "theme": "fireChoice",
+  "note": "一部（鱗×・つる○）",
+  "bits": 12.3,
+  "finalStates": 11,
+  "text": "format: 1\nid: job-112\ntitle: 王立図書館の司書の重し\nrequest: 王立図書館の司書が、重しを作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  ..b.\nlegend:\n  b: ice\nhand:\n  lead ##\n  vine #/#\n  lead #./##\n  fire #\n  lead ###/.#.\nsolution:\n  1 r0 x0\n  2 r0 x0\n  4 r0 x2\n  5 r1 x2\n  3 r1 x1\n"
  },
  {
-  "id": "job-082",
-  "theme": "hornMelt",
-  "bits": 17.8,
-  "finalStates": 1,
-  "text": "format: 1\nid: job-082\ntitle: 橋の番人の重し\nrequest: 橋の番人が、重しを作ってほしいと言っている。\nterrain:\n  ++++#\n  +++++\n  +++++\nhand:\n  fire #\n  ice #\n  lead ##./.##\n  lead .#/.#/##\n  lead .##/##.\n  horn #\nsolution:\n  2 r0 x0\n  5 r1 x1\n  6 r0 x0\n  1 r0 x1\n  3 r0 x0\n  4 r3 x0\n"
- },
- {
-  "id": "job-051",
-  "theme": "hornFire",
-  "bits": 18,
-  "finalStates": 8,
-  "text": "format: 1\nid: job-051\ntitle: 城の庭師の蓋\nrequest: 城の庭師が、蓋を作ってほしいと言っている。\nterrain:\n  #+++\n  ++++\n  ++++\n  x+++\npieces:\n  ....\n  ....\n  ....\n  a...\nlegend:\n  a: ice fixed\nhand:\n  ice ##\n  horn #\n  fire #\n  horn #\n  lead ##/#.\n  lead ##/##\n  lead ##./.##\nsolution:\n  1 r0 x1\n  3 r0 x2\n  5 r3 x2\n  2 r1 x3\n  7 r1 x2\n  4 r0 x3\n  6 r0 x1\n"
- },
- {
-  "id": "job-064",
+  "id": "job-044",
   "theme": "sandMelt",
-  "bits": 11.3,
+  "bits": 10.3,
   "finalStates": 1,
-  "text": "format: 1\nid: job-064\ntitle: 人形師の留め金\nrequest: 人形師が、留め金を作ってほしいと言っている。\nterrain:\n  +++++\n  +++++\n  #++++\npieces:\n  .....\n  aaaa.\n  .....\nlegend:\n  a: ice fixed\nhand:\n  sand ###\n  fire #\n  lead ##\n  lead .##/##.\n  lead .##/##.\nsolution:\n  1 r0 x2\n  2 r0 x4\n  4 r0 x2\n  5 r1 x0\n  3 r0 x1\n"
+  "text": "format: 1\nid: job-044\ntitle: 岬の灯台守の重し\nrequest: 岬の灯台守が、重しを作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  +#++\npieces:\n  ....\n  .aaa\n  ....\nlegend:\n  a: ice fixed\nhand:\n  sand ###\n  ice ##\n  lead #./##\n  lead ####\n  fire #\nsolution:\n  1 r0 x0\n  5 r0 x0\n  2 r0 x0\n  3 r2 x2\n  4 r0 x0\n"
  },
  {
-  "id": "job-037",
+  "id": "more-190",
+  "theme": "slimeHorn",
+  "bits": 17.2,
+  "finalStates": 2,
+  "text": "format: 1\nid: more-190\ntitle: 天文台の学者の錘\nrequest: 天文台の学者が、錘を作ってほしいと言っている。\nterrain:\n  +++##\n  +++++\n  +++++\nhand:\n  horn #\n  lead #./##\n  horn #\n  slime #\n  lead #./##\n  lead .##/##.\nsolution:\n  1 r0 x0\n  4 r0 x1\n  2 r2 x1\n  3 r0 x0\n  6 r1 x0\n  5 r2 x1\n"
+ },
+ {
+  "id": "job-113",
+  "theme": "goldFew",
+  "note": "区切り",
+  "bits": 17.8,
+  "finalStates": 2,
+  "text": "format: 1\nid: job-113\ntitle: 雑貨屋の店主の仕切り板\nrequest: 雑貨屋の店主が、仕切り板を作ってほしいと言っている。\nterrain:\n  .....\n  L++++\n  +++GG\n  +++++\nhand:\n  ice #/#\n  slime #\n  lead ##/##\n  lead ###/.#.\n  stone #\n  lead ###/.#.\nsolution:\n  1 r0 x2\n  3 r0 x0\n  4 r2 x0\n  5 r0 x3\n  6 r1 x3\n  2 r0 x3\n"
+ },
+ {
+  "id": "job-025",
+  "theme": "iceSlime",
+  "bits": 14.6,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-025\ntitle: 郵便屋の箱の底板\nrequest: 郵便屋が、箱の底板を作ってほしいと言っている。\nterrain:\n  +++++\n  +++++\n  +x+++\npieces:\n  .....\n  .....\n  .a...\nlegend:\n  a: ice\nhand:\n  slime #\n  fire #\n  lead .##/##.\n  lead #./#./##\n  lead #./#./##\nsolution:\n  2 r0 x0\n  4 r3 x2\n  3 r0 x2\n  1 r0 x1\n  5 r1 x0\n"
+ },
+ {
+  "id": "job-015",
+  "theme": "hornMelt",
+  "bits": 13.8,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-015\ntitle: 錬金ギルドの受付の留め金\nrequest: 錬金ギルドの受付が、留め金を作ってほしいと言っている。\nterrain:\n  +++#\n  ++++\n  ++++\nhand:\n  fire #\n  lead #\n  horn #\n  ice ##\n  lead ###/.#.\n  lead .##/##.\nsolution:\n  4 r0 x0\n  6 r1 x1\n  3 r0 x0\n  1 r0 x1\n  5 r1 x0\n  2 r0 x0\n"
+ },
+ {
+  "id": "job-047",
+  "theme": "hornFire",
+  "bits": 17.6,
+  "finalStates": 2,
+  "text": "format: 1\nid: job-047\ntitle: 学院の先輩の仕切り板\nrequest: 学院の先輩が、仕切り板を作ってほしいと言っている。\nterrain:\n  #+++\n  #+++\n  ++++\n  x+++\npieces:\n  ....\n  ....\n  ....\n  a...\nlegend:\n  a: ice fixed\nhand:\n  fire #\n  ice ##\n  lead ##/##\n  horn #\n  lead ##/#.\n  horn #\n  lead ##/#.\nsolution:\n  2 r0 x2\n  5 r2 x1\n  1 r0 x2\n  4 r1 x3\n  6 r0 x1\n  7 r0 x2\n  3 r0 x2\n"
+ },
+ {
+  "id": "job-028",
   "theme": "tallIce",
-  "bits": 13,
-  "finalStates": 6,
-  "text": "format: 1\nid: job-037\ntitle: 王立図書館の司書の重し\nrequest: 王立図書館の司書が、重しを作ってほしいと言っている。\nterrain:\n  +#++\n  +x++\n  +x++\n  +.++\npieces:\n  ....\n  .a..\n  .a..\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead #\n  fire #\n  lead ##/#.\n  lead ###/.#.\n  sand ###\n  ice #\nsolution:\n  1 r0 x0\n  5 r1 x0\n  6 r0 x2\n  2 r0 x2\n  4 r1 x2\n  3 r0 x2\n"
+  "bits": 12.6,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-028\ntitle: 修道院の写本係の鋳型\nrequest: 修道院の写本係が、鋳型を作ってほしいと言っている。\nterrain:\n  ++++#\n  ++++x\n  ++++.\n  ++++.\npieces:\n  .....\n  ....a\n  .....\n  .....\nlegend:\n  a: ice fixed\nhand:\n  lead ###/.#.\n  lead .##/##.\n  sand ###\n  fire #\n  lead #./#./##\nsolution:\n  1 r2 x0\n  2 r1 x2\n  3 r1 x0\n  4 r0 x3\n  5 r1 x1\n"
  },
  {
   "id": "job-041",
@@ -161,25 +260,48 @@
   "text": "format: 1\nid: job-041\ntitle: 森の薬師の蓋\nrequest: 森の薬師が、蓋を作ってほしいと言っている。\nterrain:\n  .....\n  +++++\n  +++++\n  #++++\nhand:\n  lead ##\n  lead ##/##\n  lead ##\n  sand ##\n  lead ###/.#.\nsolution:\n  1 r0 x1\n  2 r0 x0\n  3 r1 x4\n  4 r0 x2\n  5 r0 x2\n"
  },
  {
-  "id": "job-045",
+  "id": "job-115",
+  "theme": "fireChoice",
+  "note": "なし（つる○・水玉○）",
+  "bits": 12.3,
+  "finalStates": 2,
+  "text": "format: 1\nid: job-115\ntitle: 見習い騎士の重し\nrequest: 見習い騎士が、重しを作ってほしいと言っている。\nterrain:\n  +++++\n  +++++\n  +++++\npieces:\n  .....\n  .....\n  ..a..\nlegend:\n  a: vine\nhand:\n  water #\n  fire #\n  lead .#/.#/##\n  lead .#/.#/##\n  lead ###/.#.\nsolution:\n  1 r0 x0\n  3 r0 x3\n  5 r0 x0\n  2 r0 x0\n  4 r3 x1\n"
+ },
+ {
+  "id": "job-034",
   "theme": "iceSlime",
-  "bits": 15.1,
+  "bits": 14.7,
   "finalStates": 1,
-  "text": "format: 1\nid: job-045\ntitle: 時計塔の番人の蓋\nrequest: 時計塔の番人が、蓋を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\n  ++xx\npieces:\n  ....\n  ....\n  ....\n  ..aa\nlegend:\n  a: ice\nhand:\n  slime #\n  lead ###/.#.\n  lead ###/.#.\n  ice ##\n  lead ###/.#.\n  fire #\nsolution:\n  4 r0 x0\n  6 r0 x1\n  2 r3 x0\n  1 r0 x2\n  3 r1 x2\n  5 r0 x0\n"
+  "text": "format: 1\nid: job-034\ntitle: 温室の番人の重し\nrequest: 温室の番人が、重しを作ってほしいと言っている。\nterrain:\n  +++++\n  +++++\n  xx+++\npieces:\n  .....\n  .....\n  aa...\nlegend:\n  a: ice\nhand:\n  lead #./#./##\n  lead ###/.#.\n  fire #\n  slime ##\n  lead ##\nsolution:\n  1 r3 x2\n  4 r0 x1\n  2 r0 x2\n  3 r0 x0\n  5 r0 x0\n"
  },
  {
-  "id": "job-069",
+  "id": "job-116",
+  "theme": "goldFew",
+  "note": "区切り",
+  "bits": 17.9,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-116\ntitle: 時計塔の番人の鋳型\nrequest: 時計塔の番人が、鋳型を作ってほしいと言っている。\nterrain:\n  ....\n  ++++\n  ++G+\n  L++G\nhand:\n  lead ###/.#.\n  sand ##\n  stone #\n  lead ##/#.\n  ice ##\nsolution:\n  4 r3 x0\n  2 r0 x1\n  1 r1 x2\n  3 r0 x2\n  5 r0 x0\n"
+ },
+ {
+  "id": "job-058",
   "theme": "sandMelt",
-  "bits": 11.8,
+  "bits": 11.3,
   "finalStates": 1,
-  "text": "format: 1\nid: job-069\ntitle: パン屋のおかみさんの型板\nrequest: パン屋のおかみさんが、型板を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\n  +#++\npieces:\n  ....\n  ....\n  aaa.\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead ###/.#.\n  sand ###\n  lead ##./.##\n  fire #\n  lead ###\nsolution:\n  2 r0 x1\n  4 r0 x3\n  3 r1 x2\n  5 r1 x0\n  1 r0 x0\n"
+  "text": "format: 1\nid: job-058\ntitle: 人形師の箱の底板\nrequest: 人形師が、箱の底板を作ってほしいと言っている。\nterrain:\n  +++++\n  +++++\n  ++++#\npieces:\n  .....\n  .aaaa\n  .....\nlegend:\n  a: ice fixed\nhand:\n  sand ###\n  lead ##./.##\n  fire #\n  lead ##./.##\n  lead ##\nsolution:\n  1 r0 x0\n  3 r0 x0\n  2 r0 x0\n  4 r1 x3\n  5 r0 x2\n"
  },
  {
-  "id": "job-048",
+  "id": "job-037",
   "theme": "tallIce",
-  "bits": 13.3,
-  "finalStates": 1,
-  "text": "format: 1\nid: job-048\ntitle: 宝石商の重し\nrequest: 宝石商が、重しを作ってほしいと言っている。\nterrain:\n  #+++\n  x+++\n  .+++\n  .+++\npieces:\n  ....\n  a...\n  ....\n  ....\nlegend:\n  a: ice fixed\nhand:\n  fire #\n  ice ##\n  lead ##./.##\n  lead ###\n  ice ##\n  lead ##/##\nsolution:\n  2 r0 x1\n  5 r0 x1\n  1 r0 x1\n  3 r0 x1\n  4 r1 x3\n  6 r0 x1\n"
+  "bits": 13,
+  "finalStates": 6,
+  "text": "format: 1\nid: job-037\ntitle: 王立図書館の司書の重し\nrequest: 王立図書館の司書が、重しを作ってほしいと言っている。\nterrain:\n  +#++\n  +x++\n  +x++\n  +.++\npieces:\n  ....\n  .a..\n  .a..\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead #\n  fire #\n  lead ##/#.\n  lead ###/.#.\n  sand ###\n  ice #\nsolution:\n  1 r0 x0\n  5 r1 x0\n  6 r0 x2\n  2 r0 x2\n  4 r1 x2\n  3 r0 x2\n"
+ },
+ {
+  "id": "job-117",
+  "theme": "hornVine2",
+  "bits": 15.7,
+  "finalStates": 4,
+  "text": "format: 1\nid: job-117\ntitle: 橋の番人の蓋\nrequest: 橋の番人が、蓋を作ってほしいと言っている。\nterrain:\n  #+++#\n  ++++#\n  +++++\n  +++++\npieces:\n  .....\n  .....\n  .....\n  ...a.\nlegend:\n  a: vine\nhand:\n  horn #\n  horn #\n  water #\n  lead #./#./##\n  lead #./#./##\n  lead #./#./##\n  water #\nsolution:\n  3 r0 x2\n  1 r1 x3\n  4 r0 x1\n  2 r0 x2\n  5 r0 x1\n  7 r0 x2\n  6 r2 x2\n"
  },
  {
   "id": "job-052",
@@ -189,32 +311,62 @@
   "text": "format: 1\nid: job-052\ntitle: パン屋のおかみさんの踏み台\nrequest: パン屋のおかみさんが、踏み台を作ってほしいと言っている。\nterrain:\n  +++++\n  +++++\n  +#++#\n  +#++#\nhand:\n  lead ###/.#.\n  lead ##/##\n  lead ##\n  lead ##\n  sand ##\n  lead ##\nsolution:\n  3 r0 x2\n  4 r1 x0\n  2 r0 x0\n  5 r0 x3\n  1 r3 x2\n  6 r0 x3\n"
  },
  {
-  "id": "job-054",
-  "theme": "iceSlime",
-  "bits": 15.8,
-  "finalStates": 1,
-  "text": "format: 1\nid: job-054\ntitle: 旅の吟遊詩人の型板\nrequest: 旅の吟遊詩人が、型板を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\n  xx++\npieces:\n  ....\n  ....\n  ....\n  aa..\nlegend:\n  a: ice\nhand:\n  slime #\n  lead ###/.#.\n  fire #\n  lead .#/.#/##\n  lead .##/##.\nsolution:\n  3 r0 x2\n  2 r1 x2\n  1 r0 x1\n  5 r0 x1\n  4 r2 x0\n"
+  "id": "job-118",
+  "theme": "fireChoice",
+  "note": "なし（つる○・鱗○）",
+  "bits": 12.5,
+  "finalStates": 9,
+  "text": "format: 1\nid: job-118\ntitle: 学院の先輩の仕切り板\nrequest: 学院の先輩が、仕切り板を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  ....\n  ..ab\nlegend:\n  a: vine\n  b: ice\nhand:\n  lead ###/.#.\n  vine #\n  fire #\n  lead #./#./##\n  lead .##/##.\nsolution:\n  2 r0 x1\n  1 r3 x0\n  3 r0 x0\n  5 r1 x1\n  4 r2 x2\n"
  },
  {
-  "id": "job-090",
-  "theme": "hornMelt",
-  "bits": 17.9,
-  "finalStates": 1,
-  "text": "format: 1\nid: job-090\ntitle: 人形師の留め金\nrequest: 人形師が、留め金を作ってほしいと言っている。\nterrain:\n  #++++\n  +++++\n  +++++\nhand:\n  horn #\n  lead ##/##\n  fire #\n  ice #\n  lead .#/.#/##\n  lead ##./.##\nsolution:\n  4 r0 x4\n  6 r1 x2\n  1 r1 x4\n  3 r0 x3\n  2 r0 x2\n  5 r3 x2\n"
- },
- {
-  "id": "job-056",
-  "theme": "hornFire",
-  "bits": 18.2,
+  "id": "job-135",
+  "theme": "slimeHorn",
+  "bits": 18,
   "finalStates": 2,
-  "text": "format: 1\nid: job-056\ntitle: 宝石商の仕切り板\nrequest: 宝石商が、仕切り板を作ってほしいと言っている。\nterrain:\n  +++#\n  ++++\n  ++++\n  +++x\npieces:\n  ....\n  ....\n  ....\n  ...a\nlegend:\n  a: ice fixed\nhand:\n  lead .#/.#/##\n  horn #\n  lead #./##\n  horn #\n  fire #\n  lead ###/.#.\nsolution:\n  5 r0 x1\n  3 r3 x0\n  2 r0 x0\n  6 r1 x0\n  4 r0 x0\n  1 r3 x0\n"
+  "text": "format: 1\nid: job-135\ntitle: 修道院の写本係の鋳型\nrequest: 修道院の写本係が、鋳型を作ってほしいと言っている。\nterrain:\n  #++++\n  +++++\n  +++++\nhand:\n  slime #\n  horn #\n  lead ###/.#.\n  lead ###\n  lead .##/##.\n  horn #\nsolution:\n  1 r0 x2\n  3 r1 x2\n  2 r1 x4\n  5 r0 x2\n  6 r0 x2\n  4 r0 x2\n"
  },
  {
-  "id": "job-078",
-  "theme": "sandMelt",
-  "bits": 12.3,
+  "id": "job-045",
+  "theme": "iceSlime",
+  "bits": 15.1,
   "finalStates": 1,
-  "text": "format: 1\nid: job-078\ntitle: 山あいの鍛冶屋の踏み台\nrequest: 山あいの鍛冶屋が、踏み台を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\n  ++#+\npieces:\n  ....\n  ....\n  .aa.\n  ....\nlegend:\n  a: ice fixed\nhand:\n  sand ###\n  lead ##./.##\n  lead ##/##\n  fire #\n  lead #./##\nsolution:\n  1 r0 x1\n  4 r0 x3\n  2 r1 x0\n  3 r0 x2\n  5 r1 x0\n"
+  "text": "format: 1\nid: job-045\ntitle: 時計塔の番人の蓋\nrequest: 時計塔の番人が、蓋を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\n  ++xx\npieces:\n  ....\n  ....\n  ....\n  ..aa\nlegend:\n  a: ice\nhand:\n  slime #\n  lead ###/.#.\n  lead ###/.#.\n  ice ##\n  lead ###/.#.\n  fire #\nsolution:\n  4 r0 x0\n  6 r0 x1\n  2 r3 x0\n  1 r0 x2\n  3 r1 x2\n  5 r0 x0\n"
+ },
+ {
+  "id": "job-119",
+  "theme": "goldFew",
+  "note": "区切り",
+  "bits": 18.3,
+  "finalStates": 2,
+  "text": "format: 1\nid: job-119\ntitle: 鉱山の親方の飾り板\nrequest: 鉱山の親方が、飾り板を作ってほしいと言っている。\nterrain:\n  .....\n  G++++\n  ++L+L\n  +++++\nhand:\n  ice #/#\n  lead ###\n  lead #./#./##\n  stone #\n  lead .##/##.\n  slime #\nsolution:\n  1 r0 x1\n  2 r1 x0\n  3 r3 x2\n  4 r0 x1\n  5 r0 x2\n  6 r0 x2\n"
+ },
+ {
+  "id": "job-070",
+  "theme": "hornMelt",
+  "bits": 17.1,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-070\ntitle: 学院の先輩の飾り板\nrequest: 学院の先輩が、飾り板を作ってほしいと言っている。\nterrain:\n  +++#\n  ++++\n  ++++\n  ++++\nhand:\n  horn #\n  horn #\n  lead .##/##.\n  lead ##/##\n  fire #\n  ice #/#\n  lead #./#./##\nsolution:\n  4 r0 x1\n  6 r1 x0\n  1 r0 x0\n  2 r0 x1\n  5 r0 x2\n  3 r0 x0\n  7 r1 x0\n"
+ },
+ {
+  "id": "job-051",
+  "theme": "hornFire",
+  "bits": 18,
+  "finalStates": 8,
+  "text": "format: 1\nid: job-051\ntitle: 城の庭師の蓋\nrequest: 城の庭師が、蓋を作ってほしいと言っている。\nterrain:\n  #+++\n  ++++\n  ++++\n  x+++\npieces:\n  ....\n  ....\n  ....\n  a...\nlegend:\n  a: ice fixed\nhand:\n  ice ##\n  horn #\n  fire #\n  horn #\n  lead ##/#.\n  lead ##/##\n  lead ##./.##\nsolution:\n  1 r0 x1\n  3 r0 x2\n  5 r3 x2\n  2 r1 x3\n  7 r1 x2\n  4 r0 x3\n  6 r0 x1\n"
+ },
+ {
+  "id": "job-120",
+  "theme": "hornWater",
+  "bits": 19.6,
+  "finalStates": 2,
+  "text": "format: 1\nid: job-120\ntitle: 宝石商の蓋\nrequest: 宝石商が、蓋を作ってほしいと言っている。\nterrain:\n  +++#\n  +++#\n  ++++\n  ++++\nhand:\n  fire #\n  horn #\n  lead .##/##.\n  lead #./#./##\n  lead ###/.#.\n  water #/#\n  horn #\nsolution:\n  1 r0 x1\n  2 r0 x1\n  3 r1 x1\n  6 r0 x0\n  7 r0 x0\n  5 r1 x0\n  4 r1 x0\n"
+ },
+ {
+  "id": "job-084",
+  "theme": "sandMelt",
+  "bits": 12.7,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-084\ntitle: 宝石商の仕切り板\nrequest: 宝石商が、仕切り板を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\n  +#++\npieces:\n  ....\n  ....\n  .aaa\n  ....\nlegend:\n  a: ice fixed\nhand:\n  sand ###\n  fire #\n  lead ##/#.\n  lead ##/##\n  lead .##/##.\nsolution:\n  1 r0 x0\n  2 r0 x0\n  4 r0 x0\n  5 r1 x2\n  3 r1 x2\n"
  },
  {
   "id": "job-057",
@@ -231,18 +383,27 @@
   "text": "format: 1\nid: job-061\ntitle: 雑貨屋の店主の蓋\nrequest: 雑貨屋の店主が、蓋を作ってほしいと言っている。\nterrain:\n  ++++++\n  ++++++\n  +#++++\n  +##+++\nhand:\n  lead ##/#.\n  sand ###/#..\n  sand ###/#..\n  lead ##/#.\n  lead ##/#.\n  lead .##/##.\nsolution:\n  1 r1 x2\n  2 r0 x0\n  3 r0 x0\n  4 r2 x4\n  6 r1 x3\n  5 r1 x4\n"
  },
  {
-  "id": "job-065",
-  "theme": "iceSlime",
-  "bits": 16.2,
-  "finalStates": 1,
-  "text": "format: 1\nid: job-065\ntitle: 王立図書館の司書の重し\nrequest: 王立図書館の司書が、重しを作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  +++x\npieces:\n  ....\n  ....\n  ...a\nlegend:\n  a: ice\nhand:\n  lead #\n  fire #\n  slime #\n  ice #\n  lead ####\n  lead .#/.#/##\nsolution:\n  4 r0 x3\n  6 r1 x0\n  1 r0 x1\n  3 r0 x2\n  2 r0 x3\n  5 r0 x0\n"
+  "id": "job-121",
+  "theme": "fireChoice",
+  "note": "一部（つる×・水玉○・鱗○）",
+  "bits": 14.6,
+  "finalStates": 3,
+  "text": "format: 1\nid: job-121\ntitle: 岬の灯台守の飾り板\nrequest: 岬の灯台守が、飾り板を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  ....\n  ...a\nlegend:\n  a: vine\nhand:\n  lead .#/.#/##\n  lead ####\n  fire #\n  lead .#/.#/##\n  water #\n  ice ##\nsolution:\n  1 r1 x0\n  3 r0 x3\n  4 r1 x1\n  5 r0 x0\n  6 r0 x2\n  2 r0 x0\n"
  },
  {
-  "id": "job-084",
-  "theme": "sandMelt",
-  "bits": 12.7,
+  "id": "job-054",
+  "theme": "iceSlime",
+  "bits": 15.8,
   "finalStates": 1,
-  "text": "format: 1\nid: job-084\ntitle: 宝石商の仕切り板\nrequest: 宝石商が、仕切り板を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\n  +#++\npieces:\n  ....\n  ....\n  .aaa\n  ....\nlegend:\n  a: ice fixed\nhand:\n  sand ###\n  fire #\n  lead ##/#.\n  lead ##/##\n  lead .##/##.\nsolution:\n  1 r0 x0\n  2 r0 x0\n  4 r0 x0\n  5 r1 x2\n  3 r1 x2\n"
+  "text": "format: 1\nid: job-054\ntitle: 旅の吟遊詩人の型板\nrequest: 旅の吟遊詩人が、型板を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\n  xx++\npieces:\n  ....\n  ....\n  ....\n  aa..\nlegend:\n  a: ice\nhand:\n  slime #\n  lead ###/.#.\n  fire #\n  lead .#/.#/##\n  lead .##/##.\nsolution:\n  3 r0 x2\n  2 r1 x2\n  1 r0 x1\n  5 r0 x1\n  4 r2 x0\n"
+ },
+ {
+  "id": "job-122",
+  "theme": "goldFew",
+  "note": "区切り",
+  "bits": 18.6,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-122\ntitle: 旅の吟遊詩人の飾り板\nrequest: 旅の吟遊詩人が、飾り板を作ってほしいと言っている。\nterrain:\n  ....\n  L+++\n  ++L+\n  +G++\nhand:\n  slime #\n  stone #\n  lead ####\n  lead #\n  ice ##\n  lead .#/.#/##\nsolution:\n  1 r0 x2\n  2 r0 x0\n  3 r1 x3\n  4 r0 x1\n  5 r0 x0\n  6 r3 x0\n"
  },
  {
   "id": "job-068",
@@ -252,11 +413,47 @@
   "text": "format: 1\nid: job-068\ntitle: 王立図書館の司書の仕切り板\nrequest: 王立図書館の司書が、仕切り板を作ってほしいと言っている。\nterrain:\n  ++++\n  +++#\n  +++x\n  +++.\n  +++.\npieces:\n  ....\n  ....\n  ...a\n  ....\n  ....\nlegend:\n  a: ice fixed\nhand:\n  sand ###\n  fire #\n  ice #\n  lead ####\n  lead ##/##\n  lead ###/.#.\nsolution:\n  1 r1 x0\n  5 r0 x1\n  2 r0 x2\n  3 r0 x1\n  6 r0 x0\n  4 r0 x0\n"
  },
  {
+  "id": "job-124",
+  "theme": "slimeSand",
+  "bits": 14.9,
+  "finalStates": 13,
+  "text": "format: 1\nid: job-124\ntitle: 錬金ギルドの受付の飾り板\nrequest: 錬金ギルドの受付が、飾り板を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  x+x+\nhand:\n  slime #\n  lead #\n  lead #\n  lead #\n  sand ###/#..\n  slime #\n  lead #\nsolution:\n  1 r0 x1\n  2 r0 x3\n  3 r0 x3\n  4 r0 x3\n  6 r0 x1\n  5 r0 x0\n  7 r0 x2\n"
+ },
+ {
+  "id": "job-089",
+  "theme": "sandMelt",
+  "bits": 12.8,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-089\ntitle: 学院の先輩の型板\nrequest: 学院の先輩が、型板を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\n  ++#+\npieces:\n  ....\n  ....\n  .aaa\n  ....\nlegend:\n  a: ice fixed\nhand:\n  sand ###\n  lead ###/.#.\n  lead ###\n  lead .##/##.\n  fire #\nsolution:\n  1 r0 x0\n  5 r0 x0\n  3 r1 x3\n  4 r1 x0\n  2 r0 x1\n"
+ },
+ {
+  "id": "job-125",
+  "theme": "hornVine2",
+  "bits": 18.3,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-125\ntitle: 旅の吟遊詩人の型板\nrequest: 旅の吟遊詩人が、型板を作ってほしいと言っている。\nterrain:\n  #+++\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  ....\n  ..a.\nlegend:\n  a: vine\nhand:\n  water #\n  water #\n  horn #\n  horn #\n  lead ##./.##\n  lead ##\n  lead ##./.##\nsolution:\n  1 r0 x1\n  3 r1 x3\n  6 r0 x1\n  5 r0 x1\n  4 r1 x3\n  7 r0 x1\n  2 r0 x3\n"
+ },
+ {
   "id": "job-072",
   "theme": "sand",
   "bits": 16.1,
   "finalStates": 11,
   "text": "format: 1\nid: job-072\ntitle: 橋の番人の文鎮\nrequest: 橋の番人が、文鎮を作ってほしいと言っている。\nterrain:\n  ++++++\n  ++++++\n  +++++#\n  +++++#\nhand:\n  sand ###/#..\n  lead ##\n  lead ###/.#.\n  lead ###/.#.\n  lead ###/.#.\n  lead .##/##.\nsolution:\n  2 r0 x2\n  1 r2 x3\n  3 r1 x3\n  6 r0 x0\n  4 r3 x0\n  5 r0 x1\n"
+ },
+ {
+  "id": "job-126",
+  "theme": "fireChoice",
+  "note": "一部（つる×・鱗○）",
+  "bits": 14.8,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-126\ntitle: 雑貨屋の店主の重し\nrequest: 雑貨屋の店主が、重しを作ってほしいと言っている。\nterrain:\n  +++++\n  +++++\n  +++++\npieces:\n  .....\n  .....\n  ...a.\nlegend:\n  a: vine\nhand:\n  ice ##\n  fire #\n  lead ###/.#.\n  lead .#/.#/##\n  lead ###/.#.\nsolution:\n  2 r0 x4\n  4 r1 x0\n  3 r0 x2\n  1 r0 x3\n  5 r0 x0\n"
+ },
+ {
+  "id": "job-131",
+  "theme": "slimeHorn",
+  "bits": 19.4,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-131\ntitle: 宝石商の飾り板\nrequest: 宝石商が、飾り板を作ってほしいと言っている。\nterrain:\n  #+++\n  ++++\n  ++++\n  ++++\nhand:\n  slime #/#\n  horn #\n  lead .#/.#/##\n  lead #./##\n  lead .##/##.\n  slime #\nsolution:\n  6 r0 x2\n  5 r1 x2\n  2 r1 x3\n  4 r1 x2\n  3 r1 x1\n  1 r1 x2\n"
  },
  {
   "id": "job-074",
@@ -266,25 +463,26 @@
   "text": "format: 1\nid: job-074\ntitle: 学院の先輩の台座\nrequest: 学院の先輩が、台座を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  x+++\npieces:\n  ....\n  ....\n  a...\nlegend:\n  a: ice\nhand:\n  slime #\n  lead ####\n  ice ##\n  lead #\n  fire #\n  lead .##/##.\nsolution:\n  4 r0 x3\n  6 r0 x1\n  1 r0 x1\n  5 r0 x0\n  3 r0 x0\n  2 r0 x0\n"
  },
  {
-  "id": "job-097",
+  "id": "job-127",
+  "theme": "goldFew",
+  "note": "区切り",
+  "bits": 19.5,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-127\ntitle: 天文台の学者の飾り板\nrequest: 天文台の学者が、飾り板を作ってほしいと言っている。\nterrain:\n  .....\n  G++++\n  ++L++\n  +G+++\nhand:\n  lead ###\n  ice #/#\n  stone #\n  lead ##/##\n  ice ##\n  lead #./#./##\nsolution:\n  1 r1 x4\n  2 r1 x2\n  4 r0 x2\n  6 r0 x0\n  3 r0 x0\n  5 r1 x1\n"
+ },
+ {
+  "id": "job-090",
   "theme": "hornMelt",
-  "bits": 19.8,
-  "finalStates": 4,
-  "text": "format: 1\nid: job-097\ntitle: 郵便屋の錘\nrequest: 郵便屋が、錘を作ってほしいと言っている。\nterrain:\n  +++##\n  +++++\n  +++++\nhand:\n  horn #\n  horn #\n  lead #./##\n  lead ##/#.\n  fire #\n  ice ##\n  lead ##./.##\nsolution:\n  6 r0 x0\n  3 r2 x1\n  1 r0 x0\n  5 r0 x1\n  2 r0 x2\n  7 r1 x1\n  4 r0 x0\n"
+  "bits": 17.9,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-090\ntitle: 人形師の留め金\nrequest: 人形師が、留め金を作ってほしいと言っている。\nterrain:\n  #++++\n  +++++\n  +++++\nhand:\n  horn #\n  lead ##/##\n  fire #\n  ice #\n  lead .#/.#/##\n  lead ##./.##\nsolution:\n  4 r0 x4\n  6 r1 x2\n  1 r1 x4\n  3 r0 x3\n  2 r0 x2\n  5 r3 x2\n"
  },
  {
-  "id": "job-080",
+  "id": "job-056",
   "theme": "hornFire",
-  "bits": 19.3,
-  "finalStates": 1,
-  "text": "format: 1\nid: job-080\ntitle: 劇場の座長の錘\nrequest: 劇場の座長が、錘を作ってほしいと言っている。\nterrain:\n  ++++#\n  +++++\n  ++++x\npieces:\n  .....\n  .....\n  ....a\nlegend:\n  a: ice fixed\nhand:\n  fire #\n  ice ##\n  lead .##/##.\n  lead #./#./##\n  lead ##/#.\n  horn #\nsolution:\n  2 r0 x0\n  5 r3 x1\n  6 r0 x0\n  1 r0 x1\n  3 r1 x0\n  4 r2 x1\n"
- },
- {
-  "id": "job-089",
-  "theme": "sandMelt",
-  "bits": 12.8,
-  "finalStates": 1,
-  "text": "format: 1\nid: job-089\ntitle: 学院の先輩の型板\nrequest: 学院の先輩が、型板を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\n  ++#+\npieces:\n  ....\n  ....\n  .aaa\n  ....\nlegend:\n  a: ice fixed\nhand:\n  sand ###\n  lead ###/.#.\n  lead ###\n  lead .##/##.\n  fire #\nsolution:\n  1 r0 x0\n  5 r0 x0\n  3 r1 x3\n  4 r1 x0\n  2 r0 x1\n"
+  "bits": 18.2,
+  "finalStates": 2,
+  "text": "format: 1\nid: job-056\ntitle: 宝石商の仕切り板\nrequest: 宝石商が、仕切り板を作ってほしいと言っている。\nterrain:\n  +++#\n  ++++\n  ++++\n  +++x\npieces:\n  ....\n  ....\n  ....\n  ...a\nlegend:\n  a: ice fixed\nhand:\n  lead .#/.#/##\n  horn #\n  lead #./##\n  horn #\n  fire #\n  lead ###/.#.\nsolution:\n  5 r0 x1\n  3 r3 x0\n  2 r0 x0\n  6 r1 x0\n  4 r0 x0\n  1 r3 x0\n"
  },
  {
   "id": "job-077",
@@ -301,11 +499,12 @@
   "text": "format: 1\nid: job-081\ntitle: 修道院の写本係の蓋\nrequest: 修道院の写本係が、蓋を作ってほしいと言っている。\nterrain:\n  ++++++\n  ++++++\n  ++++++\n  #+#+++\nhand:\n  sand ###\n  lead ##./.##\n  lead ###/.#.\n  lead ##./.##\n  sand #./##\n  lead ###/.#.\nsolution:\n  1 r0 x1\n  2 r0 x3\n  3 r1 x4\n  5 r0 x0\n  4 r0 x0\n  6 r0 x2\n"
  },
  {
-  "id": "job-085",
-  "theme": "iceSlime",
-  "bits": 17.2,
+  "id": "job-128",
+  "theme": "fireChoice",
+  "note": "全部（つる×・鱗×）",
+  "bits": 14.9,
   "finalStates": 2,
-  "text": "format: 1\nid: job-085\ntitle: 修道院の写本係の重し\nrequest: 修道院の写本係が、重しを作ってほしいと言っている。\nterrain:\n  +++++\n  +++++\n  xx+++\npieces:\n  .....\n  .....\n  aa...\nlegend:\n  a: ice\nhand:\n  lead ##./.##\n  ice ##\n  fire #\n  lead .#/.#/##\n  slime #\n  lead ##/#.\nsolution:\n  2 r0 x0\n  3 r0 x2\n  1 r0 x2\n  5 r0 x1\n  4 r3 x2\n  6 r0 x0\n"
+  "text": "format: 1\nid: job-128\ntitle: 天文台の学者の留め金\nrequest: 天文台の学者が、留め金を作ってほしいと言っている。\nterrain:\n  +++++\n  +++++\n  +++++\npieces:\n  .....\n  .....\n  ..ab.\nlegend:\n  a: vine\n  b: ice\nhand:\n  vine #/#\n  ice ##\n  lead ##/##\n  lead #./#./##\n  fire #\n  lead .##/##.\nsolution:\n  1 r0 x1\n  3 r0 x3\n  5 r0 x2\n  2 r0 x3\n  6 r0 x0\n  4 r1 x0\n"
  },
  {
   "id": "job-093",
@@ -315,6 +514,21 @@
   "text": "format: 1\nid: job-093\ntitle: パン屋のおかみさんの文鎮\nrequest: パン屋のおかみさんが、文鎮を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\n  +#++\npieces:\n  ....\n  ....\n  .aa.\n  ....\nlegend:\n  a: ice fixed\nhand:\n  sand ###\n  fire #\n  lead ##/##\n  lead ##/#.\n  lead .##/##.\nsolution:\n  1 r0 x0\n  2 r0 x0\n  3 r0 x0\n  5 r1 x2\n  4 r1 x2\n"
  },
  {
+  "id": "job-085",
+  "theme": "iceSlime",
+  "bits": 17.2,
+  "finalStates": 2,
+  "text": "format: 1\nid: job-085\ntitle: 修道院の写本係の重し\nrequest: 修道院の写本係が、重しを作ってほしいと言っている。\nterrain:\n  +++++\n  +++++\n  xx+++\npieces:\n  .....\n  .....\n  aa...\nlegend:\n  a: ice\nhand:\n  lead ##./.##\n  ice ##\n  fire #\n  lead .#/.#/##\n  slime #\n  lead ##/#.\nsolution:\n  2 r0 x0\n  3 r0 x2\n  1 r0 x2\n  5 r0 x1\n  4 r3 x2\n  6 r0 x0\n"
+ },
+ {
+  "id": "job-129",
+  "theme": "goldFew",
+  "note": "区切り",
+  "bits": 19.6,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-129\ntitle: 王立図書館の司書の飾り板\nrequest: 王立図書館の司書が、飾り板を作ってほしいと言っている。\nterrain:\n  ....\n  LL++\n  ++++\n  G++G\nhand:\n  stone #\n  lead ##\n  lead ##\n  slime #\n  ice ##\n  lead ###/.#.\nsolution:\n  1 r0 x2\n  2 r0 x0\n  5 r0 x0\n  3 r0 x0\n  6 r1 x2\n  4 r0 x2\n"
+ },
+ {
   "id": "job-088",
   "theme": "tallIce",
   "bits": 17.7,
@@ -322,11 +536,55 @@
   "text": "format: 1\nid: job-088\ntitle: 森の薬師の文鎮\nrequest: 森の薬師が、文鎮を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  +#++\n  +x++\n  +.++\npieces:\n  ....\n  ....\n  ....\n  .a..\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead .#/.#/##\n  lead ##./.##\n  sand ##\n  fire #\n  sand ##\n  lead .#/.#/##\nsolution:\n  1 r0 x2\n  3 r1 x0\n  4 r0 x2\n  2 r1 x2\n  5 r0 x1\n  6 r2 x0\n"
  },
  {
+  "id": "job-130",
+  "theme": "hornWater",
+  "bits": 20.1,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-130\ntitle: 温室の番人の鋳型\nrequest: 温室の番人が、鋳型を作ってほしいと言っている。\nterrain:\n  ##+++\n  +++++\n  +++++\nhand:\n  lead ##./.##\n  fire #\n  lead ##/#.\n  lead .#/.#/##\n  horn #\n  horn #\n  water #\nsolution:\n  2 r0 x3\n  5 r1 x3\n  3 r0 x2\n  7 r0 x4\n  6 r1 x4\n  1 r1 x3\n  4 r2 x2\n"
+ },
+ {
+  "id": "job-132",
+  "theme": "hornVine2",
+  "bits": 20.7,
+  "finalStates": 2,
+  "text": "format: 1\nid: job-132\ntitle: 郵便屋の留め金\nrequest: 郵便屋が、留め金を作ってほしいと言っている。\nterrain:\n  +++##\n  +++++\n  +++++\npieces:\n  .....\n  .....\n  ..a..\nlegend:\n  a: vine\nhand:\n  horn #\n  lead #./##\n  lead ##\n  horn #\n  water #\n  water #\n  lead ###\nsolution:\n  5 r0 x0\n  6 r0 x1\n  1 r0 x1\n  3 r1 x2\n  4 r0 x1\n  2 r1 x0\n  7 r1 x2\n"
+ },
+ {
   "id": "job-092",
   "theme": "sand",
   "bits": 19.5,
   "finalStates": 2,
   "text": "format: 1\nid: job-092\ntitle: 鉱山の親方の蓋\nrequest: 鉱山の親方が、蓋を作ってほしいと言っている。\nterrain:\n  ++++++\n  ++++++\n  ++++++\n  +++++#\nhand:\n  lead ##./.##\n  sand ####\n  lead ##/#.\n  lead ##./.##\n  lead #./#./##\n  lead ##/##\nsolution:\n  1 r1 x4\n  2 r0 x2\n  6 r0 x0\n  4 r0 x1\n  3 r0 x3\n  5 r1 x0\n"
+ },
+ {
+  "id": "job-133",
+  "theme": "fireChoice",
+  "note": "全部（つる×・水玉×）",
+  "bits": 17,
+  "finalStates": 2,
+  "text": "format: 1\nid: job-133\ntitle: 学院の先輩の錘\nrequest: 学院の先輩が、錘を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  ...a\nlegend:\n  a: vine\nhand:\n  water #\n  lead .##/##.\n  lead #./#./##\n  fire #\n  lead .#/.#/##\n  vine #\nsolution:\n  1 r0 x3\n  6 r0 x1\n  4 r0 x2\n  3 r3 x1\n  2 r0 x1\n  5 r2 x0\n"
+ },
+ {
+  "id": "job-136",
+  "theme": "slimeHorn",
+  "bits": 20.8,
+  "finalStates": 2,
+  "text": "format: 1\nid: job-136\ntitle: 人形師の文鎮\nrequest: 人形師が、文鎮を作ってほしいと言っている。\nterrain:\n  +++##\n  +++##\n  +++++\n  +++++\nhand:\n  slime #\n  horn #\n  lead ###/.#.\n  lead ##/#.\n  slime ##\n  lead ##./.##\n  horn #\nsolution:\n  1 r0 x1\n  2 r0 x0\n  4 r1 x1\n  7 r0 x0\n  6 r1 x1\n  3 r3 x0\n  5 r0 x1\n"
+ },
+ {
+  "id": "job-134",
+  "theme": "goldFew",
+  "note": "区切り",
+  "bits": 22.6,
+  "finalStates": 2,
+  "text": "format: 1\nid: job-134\ntitle: 森の薬師の台座\nrequest: 森の薬師が、台座を作ってほしいと言っている。\nterrain:\n  ....\n  ++L+\n  +G++\n  ++L+\nhand:\n  stone #\n  lead #\n  lead .#/.#/##\n  sand ##\n  lead ##/#.\n  slime ##\nsolution:\n  1 r0 x0\n  3 r0 x2\n  4 r0 x1\n  2 r0 x2\n  5 r3 x0\n  6 r1 x1\n"
+ },
+ {
+  "id": "job-096",
+  "theme": "sandMelt",
+  "bits": 14,
+  "finalStates": 1,
+  "text": "format: 1\nid: job-096\ntitle: 錬金ギルドの受付の仕切り板\nrequest: 錬金ギルドの受付が、仕切り板を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\n  ++#+\npieces:\n  ....\n  ....\n  .aa.\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead #./##\n  sand ###\n  lead ##./.##\n  lead ###/.#.\n  fire #\n  ice ##\nsolution:\n  2 r0 x1\n  5 r0 x3\n  4 r3 x0\n  3 r0 x0\n  6 r1 x3\n  1 r2 x2\n"
  },
  {
   "id": "job-099",
@@ -341,12 +599,5 @@
   "bits": 23.5,
   "finalStates": 3,
   "text": "format: 1\nid: job-098\ntitle: 雑貨屋の店主の鋳型\nrequest: 雑貨屋の店主が、鋳型を作ってほしいと言っている。\nterrain:\n  #++++\n  +++++\n  x++++\npieces:\n  .....\n  .....\n  a....\nlegend:\n  a: ice fixed\nhand:\n  ice ##\n  horn #\n  lead #./##\n  fire #\n  horn #\n  lead #./##\n  lead .##/##.\nsolution:\n  1 r0 x2\n  3 r3 x1\n  2 r1 x3\n  4 r0 x2\n  5 r0 x2\n  7 r1 x2\n  6 r2 x3\n"
- },
- {
-  "id": "job-096",
-  "theme": "sandMelt",
-  "bits": 14,
-  "finalStates": 1,
-  "text": "format: 1\nid: job-096\ntitle: 錬金ギルドの受付の仕切り板\nrequest: 錬金ギルドの受付が、仕切り板を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\n  ++#+\npieces:\n  ....\n  ....\n  .aa.\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead #./##\n  sand ###\n  lead ##./.##\n  lead ###/.#.\n  fire #\n  ice ##\nsolution:\n  2 r0 x1\n  5 r0 x3\n  4 r3 x0\n  3 r0 x0\n  6 r1 x3\n  1 r2 x2\n"
  }
 ]
