@@ -94,7 +94,7 @@ function showTitle() {
       <p class="subtitle">見習い錬金術師ノエルと、7つの天体</p>
       <div class="menu">
         <a class="menu-item primary" href="#/story">物語<small>師匠をたずねて、称号「天体」をめざす</small></a>
-        <a class="menu-item" href="#/board">依頼の掲示板<small>難しい依頼が100問。新しい依頼も探せる</small></a>
+        <a class="menu-item" href="#/board">依頼の掲示板<small>難しい依頼ばかり。新しい依頼も探せる</small></a>
         <a class="menu-item" href="#/edit">自分で作る<small>器と手持ちを決めて、共有URLで遊んでもらう</small></a>
         <a class="menu-item" href="#/note">師匠のノート<small>覚えた素材と、お手本</small></a>
       </div>
@@ -297,7 +297,7 @@ async function showBoard() {
       <p class="master-line">「腕の立つ錬金術師へ。どれも一筋縄ではいかない依頼ばかりだ。」</p>
       ${trials.length ? `<h3>作り方の試作 <small>テーマから作った${trials.length}問（テーマと素材は伏せています）。遊んで感想を聞かせてください</small></h3>
       <ol class="stage-list board-list">${trials.map((b, k) => `<li><a class="stage-item${save.isCleared(b.id) ? ' cleared' : ''}" href="#/trial/${k + 1}"><span class="num">${k + 1}</span><span class="name">${escapeHTML(b.stage.title)}</span><span class="req">${escapeHTML(b.stage.request)}</span></a></li>`).join('')}</ol>
-      <h3>依頼（前の作り方の100問）</h3>` : ''}
+      <h3>依頼（${list.length}問）</h3>` : ''}
       <div class="board-new">
         <button id="find-new">新しい依頼を探す</button>
         <span id="find-status" class="ed-note">掲示板にない依頼を、ランダムに1つ出します（URLで人にも渡せます）</span>

@@ -538,7 +538,7 @@ test('依頼の掲示板：どの問題も読めて、狙いの手順でクリ�
   const { THEMED, mainsOf } = await import('../src/core/generate.js');
   const { FEATURES, exists } = await import('../src/core/solver.js');
   const board = JSON.parse(await readFile(new URL('../stages/board.json', import.meta.url), 'utf8'));
-  assert.ok(board.length >= 100, `問題が足りない（${board.length}）`);
+  assert.ok(board.length >= 50, `問題が足りない（${board.length}）`);
   const ids = new Set();
   for (const [k, b] of board.entries()) {
     assert.ok(!ids.has(b.id), `id が重なっている：${b.id}`);
