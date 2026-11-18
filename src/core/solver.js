@@ -410,6 +410,12 @@ Object.assign(FEATURES, {
   glue: events => events.some(e => e.type === 'react' && e.groups && new Set(e.groups.map(g => g[1])).size < e.groups.length),
 });
 
+// 火種と水玉が消えたあとで、角笛が押した（下の水玉が消えて落ちた角笛が、もう一度押す。火種も消えるので、ほかの物を押せる）
+FEATURES.steamPush = events => {
+  const i = events.findIndex(e => e.type === 'react' && e.removed.some(r => r.why === 'steam'));
+  return i >= 0 && events.slice(i + 1).some(e => e.type === 'react' && e.pushed?.length);
+};
+
 // 1つの火種で、つるを燃やすのと水玉の蒸発を、同じ段で一度に起こす（まとめて消す）
 FEATURES.burnSteam = events => events.some(e => e.type === 'react' && e.removed.some(r => r.why === 'burn') && e.removed.some(r => r.why === 'steam'));
 
