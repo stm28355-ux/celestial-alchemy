@@ -1,0 +1,9 @@
+[
+ {
+  "id": "hand-100",
+  "pos": 100,
+  "by": "人",
+  "noHint": true,
+  "text": "format: 1\nid: hand-100\ntitle: 覇天\nrequest: 天を統べろ。\nterrain:\n  ........\n  ........\n  ........\n  ........\n  ........\n  ........\n  ........\n  .....###\n  ....GxG.\n  ....G.G.\nopen:\n  floor 3 4\npieces:\n  ........\n  ........\n  ........\n  .......f\n  ........\n  ......ag\n  .......g\n  hhhhh...\n  ........\n  ........\nlegend:\n  f: fire fixed\n  g: vine\n  h: water fixed\n  a: slime\nhand:\n  lead #/#\n  lead #./##/#.\n  fire #\n  ice #\n  water #/#/#\n  water #/#/#\n  vine #/#/#\n  horn #\n  horn #\n  stone #\n"
+ }
+]

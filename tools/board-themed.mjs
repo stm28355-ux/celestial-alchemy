@@ -127,6 +127,12 @@ const entry = prefix => c => {
 };
 // id は前の100問と重ならないように変える（前の作り方の問題を解いた記録と混ざらないように）
 const board = chosen.map(entry('job'));
+// 人が作った問題（stages/board-hand.json、2026-11-20〜）は、作った順番（pos）で最後に足す。95〜100番の予定
+let hand = [];
+try {
+  hand = JSON.parse(readFileSync('stages/board-hand.json', 'utf8'));
+} catch {}
+board.push(...hand.sort((a, b) => a.pos - b.pos));
 writeFileSync('stages/board.json', JSON.stringify(board, null, 1) + '\n');
 const extra = rest.map(entry('more'));
 writeFileSync('stages/board-extra.json', JSON.stringify(extra, null, 1) + '\n');

@@ -119,6 +119,7 @@ export const PORTRAITS = {
     '#d9ebc4',
     `
     <path d="M34 160 q4 -38 46 -42 q42 4 46 42 z" fill="#7a9a4a" stroke="${INK}" stroke-width="2"/>
+    <rect x="72" y="102" width="16" height="20" rx="6" fill="${SKIN}" stroke="${INK}" stroke-width="2"/>
     <ellipse cx="80" cy="84" rx="28" ry="27" fill="${SKIN}" stroke="${INK}" stroke-width="2"/>
     ${face(80, 84, { eye: 'round', mouth: 'smile', gap: 11 })}
     <path d="M58 98 q22 30 44 0 q-6 8 -22 8 q-16 0 -22 -8 z" fill="#b98a5a" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>
@@ -213,6 +214,7 @@ export const PORTRAITS = {
     `
     <path d="M28 160 q4 -42 52 -46 q48 4 52 46 z" fill="#e9c98f" stroke="${INK}" stroke-width="2"/>
     <path d="M44 124 l60 36" stroke="#8a5a36" stroke-width="7"/>
+    <rect x="72" y="98" width="16" height="20" rx="6" fill="${SKIN}" stroke="${INK}" stroke-width="2"/>
     <path d="M60 112 q20 12 40 0 l2 10 q-22 12 -44 0 z" fill="#7a5cc0" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>
     <path d="M100 116 q20 -4 34 -18 q-4 16 -26 26 z" fill="#7a5cc0" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>
     <path d="M106 118 q14 -2 22 -12" fill="none" stroke="#b9a5ea" stroke-width="2"/>

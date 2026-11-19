@@ -177,7 +177,8 @@ const RULES = {
   horn: 'シルフの角笛は1マス。止まると、口の前のピースを、壁か他のピースに当たるまで横に押す。口の向き（左右）は回して決める。落ちてまた止まると、もう一度押す。',
 };
 
-function puzzleHTML(st, { heading, back, extra = '' }) {
+// noHint：ヒントを出さない（人が作った大きな問題は、今のヒントでは答えを探しきれない）
+function puzzleHTML(st, { heading, back, extra = '', noHint = false }) {
   const rules = [...RULES.base];
   if (st.terrain.some(r => r.includes('.'))) rules.push(RULES.free);
   if (st.terrain.some(r => r.includes('x'))) rules.push(RULES.mark);
@@ -216,7 +217,7 @@ function puzzleHTML(st, { heading, back, extra = '' }) {
           <button id="btn-drop" class="primary">落とす ↓</button>
           <button id="btn-undo">一手戻す</button>
           <button id="btn-reset">やり直し</button>
-          <button id="btn-hint">ヒント</button>
+          ${noHint ? '' : '<button id="btn-hint">ヒント</button>'}
           <button id="btn-see" aria-pressed="false" title="ピースを透かして、下の刻印を見る（T）">透かす</button>
         </div>
         <details class="help">
@@ -311,7 +312,7 @@ async function showBoard() {
             const s = b.stage;
             const mats = THEME_MATS([...s.hand.map(h => h.mat), ...s.pieces.map(p => p.mat)]);
             const cls = save.isCleared(b.id) ? ' cleared' : '';
-            return `<li><a class="stage-item${cls}" href="#/req/${k + 1}"><span class="num">${k + 1}</span><span class="name">${escapeHTML(s.title)}</span><span class="req">${mats}</span></a></li>`;
+            return `<li><a class="stage-item${cls}" href="#/req/${k + 1}"><span class="num">${b.pos ?? k + 1}</span><span class="name">${escapeHTML(s.title)}</span><span class="req">${mats}</span></a></li>`;
           })
           .join('')}
       </ol>
@@ -357,7 +358,7 @@ async function showRequest(n) {
   const b = list[n - 1];
   if (!b) return (location.hash = '#/board');
   const st = b.stage;
-  const game = mountGame(st, { heading: `依頼 ${n}. ${escapeHTML(st.title)}`, back: '<a href="#/board">← 依頼の掲示板</a>' }, () => {
+  const game = mountGame(st, { heading: `依頼 ${b.pos ?? n}. ${escapeHTML(st.title)}`, back: '<a href="#/board">← 依頼の掲示板</a>', noHint: b.noHint }, () => {
     save.markCleared(b.id);
     const next = n < list.length ? `#/req/${n + 1}` : null;
     clearDialog('依頼の品ができあがった。', [

@@ -544,6 +544,8 @@ test('依頼の掲示板：どの問題も読めて、狙いの手順でクリ�
     ids.add(b.id);
     const st = parseStage(b.text);
     assert.deepEqual(initialProblems(st), [], b.id);
+    // 人が作った問題は、作った人がクリアしてから共有URLを作っている（答えの手順は持っていない）
+    if (b.by === '人') continue;
     const c = checkSolution(st);
     assert.ok(c.ok && c.cleared, `${b.id}：狙いの手順でクリアできない`);
     if (!process.env.BOARD_ALL && k % 10 !== 0) continue;

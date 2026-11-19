@@ -140,6 +140,7 @@ export class Game {
 
   // ヒント：今の盤面から、クリアにつながる最初の1手を選んだ状態にする（落とすのは自分）。
   async hint() {
+    if (!this.root.querySelector('#btn-hint')) return; // ヒントを出さない問題
     if (this.anim || this.done || !this.state.hand.length) return;
     const token = {};
     this.hintToken = token;
