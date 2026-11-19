@@ -22,6 +22,9 @@ const WOOD_DARK = '#6a4327';
 const INSIDE = '#fbf3e3';
 const INSIDE_FREE = '#f1e6cf';
 const RUNE = '#c8a46a';
+// 金・鉛の刻印のマスは、地の色も少し変える（形と色の両方で見分ける。#14）
+const INSIDE_GOLD = '#fbebb5';
+const INSIDE_LEAD = '#e3e5ec';
 const EDGE = 'rgba(40, 28, 18, 0.75)';
 
 // 落とす前のピースと器の口の間に空ける高さ（マス数）。くっついて見えないように。
@@ -91,7 +94,7 @@ export function draw(ctx, L, view) {
         ctx.strokeRect(px + 0.5, py + 0.5, c - 1, c - 1);
         continue;
       }
-      ctx.fillStyle = t === '.' || t === 'x' ? INSIDE_FREE : INSIDE;
+      ctx.fillStyle = t === '.' || t === 'x' ? INSIDE_FREE : t === 'G' ? INSIDE_GOLD : t === 'L' ? INSIDE_LEAD : INSIDE;
       ctx.fillRect(px, py, c, c);
       ctx.strokeStyle = 'rgba(120, 90, 50, 0.12)';
       ctx.lineWidth = 1;
@@ -127,6 +130,17 @@ export function draw(ctx, L, view) {
       ctx.globalAlpha = 0.85;
       drawCross(ctx, L.left + x * c, L.top + y * c, c);
       ctx.restore();
+    }
+  }
+
+  // ピースの下に隠れた刻印を、ピースの右上に小さく出す（#14）。
+  // 金・鉛の刻印はどのピースの下でも、ふつうの刻印は器の一部（斜線の鱗）の下だけ（溶けたあと埋めるかが分かるように）
+  for (const p of view.pieces) {
+    if ((view.lift?.get(p.id) ?? 0) || (view.shift?.get(p.id) ?? 0)) continue;
+    for (const [x, y] of p.cells) {
+      const t = y < 0 ? null : stage.terrain[y]?.[x];
+      if (!(t === 'G' || t === 'L' || (t === '+' && p.fixed))) continue;
+      drawBadge(ctx, L.left + x * c, L.top + y * c, c, t);
     }
   }
 
@@ -198,19 +212,62 @@ function drawCross(ctx, px, py, c) {
   ctx.restore();
 }
 
+// 刻印の形（#14）：ふつう＝点線の輪、金＝太陽（☉に光）、鉛＝四角。色だけでなく形でも見分ける
 function drawRune(ctx, px, py, c, t) {
+  drawMark(ctx, px + c / 2, py + c / 2, c * 0.3, t, Math.max(1.5, c * 0.045));
+}
+
+function drawMark(ctx, cx, cy, r, t, lw) {
   ctx.save();
-  ctx.strokeStyle = t === 'G' ? '#d9a514' : t === 'L' ? '#565b69' : RUNE;
-  ctx.lineWidth = Math.max(1.5, c * 0.04);
-  ctx.setLineDash([c * 0.09, c * 0.07]);
+  ctx.lineWidth = lw;
+  if (t === 'G') {
+    ctx.strokeStyle = '#c99200';
+    ctx.fillStyle = '#c99200';
+    ctx.beginPath();
+    ctx.arc(cx, cy, r * 0.62, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(cx, cy, r * 0.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    for (let k = 0; k < 8; k++) {
+      const a = (k * Math.PI) / 4;
+      ctx.moveTo(cx + Math.cos(a) * r * 0.82, cy + Math.sin(a) * r * 0.82);
+      ctx.lineTo(cx + Math.cos(a) * r * 1.08, cy + Math.sin(a) * r * 1.08);
+    }
+    ctx.stroke();
+  } else if (t === 'L') {
+    ctx.strokeStyle = '#4b5060';
+    ctx.fillStyle = '#4b5060';
+    const h = r * 0.78;
+    ctx.strokeRect(cx - h, cy - h, h * 2, h * 2);
+    const k = r * 0.28;
+    ctx.fillRect(cx - k, cy - k, k * 2, k * 2);
+  } else {
+    ctx.strokeStyle = RUNE;
+    ctx.setLineDash([r * 0.3, r * 0.23]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+// ピースの下の刻印を、マスの右上に白い丸を敷いて小さく描く
+function drawBadge(ctx, px, py, c, t) {
+  const r = c * 0.17;
+  const cx = px + c - r - 2, cy = py + r + 2;
+  ctx.save();
+  ctx.fillStyle = t === 'G' ? '#fff7d6' : t === 'L' ? '#f3f4f8' : '#fffaf0';
+  ctx.strokeStyle = 'rgba(40, 28, 18, 0.55)';
+  ctx.lineWidth = 1;
   ctx.beginPath();
-  ctx.arc(px + c / 2, py + c / 2, c * 0.3, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.beginPath();
-  ctx.arc(px + c / 2, py + c / 2, c * 0.08, 0, Math.PI * 2);
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fill();
   ctx.stroke();
   ctx.restore();
+  drawMark(ctx, cx, cy, r * 0.62, t, Math.max(1.2, c * 0.03));
 }
 
 // cells は盤のマス座標（y が負なら盤の上）。lift は上にずらすマス数（落ちていく途中の見せ方）。

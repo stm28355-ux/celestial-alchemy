@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>立ち絵の見本</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .page { max-width: 980px; margin: 0 auto; padding: 16px; }
+    .page p.note { color: var(--ink-soft); font-size: 14px; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+    .card svg { width: 100%; height: auto; display: block; }
+    .card b { display: block; margin-top: 8px; }
+    .card p { margin: 4px 0 0; font-size: 13px; color: var(--ink-soft); }
+    .small { display: flex; gap: 12px; align-items: center; margin-top: 24px; }
+    .small svg { width: 72px; height: 72px; }
+    .bubble { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Celestial Alchemy <small>立ち絵の見本（1回目）</small></h1>
+    <nav><a href="./">ゲームへ戻る</a></nav>
+  </header>
+  <div class="page">
+    <p class="note">胸から上の立ち絵。明るいページに合わせて、やわらかい色・細い線・丸い顔にしました。見本は3人です。良ければ、残りの6人も同じ描き方で作ります。</p>
+    <div class="cards" id="cards"></div>
+    <h3>章の始めの、師匠の一言に置いたとき</h3>
+    <div id="lines"></div>
+  </div>
+  <script type="module">
+    import { PORTRAITS } from './src/ui/portraits.js';
+    const info = {
+      ノエル: ['主人公', '見習い錬金術師。明るく、好奇心が強い'],
+      サトゥル: ['1章 土星の錬金術師', '時間にきびしい老人。砂時計を持つ'],
+      ソレイユ: ['7章 太陽の錬金術師', 'すべての錬金術師の長。明るく温かい'],
+    };
+    const lines = {
+      サトゥル: 'すべてを埋める必要はない。埋めるべき所を見きわめよ。',
+      ソレイユ: '鉛を金に。きみがここまで来た理由が、ようやく分かるよ。',
+    };
+    document.querySelector('#cards').innerHTML = Object.entries(PORTRAITS)
+      .map(([name, svg]) => `<div class="card">${svg}<b>${name}</b><p>${info[name][0]}：${info[name][1]}</p></div>`)
+      .join('');
+    document.querySelector('#lines').innerHTML = Object.entries(lines)
+      .map(([name, line]) => `<div class="small">${PORTRAITS[name]}<div class="bubble"><b>${name}</b><br>「${line}」</div></div>`)
+      .join('');
+  </script>
+</body>
+</html>
