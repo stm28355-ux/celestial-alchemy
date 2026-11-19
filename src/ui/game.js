@@ -113,7 +113,7 @@ export class Game {
     const steps = buildSteps(before, d, cur.cells, SPAWN_GAP);
     this.anim = runSteps(
       steps,
-      (pieces, extra) => draw(this.ctx, this.L, { stage: this.stage, pieces, icons: true, ...extra }),
+      (pieces, extra) => draw(this.ctx, this.L, { stage: this.stage, pieces, icons: true, see: this.see, ...extra }),
       () => {
         this.anim = null;
         this.state = d.state;
@@ -227,6 +227,7 @@ export class Game {
       else if (k === 'ArrowDown' || k === ' ' || k === 'Enter' || k === 's') this.dropNow();
       else if (k === 'z' || k === 'Backspace') this.undo();
       else if (k === 'h') this.hint();
+      else if (k === 't') this.toggleSee();
       else if (/^[1-9]$/.test(k)) {
         const orig = Number(k) - 1;
         if (this.state.hand.some(h => h.orig === orig)) {
@@ -243,6 +244,18 @@ export class Game {
     btn('#btn-undo', () => this.undo());
     btn('#btn-reset', () => this.reset());
     btn('#btn-hint', () => this.hint());
+    btn('#btn-see', () => this.toggleSee());
+  }
+
+  // ピースを透かして、下の刻印を見る（押すたびに切り替え）
+  toggleSee() {
+    this.see = !this.see;
+    const b = this.root.querySelector('#btn-see');
+    if (b) {
+      b.setAttribute('aria-pressed', String(this.see));
+      b.classList.toggle('on', this.see);
+    }
+    this.render();
   }
 
   destroy() {
@@ -270,7 +283,7 @@ export class Game {
 
   render() {
     if (!this.L || this.anim) return;
-    const view = { stage: this.stage, pieces: this.state.pieces, icons: true };
+    const view = { stage: this.stage, pieces: this.state.pieces, icons: true, see: this.see };
     const cur = this.done ? null : this.current();
     if (cur) {
       const { h } = size(cur.cells);

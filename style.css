@@ -104,6 +104,7 @@ main {
   cursor: pointer;
 }
 .buttons button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: bold; }
+.buttons button.on { background: #fde7c9; border-color: var(--accent); color: var(--ink); font-weight: bold; }
 button:focus-visible { outline: 3px solid #f3b36b; outline-offset: 1px; }
 
 .help { margin-top: 14px; font-size: 13px; color: var(--ink-soft); }
@@ -165,13 +166,23 @@ a.menu-item:hover { border-color: var(--accent); }
 
 /* ── 章とステージ ── */
 .chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-.chapter-card { display: flex; flex-direction: column; gap: 2px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--ink); text-decoration: none; }
+.chapter-card { display: flex; align-items: center; gap: 12px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--ink); text-decoration: none; }
 .chapter-card b { font-size: 16px; }
 .chapter-card .master { font-size: 13px; color: var(--ink-soft); }
 .chapter-card .status { font-size: 13px; color: var(--accent); }
 .chapter-card.done { border-color: var(--good); }
 .chapter-card.done .status { color: var(--good); }
 .chapter-card.locked { opacity: 0.5; }
+.chapter-card .text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.chapter-card .face, .master-say .face { flex: none; width: 64px; height: 64px; }
+.chapter-card .face svg, .master-say .face svg, .title-face svg { display: block; width: 100%; height: 100%; }
+.chapter-card.locked .face { filter: grayscale(0.6); }
+/* 章の始めの師匠の一言：立ち絵と吹き出し */
+.master-say { display: flex; align-items: center; gap: 12px; margin: 0 0 16px; }
+.master-say .face { width: 84px; height: 84px; }
+.master-say .master-line { margin: 0; flex: 1; }
+.master-say .master-line b { display: block; font-size: 13px; color: var(--ink-soft); }
+.title-face { width: 132px; height: 132px; margin: 12px auto 0; }
 a.chapter-card:hover { border-color: var(--accent); }
 .dev { display: block; margin-top: 24px; font-size: 13px; color: var(--ink-soft); }
 .master-line { margin: 0 0 16px; padding: 10px 14px; background: var(--panel); border-radius: 10px; border: 1px solid var(--line); }

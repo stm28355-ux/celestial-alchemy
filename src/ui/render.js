@@ -118,7 +118,7 @@ export function draw(ctx, L, view) {
   for (const p of view.pieces) {
     const lift = view.lift?.get(p.id) ?? 0;
     const shift = view.shift?.get(p.id) ?? 0;
-    drawPiece(ctx, L, p.cells, p.mat, { lift, shift, dir: p.dir, fixed: p.fixed, flash: view.flash?.has(p.id) ? view.flashAlpha ?? 0.7 : 0, icons: view.icons });
+    drawPiece(ctx, L, p.cells, p.mat, { lift, shift, dir: p.dir, fixed: p.fixed, flash: view.flash?.has(p.id) ? view.flashAlpha ?? 0.7 : 0, icons: view.icons, alpha: view.see ? 0.28 : 1 });
   }
 
   // ×印のマスにあるピースの上にも、×を描く（下に×印があると分かるように）
@@ -134,12 +134,14 @@ export function draw(ctx, L, view) {
   }
 
   // ピースの下に隠れた刻印を、ピースの右上に小さく出す（#14）。
-  // 金・鉛の刻印はどのピースの下でも、ふつうの刻印は器の一部（斜線の鱗）の下だけ（溶けたあと埋めるかが分かるように）
-  for (const p of view.pieces) {
+  // 金・鉛の刻印はどのピースの下でも、ふつうの刻印は最初から置いてあるピースの下だけ（落としたピースの下まで出すと、うるさい）。
+  // 最初から置いてあるピースは、id がステージのピースの数以下。透かしているときは刻印がそのまま見えるので出さない
+  const presetCount = stage.pieces?.length ?? Infinity;
+  for (const p of view.see ? [] : view.pieces) {
     if ((view.lift?.get(p.id) ?? 0) || (view.shift?.get(p.id) ?? 0)) continue;
     for (const [x, y] of p.cells) {
       const t = y < 0 ? null : stage.terrain[y]?.[x];
-      if (!(t === 'G' || t === 'L' || (t === '+' && p.fixed))) continue;
+      if (!(t === 'G' || t === 'L' || (t === '+' && p.id <= presetCount))) continue;
       drawBadge(ctx, L.left + x * c, L.top + y * c, c, t);
     }
   }
@@ -273,13 +275,14 @@ function drawBadge(ctx, px, py, c, t) {
 // cells は盤のマス座標（y が負なら盤の上）。lift は上にずらすマス数（落ちていく途中の見せ方）。
 // icons: true で、1文字の代わりにアイコン（試し描き）を描く。
 // shift は横にずらすマス数（押されて滑る途中の見せ方）。dir は角笛の口の向き（1 右・-1 左）。
-export function drawPiece(ctx, L, cells, mat, { lift = 0, shift = 0, dir = 1, fixed = false, flash = 0, ghost = false, invalid = false, icons = false } = {}) {
+// alpha は透かすときの濃さ（ふちは少し濃く残して、ピースの形は分かるようにする）。
+export function drawPiece(ctx, L, cells, mat, { lift = 0, shift = 0, dir = 1, fixed = false, flash = 0, ghost = false, invalid = false, icons = false, alpha = 1 } = {}) {
   const c = L.cell;
   const look = LOOK[mat];
   const set = new Set(cells.map(([x, y]) => `${x},${y}`));
   const pos = (x, y) => [L.left + (x + shift) * c, L.top + (y - lift) * c];
   ctx.save();
-  if (ghost) ctx.globalAlpha = 0.32;
+  ctx.globalAlpha = (ghost ? 0.32 : 1) * alpha;
   for (const [x, y] of cells) {
     const [px, py] = pos(x, y);
     ctx.fillStyle = invalid ? '#d9534f' : look.fill;
@@ -318,7 +321,7 @@ export function drawPiece(ctx, L, cells, mat, { lift = 0, shift = 0, dir = 1, fi
     }
   }
   // ピースのまとまりが分かるように、外側のふちだけを太く描く
-  ctx.globalAlpha = ghost ? 0.9 : 1;
+  ctx.globalAlpha = ghost ? 0.9 : alpha < 1 ? 0.8 : 1;
   ctx.strokeStyle = ghost ? look.fill : EDGE;
   ctx.lineWidth = ghost ? 2 : Math.max(2, c * 0.06);
   if (ghost) ctx.setLineDash([c * 0.12, c * 0.08]);

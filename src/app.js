@@ -15,6 +15,7 @@ import { Game } from './ui/game.js';
 import { Replay } from './ui/replay.js';
 import { drawPiece } from './ui/render.js';
 import { save } from './save.js';
+import { PORTRAITS } from './ui/portraits.js';
 import { openEditor, editorPlayStage, markEditorCleared, loadIntoEditor } from './editor.js';
 
 const view = document.querySelector('#view');
@@ -91,6 +92,7 @@ function showTitle() {
   view.innerHTML = `
     <section class="title-screen">
       <h1>Celestial Alchemy</h1>
+      <div class="title-face">${PORTRAITS.ノエル}</div>
       <p class="subtitle">見習い錬金術師ノエルと、7つの天体</p>
       <div class="menu">
         <a class="menu-item primary" href="#/story">物語<small>師匠をたずねて、称号「天体」をめざす</small></a>
@@ -122,7 +124,7 @@ function chapterCard(ch, i) {
   const count = ch.loaded.filter(s => save.isCleared(s.id)).length;
   const ready = ch.loaded.length > 0;
   const status = !ready ? '準備中' : !open ? '前の章をクリアすると開く' : done ? (ch.title ? `称号「${ch.title}」` : 'クリア') : `${count} / ${ch.loaded.length}`;
-  const body = `<b>${chapterLabel(ch)}</b><span class="master">${ch.master}</span><span class="status">${status}</span>`;
+  const body = `<span class="face">${PORTRAITS[ch.master] ?? ''}</span><span class="text"><b>${chapterLabel(ch)}</b><span class="master">${ch.master}</span><span class="status">${status}</span></span>`;
   return open && ready
     ? `<a class="chapter-card${done ? ' done' : ''}" href="#/ch/${i}">${body}</a>`
     : `<span class="chapter-card locked">${body}</span>`;
@@ -136,7 +138,7 @@ function showChapter(i) {
     <section class="page">
       <p class="back"><a href="#/story">← 章をえらぶ</a></p>
       <h2>${chapterLabel(ch)} <small>${ch.master}</small></h2>
-      <p class="master-line">「${ch.line}」</p>
+      <div class="master-say"><span class="face">${PORTRAITS[ch.master] ?? ''}</span><p class="master-line"><b>${ch.master}</b>「${ch.line}」</p></div>
       <ol class="stage-list">
         ${ch.loaded
           .map((s, k) => {
@@ -215,12 +217,13 @@ function puzzleHTML(st, { heading, back, extra = '' }) {
           <button id="btn-undo">一手戻す</button>
           <button id="btn-reset">やり直し</button>
           <button id="btn-hint">ヒント</button>
+          <button id="btn-see" aria-pressed="false" title="ピースを透かして、下の刻印を見る（T）">透かす</button>
         </div>
         <details class="help">
           <summary>操作</summary>
           <ul>
             <li>マウス：動かして列を選ぶ／クリックで落とす／右クリックかホイールで回す</li>
-            <li>キー：← → 列　↑ か R 回す　↓ か Space 落とす　Z 一手戻す　H ヒント　1〜9 ピースを選ぶ</li>
+            <li>キー：← → 列　↑ か R 回す　↓ か Space 落とす　Z 一手戻す　H ヒント　T 透かす　1〜9 ピースを選ぶ</li>
             <li>指：触った列に合わせ、同じ所をもう一度触ると落とす</li>
             <li>動いている途中にクリックすると、最後まで飛ばす</li>
           </ul>
