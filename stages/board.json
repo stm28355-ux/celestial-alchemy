@@ -116,6 +116,14 @@
   "text": "format: 1\nid: job-011\ntitle: 城の庭師の箱の底板\nrequest: 城の庭師が、箱の底板を作ってほしいと言っている。\nterrain:\n  +++#\n  ++++\n  +++x\npieces:\n  ....\n  ....\n  ...a\nlegend:\n  a: ice fixed\nhand:\n  ice ##\n  lead #./##\n  horn #\n  fire #\n  lead .##/##.\n  horn #\nsolution:\n  1 r0 x0\n  2 r0 x1\n  3 r0 x0\n  4 r0 x1\n  5 r1 x0\n  6 r0 x1\n"
  },
  {
+  "id": "trial-71",
+  "theme": "hornChoice",
+  "note": "なし（つる○・鱗○）",
+  "bits": 9.7,
+  "finalStates": 18,
+  "text": "format: 1\nid: trial-71\ntitle: 王立図書館の司書の重し\nrequest: 王立図書館の司書が、重しを作ってほしいと言っている。\nterrain:\n  +++#\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  ...a\nlegend:\n  a: vine\nhand:\n  horn #\n  ice #\n  fire #\n  lead ###/.#.\n  lead ##\n  vine #\nsolution:\n  2 r0 x0\n  4 r3 x1\n  1 r0 x0\n  3 r0 x0\n  6 r0 x1\n  5 r1 x1\n"
+ },
+ {
   "id": "more-065",
   "theme": "tallIce",
   "bits": 11.7,
@@ -181,11 +189,25 @@
   "text": "format: 1\nid: job-110\ntitle: 港の船大工の飾り板\nrequest: 港の船大工が、飾り板を作ってほしいと言っている。\nterrain:\n  ....\n  ++++\n  ++L+\n  +G++\npieces:\n  ....\n  ....\n  ....\n  ..a.\nlegend:\n  a: vine\nhand:\n  stone #\n  lead .#/.#/##\n  water #\n  lead #\n  water #\n  lead #./#./##\nsolution:\n  4 r0 x3\n  2 r0 x2\n  3 r0 x2\n  6 r0 x0\n  5 r0 x1\n  1 r0 x1\n"
  },
  {
+  "id": "trial-66",
+  "theme": "hornSlimeIce",
+  "bits": 19.9,
+  "finalStates": 2,
+  "text": "format: 1\nid: trial-66\ntitle: 城の庭師の錘\nrequest: 城の庭師が、錘を作ってほしいと言っている。\nterrain:\n  #+++\n  ++++\n  ++++\nhand:\n  lead ###/.#.\n  ice ##\n  horn #\n  fire #\n  lead ###\n  slime #\n  lead #\nsolution:\n  2 r0 x1\n  4 r0 x3\n  6 r0 x2\n  7 r0 x2\n  3 r1 x3\n  1 r0 x1\n  5 r0 x1\n"
+ },
+ {
   "id": "job-017",
   "theme": "tallIce",
   "bits": 12.3,
   "finalStates": 2,
   "text": "format: 1\nid: job-017\ntitle: 橋の番人の錘\nrequest: 橋の番人が、錘を作ってほしいと言っている。\nterrain:\n  ++++#\n  ++++x\n  ++++x\n  ++++.\npieces:\n  .....\n  ....a\n  ....a\n  .....\nlegend:\n  a: ice fixed\nhand:\n  lead #./#./##\n  lead #./#./##\n  fire #\n  sand ###\n  lead ##/##\nsolution:\n  1 r0 x0\n  5 r0 x2\n  3 r0 x3\n  4 r0 x0\n  2 r1 x1\n"
+ },
+ {
+  "id": "trial-67",
+  "theme": "slimeHornX",
+  "bits": 19.1,
+  "finalStates": 1,
+  "text": "format: 1\nid: trial-67\ntitle: 雑貨屋の店主の留め金\nrequest: 雑貨屋の店主が、留め金を作ってほしいと言っている。\nterrain:\n  ++++##\n  +++++#\n  ++++++\nhand:\n  lead ###\n  slime #/#\n  horn #\n  slime #\n  lead ##/##\n  lead .##/##.\nsolution:\n  1 r0 x1\n  4 r0 x2\n  3 r0 x0\n  6 r0 x1\n  5 r0 x0\n  2 r1 x2\n"
  },
  {
   "id": "job-111",
@@ -318,6 +340,14 @@
   "text": "format: 1\nid: job-117\ntitle: 橋の番人の蓋\nrequest: 橋の番人が、蓋を作ってほしいと言っている。\nterrain:\n  #+++#\n  ++++#\n  +++++\n  +++++\npieces:\n  .....\n  .....\n  .....\n  ...a.\nlegend:\n  a: vine\nhand:\n  horn #\n  horn #\n  water #\n  lead #./#./##\n  lead #./#./##\n  lead #./#./##\n  water #\nsolution:\n  3 r0 x2\n  1 r1 x3\n  4 r0 x1\n  2 r0 x2\n  5 r0 x1\n  7 r0 x2\n  6 r2 x2\n"
  },
  {
+  "id": "trial-65",
+  "theme": "hornChoice",
+  "note": "全部（鱗×・つる×・水玉×）",
+  "bits": 18.2,
+  "finalStates": 3,
+  "text": "format: 1\nid: trial-65\ntitle: 森の薬師の台座\nrequest: 森の薬師が、台座を作ってほしいと言っている。\nterrain:\n  +++#\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  b.a.\nlegend:\n  a: vine\n  b: ice\nhand:\n  ice #\n  water #\n  lead .#/.#/##\n  lead ##/#.\n  fire #\n  horn #\n  lead ##/#.\nsolution:\n  1 r0 x0\n  2 r0 x0\n  5 r0 x1\n  4 r2 x0\n  6 r0 x0\n  7 r1 x0\n  3 r3 x0\n"
+ },
+ {
   "id": "job-052",
   "theme": "sand",
   "bits": 15.4,
@@ -381,6 +411,13 @@
   "bits": 13.8,
   "finalStates": 1,
   "text": "format: 1\nid: job-057\ntitle: 森の薬師の重し\nrequest: 森の薬師が、重しを作ってほしいと言っている。\nterrain:\n  ++++\n  +++#\n  +++x\n  +++.\npieces:\n  ....\n  ....\n  ...a\n  ....\nlegend:\n  a: ice fixed\nhand:\n  fire #\n  ice #\n  lead .#/.#/##\n  lead ##./.##\n  lead ####\nsolution:\n  2 r0 x2\n  1 r0 x2\n  4 r1 x1\n  3 r2 x0\n  5 r0 x0\n"
+ },
+ {
+  "id": "trial-69",
+  "theme": "hornSlimeIce",
+  "bits": 17.5,
+  "finalStates": 2,
+  "text": "format: 1\nid: trial-69\ntitle: 城の庭師の仕切り板\nrequest: 城の庭師が、仕切り板を作ってほしいと言っている。\nterrain:\n  +++#\n  ++++\n  ++++\n  ++++\nhand:\n  ice #\n  slime #\n  fire #\n  horn #\n  lead #./#./##\n  lead ###/.#.\n  lead ##./.##\nsolution:\n  2 r0 x1\n  6 r1 x1\n  1 r0 x2\n  4 r0 x1\n  3 r0 x2\n  7 r1 x0\n  5 r1 x0\n"
  },
  {
   "id": "job-123",
@@ -506,6 +543,13 @@
   "text": "format: 1\nid: job-077\ntitle: 錬金ギルドの受付の重し\nrequest: 錬金ギルドの受付が、重しを作ってほしいと言っている。\nterrain:\n  +++#\n  +++x\n  +++.\n  +++.\npieces:\n  ....\n  ...a\n  ....\n  ....\nlegend:\n  a: ice fixed\nhand:\n  lead .#/.#/##\n  ice #\n  lead ##./.##\n  fire #\n  lead ##/#.\nsolution:\n  1 r1 x0\n  2 r0 x2\n  4 r0 x2\n  3 r1 x1\n  5 r0 x0\n"
  },
  {
+  "id": "trial-70",
+  "theme": "slimeHornX",
+  "bits": 15.2,
+  "finalStates": 1,
+  "text": "format: 1\nid: trial-70\ntitle: 鐘つき堂の主人の重し\nrequest: 鐘つき堂の主人が、重しを作ってほしいと言っている。\nterrain:\n  +++++\n  #++++\n  +++++\nhand:\n  horn #\n  lead ##/##\n  slime #\n  lead ####\n  lead .#/.#/##\nsolution:\n  4 r0 x1\n  3 r0 x2\n  5 r3 x1\n  1 r1 x4\n  2 r0 x3\n"
+ },
+ {
   "id": "job-081",
   "theme": "sand",
   "bits": 17.6,
@@ -550,6 +594,14 @@
   "text": "format: 1\nid: job-131\ntitle: 宝石商の飾り板\nrequest: 宝石商が、飾り板を作ってほしいと言っている。\nterrain:\n  #+++\n  ++++\n  ++++\n  ++++\nhand:\n  slime #/#\n  horn #\n  lead .#/.#/##\n  lead #./##\n  lead .##/##.\n  slime #\nsolution:\n  6 r0 x2\n  5 r1 x2\n  2 r1 x3\n  4 r1 x2\n  3 r1 x1\n  1 r1 x2\n"
  },
  {
+  "id": "trial-68",
+  "theme": "hornChoice",
+  "note": "一部（つる×・鱗○）",
+  "bits": 15.8,
+  "finalStates": 2,
+  "text": "format: 1\nid: trial-68\ntitle: パン屋のおかみさんの文鎮\nrequest: パン屋のおかみさんが、文鎮を作ってほしいと言っている。\nterrain:\n  +++#\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  ....\n  ..a.\nlegend:\n  a: vine\nhand:\n  fire #\n  horn #\n  ice #\n  lead ###/.#.\n  vine #\n  lead ###\n  lead ####\nsolution:\n  1 r0 x1\n  4 r3 x0\n  3 r0 x0\n  6 r1 x2\n  2 r0 x1\n  5 r0 x1\n  7 r1 x2\n"
+ },
+ {
   "id": "job-088",
   "theme": "tallIce",
   "bits": 17.7,
@@ -584,6 +636,13 @@
   "bits": 17,
   "finalStates": 2,
   "text": "format: 1\nid: job-133\ntitle: 学院の先輩の錘\nrequest: 学院の先輩が、錘を作ってほしいと言っている。\nterrain:\n  ++++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  ...a\nlegend:\n  a: vine\nhand:\n  water #\n  lead .##/##.\n  lead #./#./##\n  fire #\n  lead .#/.#/##\n  vine #\nsolution:\n  1 r0 x3\n  6 r0 x1\n  4 r0 x2\n  3 r3 x1\n  2 r0 x1\n  5 r2 x0\n"
+ },
+ {
+  "id": "trial-72",
+  "theme": "hornSlimeIce",
+  "bits": 15.9,
+  "finalStates": 1,
+  "text": "format: 1\nid: trial-72\ntitle: 岬の灯台守の飾り板\nrequest: 岬の灯台守が、飾り板を作ってほしいと言っている。\nterrain:\n  +++#\n  +++#\n  ++++\n  ++++\nhand:\n  lead ###\n  horn #\n  lead ##./.##\n  fire #\n  slime #\n  lead .#/.#/##\n  ice ##\nsolution:\n  1 r0 x0\n  4 r0 x2\n  5 r0 x1\n  3 r1 x0\n  7 r1 x2\n  2 r0 x0\n  6 r2 x0\n"
  },
  {
   "id": "job-134",

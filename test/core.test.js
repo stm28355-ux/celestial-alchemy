@@ -537,7 +537,7 @@ test('生成：作った問題は狙いの手順でクリアでき、答えが1�
 test('依頼の掲示板：どの問題も読めて、狙いの手順でクリアでき、テーマの気付きを使い、メインの素材を鉛に替えると解けない', async () => {
   const { THEMED, verifyThemed } = await import('../src/core/generate.js');
   const board = JSON.parse(await readFile(new URL('../stages/board.json', import.meta.url), 'utf8'));
-  assert.ok(board.length >= 50, `問題が足りない（${board.length}）`);
+  assert.ok(board.length >= 94, `問題が足りない（${board.length}）`);
   const ids = new Set();
   for (const [k, b] of board.entries()) {
     assert.ok(!ids.has(b.id), `id が重なっている：${b.id}`);

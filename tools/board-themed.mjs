@@ -15,8 +15,15 @@ import { rng } from '../src/core/generate.js';
 // 2026-11-18 人の指示：角笛と鱗・角笛と火種は同じ話になりすぎるので5問ずつ、鱗×星砂はやさしすぎるものを外して10問（計50問。残り50問は新しいテーマで足す）
 // 2026-11-18 試作44〜59の人の順位（角笛と水玉＞ゼリーと角笛＞角笛とつる＞少しの鉛＞火種の使い道＞ゼリーと星砂）から、良かったテーマを足す。
 // ゼリーと星砂は見栄えが悪いので、遊んだ2問だけ（ゼリーの10問の残りはゼリーと角笛）。角笛と低い枠は入れない
-const QUOTA = { hornMelt: 5, hornFire: 5, sandMelt: 10, tallIce: 10, iceSlime: 10, sand: 10, fireChoice: 10, hornWater: 5, goldFew: 10, slimeSand: 2, slimeHorn: 8, hornVine2: 5 };
-const BONUS = { hornMelt: 3, hornFire: 3, sandMelt: 2, sand: 1, tallIce: 0, iceSlime: -1, hornWater: 3, slimeHorn: 2.5, hornVine2: 2, goldFew: 1.5, fireChoice: 1, slimeSand: 0 };
+// 2026-11-19 試作65〜72はどれも良かったので、そのまま入れる（94問。残り6問は人が作る）。
+// 人の順位 72>69>70>68>66>67>65>71：角笛とゼリーと鱗がいちばん難しく、新しい器のゼリーと角笛、角笛と火種の使い道の順
+const QUOTA = { hornMelt: 5, hornFire: 5, sandMelt: 10, tallIce: 10, iceSlime: 10, sand: 10, fireChoice: 10, hornWater: 5, goldFew: 10, slimeSand: 2, slimeHorn: 8, hornVine2: 5, hornChoice: 3, hornSlimeIce: 3, slimeHornX: 2 };
+const BONUS = { hornMelt: 3, hornFire: 3, sandMelt: 2, sand: 1, tallIce: 0, iceSlime: -1, hornWater: 3, slimeHorn: 2.5, hornVine2: 2, goldFew: 1.5, fireChoice: 1, slimeSand: 0, hornChoice: 2, hornSlimeIce: 4, slimeHornX: 3 };
+// 人が遊んで決めた問題は、目安の順に関係なく必ず入れる（seed で決める。試作65〜72）
+const PIN = new Set([17118785, 17102949, 17039728, 17023767, 17031688, 17134653, 17142544, 17007925]);
+// 人が遊んだ難しさの順（やさしい → 難しい）。テーマの中の並びは、目安よりこちらを優先する（試作71<65<67<66<68<70<69<72）
+const HUMAN = [17142544, 17118785, 17039728, 17102949, 17023767, 17134653, 17031688, 17007925];
+const hardness = c => (HUMAN.includes(c.seed) ? 100 + HUMAN.indexOf(c.seed) : c.bits);
 // テーマの中の種類（note）ごとの数：火種の使い道は「なし・一部・全部」、少しの鉛は「区切り・つると水玉」を混ぜる
 const KINDS = { fireChoice: { なし: 2, 一部: 4, 全部: 4 }, goldFew: { 区切り: 7, つると水玉: 3 } };
 // 目安の下限：鱗×星砂は、反転や同じ形を除くと高いものが少なく、やさしすぎるもの（6台）が入ってしまう
@@ -53,10 +60,14 @@ const shapeKey = c => {
 const chosen = [];
 for (const [theme, n] of Object.entries(QUOTA)) {
   const l = byTheme.get(theme) ?? [];
-  const pick = [];
+  const pick = l.filter(c => PIN.has(c.seed)).slice(0, n);
   const shapes = new Set();
-  const looks = new Set();
+  const looks = new Set(pick.map(c => shapeKey(c) + '|' + specials(c)));
   const kinds = {};
+  for (const c of pick) {
+    shapes.add(shapeKey(c));
+    kinds[kindOf(c)] = (kinds[kindOf(c)] ?? 0) + 1;
+  }
   for (const pass of [0, 1]) {
     for (const c of l) {
       if (pick.length >= n || pick.includes(c) || c.bits < (MIN_BITS[theme] ?? 0)) continue;
@@ -77,7 +88,7 @@ for (const [theme, n] of Object.entries(QUOTA)) {
 // テーマの中の順位（0〜1）に、テーマの難しさ（BONUS）を少し足した値で並べる
 const rankOf = new Map();
 for (const theme of Object.keys(QUOTA)) {
-  const l = chosen.filter(c => c.theme === theme).sort((a, b) => a.bits - b.bits);
+  const l = chosen.filter(c => c.theme === theme).sort((a, b) => hardness(a) - hardness(b));
   l.forEach((c, i) => rankOf.set(c, (i + 0.5) / l.length + (BONUS[theme] ?? 0) * 0.04));
 }
 chosen.sort((a, b) => rankOf.get(a) - rankOf.get(b));
@@ -89,14 +100,15 @@ const rest = [...byTheme.entries()].filter(([theme]) => theme in QUOTA).flatMap(
 const keyOf = raw => [...raw.terrain, '|', ...(raw.pieces ?? []), '|', ...[...raw.hand].sort(), '|', ...(raw.open ?? [])].join('/');
 const before = new Map();
 const used = { job: 0, more: 0 };
-for (const f of ['stages/board.json', 'stages/board-extra.json']) {
+// 試作から入れた問題は、試作のときの id のまま（名前は依頼らしいものに付け直す）
+for (const f of ['stages/board-trial.json', 'stages/board.json', 'stages/board-extra.json']) {
   let list = [];
   try {
     list = JSON.parse(readFileSync(f, 'utf8'));
   } catch {}
   for (const b of list) {
     const raw = parseStage(b.text).raw;
-    before.set(keyOf(raw), { id: b.id, title: raw.title, request: raw.request });
+    before.set(keyOf(raw), b.id.startsWith('trial-') ? { id: b.id } : { id: b.id, title: raw.title, request: raw.request });
     const [p, n] = b.id.split('-');
     if (p in used) used[p] = Math.max(used[p], Number(n));
   }
@@ -107,7 +119,7 @@ const entry = prefix => c => {
   const item = ITEMS[Math.floor(r() * ITEMS.length)];
   const old = before.get(keyOf(c.raw));
   const id = old?.id ?? `${prefix}-${String(++used[prefix]).padStart(3, '0')}`;
-  const raw = old ? { ...c.raw, id, title: old.title, request: old.request } : { ...c.raw, id, title: `${client}の${item}`, request: `${client}が、${item}を作ってほしいと言っている。` };
+  const raw = old?.title ? { ...c.raw, id, title: old.title, request: old.request } : { ...c.raw, id, title: `${client}の${item}`, request: `${client}が、${item}を作ってほしいと言っている。` };
   const st = parseStage(stageToText(raw));
   const check = checkSolution(st);
   if (!check.ok || !check.cleared) throw new Error(`${id}：狙いの手順でクリアできない`);

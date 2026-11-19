@@ -1058,6 +1058,20 @@
   "text": "format: 1\nid: more-248\ntitle: 錬金ギルドの受付の留め金\nrequest: 錬金ギルドの受付が、留め金を作ってほしいと言っている。\nterrain:\n  +++#\n  ++++\n  ++++\nhand:\n  water ##\n  horn #\n  lead #\n  lead .##/##.\n  fire #\n  horn #\n  lead .##/##.\nsolution:\n  1 r1 x0\n  2 r0 x1\n  4 r1 x1\n  6 r0 x0\n  5 r0 x1\n  7 r1 x0\n  3 r0 x1\n"
  },
  {
+  "id": "more-249",
+  "theme": "hornSlimeIce",
+  "bits": 15.9,
+  "finalStates": 1,
+  "text": "format: 1\nid: more-249\ntitle: 宝石商の仕切り板\nrequest: 宝石商が、仕切り板を作ってほしいと言っている。\nterrain:\n  +++#\n  ++++\n  ++++\n  ++++\nhand:\n  horn #\n  lead ###/.#.\n  lead ###/.#.\n  ice ##\n  lead ###/.#.\n  fire #\n  slime #\nsolution:\n  7 r0 x1\n  2 r1 x1\n  1 r0 x1\n  3 r3 x0\n  4 r0 x1\n  6 r0 x2\n  5 r0 x0\n"
+ },
+ {
+  "id": "more-250",
+  "theme": "hornSlimeIce",
+  "bits": 14.9,
+  "finalStates": 2,
+  "text": "format: 1\nid: more-250\ntitle: 森の薬師の重し\nrequest: 森の薬師が、重しを作ってほしいと言っている。\nterrain:\n  #+++\n  ++++\n  ++++\nhand:\n  slime #\n  lead ###/.#.\n  lead ###\n  fire #\n  lead #\n  horn #\n  ice #\nsolution:\n  1 r0 x2\n  4 r0 x2\n  5 r0 x3\n  6 r1 x3\n  7 r0 x1\n  2 r0 x1\n  3 r0 x1\n"
+ },
+ {
   "id": "job-003",
   "theme": "sand",
   "bits": 13.2,
@@ -1301,6 +1315,88 @@
   "bits": 3.9,
   "finalStates": 96,
   "text": "format: 1\nid: more-064\ntitle: 人形師の台座\nrequest: 人形師が、台座を作ってほしいと言っている。\nterrain:\n  ++++++\n  ++++++\n  ##++++\nhand:\n  lead ###/.#.\n  sand ####\n  lead ##\n  lead ##\n  sand ##\n  lead ##\nsolution:\n  1 r2 x2\n  2 r0 x1\n  3 r0 x1\n  4 r1 x0\n  5 r0 x4\n  6 r1 x5\n"
+ },
+ {
+  "id": "more-251",
+  "theme": "slimeHornX",
+  "bits": 18.9,
+  "finalStates": 1,
+  "text": "format: 1\nid: more-251\ntitle: 郵便屋の台座\nrequest: 郵便屋が、台座を作ってほしいと言っている。\nterrain:\n  ++++##\n  +++++#\n  ++++++\nhand:\n  lead .#/.#/##\n  slime ##\n  horn #\n  slime #\n  lead .#/.#/##\n  lead ###\nsolution:\n  6 r0 x1\n  4 r0 x2\n  3 r0 x0\n  2 r0 x1\n  1 r1 x0\n  5 r3 x1\n"
+ },
+ {
+  "id": "more-252",
+  "theme": "slimeHornX",
+  "bits": 18.8,
+  "finalStates": 1,
+  "text": "format: 1\nid: more-252\ntitle: 修道院の写本係の重し\nrequest: 修道院の写本係が、重しを作ってほしいと言っている。\nterrain:\n  ##++++\n  #+++++\n  ++++++\nhand:\n  slime #/#\n  slime #\n  horn #\n  lead ###\n  lead .#/.#/##\n  lead .#/.#/##\nsolution:\n  4 r0 x2\n  2 r0 x3\n  3 r1 x5\n  1 r1 x3\n  5 r1 x2\n  6 r3 x3\n"
+ },
+ {
+  "id": "more-253",
+  "theme": "slimeHornX",
+  "bits": 17.5,
+  "finalStates": 1,
+  "text": "format: 1\nid: more-253\ntitle: 温室の番人の錘\nrequest: 温室の番人が、錘を作ってほしいと言っている。\nterrain:\n  ##++++\n  #+++++\n  ++++++\nhand:\n  lead ##/##\n  slime #\n  horn #\n  slime #\n  lead #./#./##\n  lead .#/.#/##\nsolution:\n  5 r3 x2\n  2 r0 x3\n  3 r1 x5\n  1 r0 x3\n  4 r0 x2\n  6 r3 x3\n"
+ },
+ {
+  "id": "more-254",
+  "theme": "slimeHornX",
+  "bits": 16.2,
+  "finalStates": 2,
+  "text": "format: 1\nid: more-254\ntitle: 人形師の留め金\nrequest: 人形師が、留め金を作ってほしいと言っている。\nterrain:\n  ##++++\n  #+++++\n  ++++++\nhand:\n  horn #\n  lead #./#./##\n  slime #\n  slime #\n  lead ##/##\n  lead #./#./##\nsolution:\n  2 r3 x2\n  3 r0 x3\n  1 r1 x5\n  4 r0 x4\n  5 r0 x4\n  6 r2 x2\n"
+ },
+ {
+  "id": "more-255",
+  "theme": "slimeHornX",
+  "bits": 15.9,
+  "finalStates": 2,
+  "text": "format: 1\nid: more-255\ntitle: 人形師の箱の底板\nrequest: 人形師が、箱の底板を作ってほしいと言っている。\nterrain:\n  ++++##\n  +++++#\n  ++++++\nhand:\n  lead .#/.#/##\n  lead ##/##\n  horn #\n  slime #\n  lead .#/.#/##\n  slime #\nsolution:\n  1 r1 x1\n  4 r0 x2\n  3 r0 x0\n  5 r0 x1\n  2 r0 x0\n  6 r0 x3\n"
+ },
+ {
+  "id": "more-256",
+  "theme": "slimeHornX",
+  "bits": 15,
+  "finalStates": 2,
+  "text": "format: 1\nid: more-256\ntitle: 劇場の座長の台座\nrequest: 劇場の座長が、台座を作ってほしいと言っている。\nterrain:\n  ##++++\n  #+++++\n  ++++++\nhand:\n  slime #\n  lead ####\n  horn #\n  lead #./#./##\n  lead #./#./##\n  horn #\nsolution:\n  4 r3 x2\n  1 r0 x3\n  3 r0 x4\n  6 r1 x5\n  5 r1 x3\n  2 r0 x2\n"
+ },
+ {
+  "id": "more-257",
+  "theme": "hornChoice",
+  "note": "一部（鱗×・つる○）",
+  "bits": 15.1,
+  "finalStates": 2,
+  "text": "format: 1\nid: more-257\ntitle: パン屋のおかみさんの型板\nrequest: パン屋のおかみさんが、型板を作ってほしいと言っている。\nterrain:\n  +++#\n  +++#\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  ....\n  b...\nlegend:\n  b: ice\nhand:\n  fire #\n  vine #\n  lead #./##\n  lead ##/##\n  horn #\n  lead ##/##\nsolution:\n  4 r0 x1\n  1 r0 x1\n  5 r0 x0\n  3 r0 x0\n  2 r0 x0\n  6 r0 x1\n"
+ },
+ {
+  "id": "more-258",
+  "theme": "hornChoice",
+  "note": "全部（鱗×・つる×）",
+  "bits": 13.3,
+  "finalStates": 1,
+  "text": "format: 1\nid: more-258\ntitle: 橋の番人の留め金\nrequest: 橋の番人が、留め金を作ってほしいと言っている。\nterrain:\n  ++++#\n  +++++\n  +++++\npieces:\n  .....\n  .....\n  ba...\nlegend:\n  a: vine\n  b: ice\nhand:\n  horn #\n  fire #\n  lead ##/#.\n  lead ##./.##\n  ice #\n  lead #./#./##\nsolution:\n  1 r0 x1\n  3 r2 x2\n  2 r0 x0\n  4 r1 x2\n  5 r0 x1\n  6 r1 x0\n"
+ },
+ {
+  "id": "more-259",
+  "theme": "hornChoice",
+  "note": "一部（つる×・水玉○）",
+  "bits": 12.7,
+  "finalStates": 22,
+  "text": "format: 1\nid: more-259\ntitle: 見習い騎士の台座\nrequest: 見習い騎士が、台座を作ってほしいと言っている。\nterrain:\n  ++++#\n  +++++\n  +++++\npieces:\n  .....\n  .....\n  a....\nlegend:\n  a: vine\nhand:\n  fire #\n  horn #\n  lead ##/##\n  lead ##/#.\n  lead ###\n  water #\n  water #\nsolution:\n  1 r0 x0\n  3 r0 x1\n  2 r0 x0\n  4 r2 x1\n  6 r0 x0\n  7 r0 x1\n  5 r0 x1\n"
+ },
+ {
+  "id": "more-260",
+  "theme": "hornChoice",
+  "note": "全部（つる×・鱗×）",
+  "bits": 9.4,
+  "finalStates": 10,
+  "text": "format: 1\nid: more-260\ntitle: 旅の吟遊詩人の重し\nrequest: 旅の吟遊詩人が、重しを作ってほしいと言っている。\nterrain:\n  #+++\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  ..ab\nlegend:\n  a: vine\n  b: ice\nhand:\n  fire #\n  lead ##\n  horn #\n  ice ##\n  lead ##/##\n  ice #\nsolution:\n  1 r0 x3\n  2 r1 x1\n  3 r1 x2\n  4 r1 x1\n  5 r0 x2\n  6 r0 x1\n"
+ },
+ {
+  "id": "more-261",
+  "theme": "hornChoice",
+  "note": "全部（鱗×・つる×）",
+  "bits": 8.7,
+  "finalStates": 10,
+  "text": "format: 1\nid: more-261\ntitle: 錬金ギルドの受付の錘\nrequest: 錬金ギルドの受付が、錘を作ってほしいと言っている。\nterrain:\n  +++#\n  ++++\n  ++++\npieces:\n  ....\n  ....\n  ba..\nlegend:\n  a: vine\n  b: ice\nhand:\n  fire #\n  lead ##/##\n  lead ##\n  ice ##\n  horn #\n  ice #\nsolution:\n  1 r0 x0\n  2 r0 x1\n  5 r0 x0\n  3 r1 x1\n  4 r0 x0\n  6 r0 x2\n"
  },
  {
   "id": "job-048",

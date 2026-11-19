@@ -24,12 +24,12 @@ let board = null; // 依頼の掲示板（はじめて開くときに読む）
 let cleanup = null; // 今の画面の後片付け
 
 async function boot() {
-  chapters = await fetchJSON('stages/chapters.json');
-  for (const ch of chapters) {
-    ch.loaded = await Promise.all(ch.stages.map(async path => parseStage(await fetchText(`stages/${path}`))));
-  }
-  notes = await fetchJSON('stages/notes.json');
-  for (const n of notes) n.loaded = parseStage(await fetchText(`stages/${n.stage}`));
+  // 章とノートのステージ（約120個）は、全部いっぺんに読む（1つずつ待つと、最初の表示まで1.5秒ほどかかっていた）
+  [chapters, notes] = await Promise.all([fetchJSON('stages/chapters.json'), fetchJSON('stages/notes.json')]);
+  await Promise.all([
+    ...chapters.map(async ch => (ch.loaded = await Promise.all(ch.stages.map(async path => parseStage(await fetchText(`stages/${path}`)))))),
+    ...notes.map(async n => (n.loaded = parseStage(await fetchText(`stages/${n.stage}`)))),
+  ]);
   window.addEventListener('hashchange', route);
   route();
 }
