@@ -140,4 +140,5 @@ const count = {};
 for (const b of board) count[b.theme] = (count[b.theme] ?? 0) + 1;
 console.log(`候補 ${all.length}（重なりを除いて ${seen.size}）から ${board.length} 問。予備 ${extra.length} 問`);
 console.log(count);
-console.log(`目安：${Math.min(...board.map(b => b.bits))} 〜 ${Math.max(...board.map(b => b.bits))}`);
+const bits = board.filter(b => b.bits != null).map(b => b.bits);
+console.log(`目安：${Math.min(...bits)} 〜 ${Math.max(...bits)}（人が作った問題をのぞく）`);

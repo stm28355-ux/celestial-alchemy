@@ -13,6 +13,27 @@
   "text": "format: 1\nid: hand-96\ntitle: 初めてのタンク\nrequest: 弾をいっぱい撃てるようにしよう！\nterrain:\n  .....###\n  ......xx\n  .....xxx\n  .....###\n  ......xx\n  .....xxx\n  .....###\n  ++....GG\n  +++.#GGG\npieces:\n  ........\n  ......ac\n  .....ccc\n  bbbbb...\n  ......gd\n  .....ddd\n  hhhhh...\n  ......ei\n  .....iii\nlegend:\n  d: water\n  g: water\n  c: ice\n  a: ice\n  b: water fixed\n  h: ice fixed\n  i: lead\n  e: lead\nhand:\n  fire #\n  fire #\n  fire #/#/#\n  sand #../###\n  horn #\n  stone #\n"
  },
  {
+  "id": "hand-97",
+  "pos": 97,
+  "by": "人",
+  "noHint": true,
+  "text": "format: 1\nid: hand-97\ntitle: 自炊\nrequest: 本当に食べても良い鍋なのだろうか？\nterrain:\n  ........\n  ........\n  ........\n  ...##.##\n  ...#xxx#\n  xxx+x+x.\n  ...++++.\npieces:\n  ...ahgfa\n  ...aebba\n  ...aaaaa\n  .....c..\n  ........\n  .......d\n  .......d\nlegend:\n  a: lead\n  c: fire fixed\n  b: water\n  d: lead\n  e: vine\n  f: vine\n  g: stone\n  h: water\nhand:\n  lead #/#\n  water #\n  water #\n  vine #\n  slime #\n  sand #/#\n  horn #\n  horn #\n"
+ },
+ {
+  "id": "hand-98",
+  "pos": 98,
+  "by": "人",
+  "noHint": true,
+  "text": "format: 1\nid: hand-98\ntitle: 量産品\nrequest: 吐いて捨てられる神秘。\nterrain:\n  ........\n  ........\n  ..xxxx..\n  ........\n  ........\n  ........\n  ........\n  ........\n  ........\n  ..xLLx..\npieces:\n  m......g\n  lk....np\n  ij....oq\n  h......r\n  ........\n  ........\n  ........\n  ........\n  s......f\n  ab....cd\nlegend:\n  m: stone fixed\n  l: stone fixed\n  k: stone fixed\n  j: stone fixed\n  i: stone fixed\n  h: stone fixed\n  g: stone fixed\n  n: stone fixed\n  o: stone fixed\n  p: stone fixed\n  q: stone fixed\n  r: stone fixed\n  s: stone fixed\n  a: stone fixed\n  b: stone fixed\n  c: stone fixed\n  d: stone fixed\n  f: stone fixed\nhand:\n  lead ##/.#\n  lead ##/.#\n  lead ##/.#/.#\n  lead ##/.#/.#\n  lead ##/#./#.\n  lead ##/#./#.\n  lead ##/#./#.\n  lead #/#/#/#\n  lead ##/##\n  lead ##/##\n  horn #\n  horn #\n"
+ },
+ {
+  "id": "hand-99",
+  "pos": 99,
+  "by": "人",
+  "noHint": true,
+  "text": "format: 1\nid: hand-99\ntitle: アビス\nrequest: 時には沈むことも必要である。\nterrain:\n  ........\n  ........\n  ........\n  ........\n  ........\n  ........\n  ........\n  ........\n  ........\n  ........\nopen:\n  left 0 1 2 3 4\n  right 2 3 4 5 6 7\n  floor 0 1 2 3 4 5 6 7\npieces:\n  ........\n  ........\n  ........\n  ........\n  ........\n  ........\n  ........\n  ........\n  ........\n  ........\nhand:\n  lead ###/#.#/###/..#/###\n  lead ###/#.#/###/..#/###\n  lead ##/.#/.#\n  lead ##/.#/.#\n  lead ##/#./#.\n  lead ##/#./#.\n  slime #\n  slime #\n  horn #\n"
+ },
+ {
   "id": "hand-100",
   "pos": 100,
   "by": "人",
