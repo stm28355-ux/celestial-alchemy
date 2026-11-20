@@ -42,7 +42,7 @@ npm run test:board             # 掲示板の100問を確かめる（数分か�
 npm run solve stages/ch2       # ステージが解けるか、解がいくつあるかを出す（--show 3 で答えも）
 ```
 
-ビルドはありません。`index.html` と `src/` がそのまま GitHub Pages で動きます。計画と決めたことは [docs/plan.md](docs/plan.md)。
+ビルドはありません。`index.html` と `src/` がそのまま GitHub Pages で動きます。計画と決めたことは [docs/plan.md](docs/plan.md)、作り方のふり返りは [docs/retrospective.md](docs/retrospective.md)。
 
 - ルールとソルバー：`src/core/`（`rules.js` が素材の動き、`solver.js` が答え探し、`stage.js` がステージの書き方）
 - 物語：`stages/chapters.json`（章と問題の並び）、`stages/ch0/`〜`ch7/`（1問1ファイル）
