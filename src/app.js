@@ -110,7 +110,7 @@ function showChapters() {
     <section class="page">
       <h2>物語 <small>章をえらぶ</small></h2>
       <div class="chapter-grid">${chapters.map(chapterCard).join('')}</div>
-      <label class="dev"><input type="checkbox" id="open-all" ${save.openAll ? 'checked' : ''}> （試作用）すべての章と問題を開く</label>
+      <label class="dev"><input type="checkbox" id="open-all" ${save.openAll ? 'checked' : ''}> すべての章と問題を開く（先の章の素材が見えます）</label>
     </section>`;
   view.querySelector('#open-all').onchange = ev => {
     save.openAll = ev.target.checked;
