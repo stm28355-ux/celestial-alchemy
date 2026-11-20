@@ -110,7 +110,7 @@ export function openEditor(view) {
           <label><input type="checkbox" id="ed-left"> 角笛の口を左に向ける（ないときは右）</label>
           <label><input type="radio" name="tool" value="erase"> 素材を消す</label>
         </fieldset>
-        <p class="ed-note">ドラッグで塗れます。右クリック（右ボタンでなぞる）で素材を消せます。まだルールのない素材（水玉など）は、その章のフェーズで使えるようになります。</p>
+        <p class="ed-note">ドラッグで塗れます。右クリック（右ボタンでなぞる）で素材を消せます。</p>
       </section>
 
       <section class="ed-board">

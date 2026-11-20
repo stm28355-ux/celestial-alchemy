@@ -134,7 +134,9 @@ dialog .buttons { justify-content: center; margin-top: 12px; }
 
 @media (max-width: 900px) {
   main { grid-template-columns: 1fr; }
-  .play { order: -1; }
+  .play { order: -2; }
+  /* スマホ：器のすぐ下に手持ちとボタン（ルールの説明は下に回す） */
+  .puzzle .side { order: -1; }
 }
 
 /* ── アプリの枠 ── */
