@@ -223,7 +223,11 @@ function puzzleHTML(st, { heading, back, extra = '', noHint = false, face = null
         <details class="help">
           <summary>操作</summary>
           <ul>
-            <li>マウス：動かして列を選ぶ／クリックで落とす／右クリックかホイールで回す</li>
+            <li id="mouse-help">${mouseHelp()}</li>
+            <li class="controls-pick">マウスの操作タイプ（片手で遊べるように）：
+              <label><input type="radio" name="controls" value="1" ${save.controls === 1 ? 'checked' : ''}> 1：右クリックで回す・ホイールでピースを替える</label>
+              <label><input type="radio" name="controls" value="2" ${save.controls === 2 ? 'checked' : ''}> 2：右クリックでピースを替える・ホイールで回す</label>
+            </li>
             <li>キー：← → 列　↑ か R 回す　↓ か Space 落とす　Z 一手戻す　H ヒント　T 透かす　1〜9 ピースを選ぶ</li>
             <li>指：触った列に合わせ、同じ所をもう一度触ると落とす</li>
             <li>動いている途中にクリックすると、最後まで飛ばす</li>
@@ -234,8 +238,20 @@ function puzzleHTML(st, { heading, back, extra = '', noHint = false, face = null
     </main>`;
 }
 
+function mouseHelp() {
+  return save.controls === 2
+    ? 'マウス：動かして列を選ぶ／クリックで落とす／右クリックでピースを替える／ホイールで回す'
+    : 'マウス：動かして列を選ぶ／クリックで落とす／右クリックで回す／ホイールでピースを替える';
+}
+
 function mountGame(st, opts, onClear) {
   view.innerHTML = puzzleHTML(st, opts);
+  view.querySelectorAll('input[name="controls"]').forEach(el => {
+    el.onchange = () => {
+      save.controls = Number(el.value);
+      view.querySelector('#mouse-help').textContent = mouseHelp();
+    };
+  });
   const game = new Game(view.querySelector('.puzzle'), st, { onClear });
   cleanup = () => game.destroy();
   return game;

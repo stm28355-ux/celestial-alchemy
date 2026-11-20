@@ -8,6 +8,7 @@ import { draw, layout, drawMini, SPAWN_GAP } from './render.js';
 import { buildSteps, runSteps } from './anim.js';
 import { askHint } from './hint.js';
 import { solutionHint } from '../core/solver.js';
+import { save } from '../save.js';
 
 // 置けない手の知らせ方（rules.js の reason ごと）
 const REASONS = {
@@ -92,6 +93,16 @@ export class Game {
     }
     this.r = (this.r + dir + 4) % 4;
     this.clampX();
+    this.render();
+  }
+
+  // 手持ちの次（dir=1）・前（dir=-1）のピースに替える（残っているものだけ、端まで行ったら反対の端へ）
+  cycle(dir = 1) {
+    if (this.anim || this.done) return;
+    const rest = this.state.hand.map(h => h.orig);
+    if (rest.length < 2) return;
+    const i = rest.indexOf(this.sel);
+    this.select(rest[(i + dir + rest.length) % rest.length]);
     this.render();
   }
 
@@ -235,13 +246,31 @@ export class Game {
       this.x = x;
       this.render();
     }, on);
+    // 回したり替えたりすると幅が変わるので、マウスの位置に合わせ直す
+    const reaim = ev => {
+      const x = aimAt(ev);
+      if (x !== null && x !== this.x) {
+        this.x = x;
+        this.render();
+      }
+    };
+    // 操作タイプ（save.controls）。1：右クリックで回す・ホイールでピースを替える　2：右クリックでピースを替える・ホイールで回す
     cv.addEventListener('contextmenu', ev => {
       ev.preventDefault();
-      this.rotate(1);
+      if (save.controls === 2) this.cycle(1);
+      else this.rotate(1);
+      reaim(ev);
     }, on);
+    // タッチパッドはホイールが細かく続けて届くので、少し間をあける
+    let lastWheel = 0;
     cv.addEventListener('wheel', ev => {
       ev.preventDefault();
-      this.rotate(ev.deltaY > 0 ? 1 : -1);
+      if (!ev.deltaY || performance.now() - lastWheel < 150) return;
+      lastWheel = performance.now();
+      const dir = ev.deltaY > 0 ? 1 : -1;
+      if (save.controls === 2) this.rotate(dir);
+      else this.cycle(dir);
+      reaim(ev);
     }, { passive: false, signal: this.ac.signal });
     window.addEventListener('keydown', ev => {
       if (ev.target instanceof HTMLInputElement || ev.target instanceof HTMLTextAreaElement) return;

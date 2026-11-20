@@ -7,9 +7,9 @@ const data = load();
 function load() {
   try {
     const v = JSON.parse(localStorage.getItem(KEY) ?? '{}');
-    return { cleared: v.cleared ?? [], openAll: !!v.openAll, editor: v.editor ?? null };
+    return { cleared: v.cleared ?? [], openAll: !!v.openAll, editor: v.editor ?? null, controls: v.controls === 2 ? 2 : 1 };
   } catch {
-    return { cleared: [], openAll: false, editor: null };
+    return { cleared: [], openAll: false, editor: null, controls: 1 };
   }
 }
 
@@ -34,6 +34,14 @@ export const save = {
   },
   set openAll(v) {
     data.openAll = !!v;
+    store();
+  },
+  // マウスの操作タイプ。1：右クリックで回す・ホイールでピースを替える　2：右クリックでピースを替える・ホイールで回す
+  get controls() {
+    return data.controls;
+  },
+  set controls(v) {
+    data.controls = v === 2 ? 2 : 1;
     store();
   },
   get editor() {
