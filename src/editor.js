@@ -63,10 +63,17 @@ export function editorPlayStage() {
   }
 }
 
-export function markEditorCleared() {
+// 作った人がクリアしたら、その手順を solution として残す（共有URLに入り、ヒントに使う）
+export function markEditorCleared(moves = []) {
   const d = draft();
-  d.verifiedText = stageToText(d.raw);
+  d.raw.solution = moves;
+  d.verifiedText = bodyText(d.raw);
   store(d);
+}
+
+// 器・最初の素材・手持ちだけのテキスト（クリアのあとで、パズルの中身を変えたかどうかを見る。名前と依頼文は変えてよい）
+function bodyText(raw) {
+  return stageToText({ ...raw, title: '', request: '', solution: [] });
 }
 
 // ── 画面 ──
@@ -161,6 +168,8 @@ export function openEditor(view) {
   // ── 下書きを変えたら ──
   const changed = () => {
     cleanLegend(d.raw);
+    // 器や手持ちを変えたら、前のクリア手順は使えない
+    if (d.raw.solution?.length && d.verifiedText !== bodyText(d.raw)) delete d.raw.solution;
     store(d);
     renderAll();
   };
@@ -319,12 +328,12 @@ export function openEditor(view) {
     say(`解けます。${paths}${once}${react}${res.truncated ? '（全部は調べきれていません）' : ''}`);
   }, on);
   $('#ed-share').addEventListener('click', async () => {
-    if (d.verifiedText !== stageToText(d.raw)) return say('共有する前に「試しに遊ぶ」で、自分でクリアしてください。');
+    if (d.verifiedText !== bodyText(d.raw)) return say('共有する前に「試しに遊ぶ」で、自分でクリアしてください。');
     const code = await encodeStage(d.raw);
     const url = `${location.origin}${location.pathname}#/s/${code}`;
     $('#ed-share-box').hidden = false;
     $('#ed-url').value = url;
-    say(`共有URLを作りました（${url.length}文字）。このURLを開くと、だれでも遊べます。`);
+    say(`共有URLを作りました（${url.length}文字）。このURLを開くと、だれでも遊べます。あなたのクリア手順も入っているので、ヒントが出せます。`);
   }, on);
   $('#ed-copy').addEventListener('click', async () => {
     try {
@@ -386,9 +395,10 @@ export function openEditor(view) {
     const text = stageToText(d.raw);
     if (document.activeElement !== $('#ed-textarea')) $('#ed-textarea').value = text;
     $('#ed-share').disabled = false;
-    $('#ed-share').title = d.verifiedText === text ? '' : '自分でクリアすると作れます';
-    $('#ed-share').classList.toggle('dim', d.verifiedText !== text);
-    if (d.verifiedText !== text) $('#ed-share-box').hidden = true;
+    const ok = d.verifiedText === bodyText(d.raw);
+    $('#ed-share').title = ok ? '' : '自分でクリアすると作れます';
+    $('#ed-share').classList.toggle('dim', !ok);
+    if (!ok) $('#ed-share-box').hidden = true;
   }
 
   function renderBoard() {

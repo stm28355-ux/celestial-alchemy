@@ -358,7 +358,7 @@ async function showRequest(n) {
   const b = list[n - 1];
   if (!b) return (location.hash = '#/board');
   const st = b.stage;
-  const game = mountGame(st, { heading: `依頼 ${b.pos ?? n}. ${escapeHTML(st.title)}`, back: '<a href="#/board">← 依頼の掲示板</a>', noHint: b.noHint }, () => {
+  const game = mountGame(st, { heading: `依頼 ${b.pos ?? n}. ${escapeHTML(st.title)}`, back: '<a href="#/board">← 依頼の掲示板</a>', noHint: b.noHint && !st.solution.length }, () => {
     save.markCleared(b.id);
     const next = n < list.length ? `#/req/${n + 1}` : null;
     clearDialog('依頼の品ができあがった。', [
@@ -401,7 +401,7 @@ function showEditorPlay() {
   const st = editorPlayStage();
   if (!st) return (location.hash = '#/edit');
   const game = mountGame(st, { heading: `試しに遊ぶ：${escapeHTML(st.title || '名前のない依頼')}`, back: '<a href="#/edit">← エディタに戻る</a>' }, () => {
-    markEditorCleared();
+    markEditorCleared(game.movesText());
     clearDialog('作った人がクリアしたので、共有URLを作れるようになった。', [
       { label: 'もう一度', run: () => game.reset() },
       { label: 'エディタに戻る', href: '#/edit', primary: true },

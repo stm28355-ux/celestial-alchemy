@@ -7,6 +7,7 @@ import { material } from '../core/materials.js';
 import { draw, layout, drawMini, SPAWN_GAP } from './render.js';
 import { buildSteps, runSteps } from './anim.js';
 import { askHint } from './hint.js';
+import { solutionHint } from '../core/solver.js';
 
 // 置けない手の知らせ方（rules.js の reason ごと）
 const REASONS = {
@@ -30,6 +31,11 @@ export class Game {
     this.reset();
     this.bind();
     this.resize();
+  }
+
+  // 打った手順（ステージの solution の書き方）。エディタで、作った人のクリア手順を残すのに使う
+  movesText() {
+    return this.history.map(h => `${h.orig + 1} r${h.r} x${h.x}`);
   }
 
   // ── 状態 ──
@@ -142,6 +148,9 @@ export class Game {
   async hint() {
     if (!this.root.querySelector('#btn-hint')) return; // ヒントを出さない問題
     if (this.anim || this.done || !this.state.hand.length) return;
+    // 狙いの手順（作った人のクリア手順など）の途中なら、その次の1手をすぐ出す
+    const fromSolution = solutionHint(this.stage, this.state);
+    if (fromSolution) return this.showHint(fromSolution);
     const token = {};
     this.hintToken = token;
     this.say('ヒントを考えています…', 'hint');
@@ -154,10 +163,20 @@ export class Game {
     }
     if (this.hintToken !== token) return; // 考えている間に盤面が変わった
     if (!res.move) {
-      this.say(res.truncated ? 'この盤面は広すぎて、ヒントを見つけきれませんでした。' : 'この盤面からは解けません。「一手戻す」で前に戻ってみましょう。');
+      const offPath = this.stage.solution?.length && this.history.length;
+      this.say(
+        res.truncated
+          ? offPath
+            ? 'この盤面は広すぎて、ヒントを見つけきれませんでした。「一手戻す」か「やり直し」で戻ると、ヒントが出せることがあります。'
+            : 'この盤面は広すぎて、ヒントを見つけきれませんでした。'
+          : 'この盤面からは解けません。「一手戻す」で前に戻ってみましょう。',
+      );
       return;
     }
-    const m = res.move;
+    this.showHint(res.move);
+  }
+
+  showHint(m) {
     this.select(m.orig, m.r);
     this.x = m.x;
     this.clampX();

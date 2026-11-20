@@ -305,6 +305,24 @@ export function boardText(s) {
   return rows;
 }
 
+// 狙いの手順（stage.solution）を使ったヒント：今の盤面が、手順の途中（k手打ったところ）と同じなら、
+// 次の1手を返す。手順から外れていれば null。総当たりがいらないので、大きな問題でもすぐ出せる。
+export function solutionHint(stage, state) {
+  if (!stage.solution?.length) return null;
+  const key = s => `${stateKey(s)}|${s.hand.map(h => h.orig).join(',')}`;
+  const target = key(state);
+  let s = createState(stage);
+  for (const m of stage.solution) {
+    const idx = s.hand.findIndex(h => h.orig === m.hand);
+    if (idx < 0) return null;
+    if (key(s) === target) return { orig: m.hand, r: m.r, x: m.x, mat: s.hand[idx].mat };
+    const d = drop(s, idx, m.r, m.x);
+    if (!d.ok) return null;
+    s = d.state;
+  }
+  return null;
+}
+
 // 狙いの手順（stage.solution）をそのまま打って、どうなるかを返す。
 export function checkSolution(stage) {
   let s = createState(stage);

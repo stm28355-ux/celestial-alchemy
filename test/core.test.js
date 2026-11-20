@@ -544,8 +544,14 @@ test('依頼の掲示板：どの問題も読めて、狙いの手順でクリ�
     ids.add(b.id);
     const st = parseStage(b.text);
     assert.deepEqual(initialProblems(st), [], b.id);
-    // 人が作った問題は、作った人がクリアしてから共有URLを作っている（答えの手順は持っていない）
-    if (b.by === '人') continue;
+    // 人が作った問題：作った人のクリア手順があれば、それでクリアできること（古い共有URLには手順がない）
+    if (b.by === '人') {
+      if (st.solution.length) {
+        const c = checkSolution(st);
+        assert.ok(c.ok && c.cleared, `${b.id}：作った人の手順でクリアできない`);
+      }
+      continue;
+    }
     const c = checkSolution(st);
     assert.ok(c.ok && c.cleared, `${b.id}：狙いの手順でクリアできない`);
     if (!process.env.BOARD_ALL && k % 10 !== 0) continue;
@@ -602,4 +608,28 @@ test('どの素材でも使う見切りと「見つかったら止める」探�
     compared++;
   }
   assert.ok(compared > 200 && solvable > 20, `比べた ${compared}、解けた ${solvable}`);
+});
+
+test('手順からのヒント：手順の途中なら次の1手、外れたら null', async () => {
+  const { solutionHint } = await import('../src/core/solver.js');
+  const st = parseStage(await readFile(new URL('../stages/ch7/06-final.txt', import.meta.url), 'utf8'));
+  let s = createState(st);
+  for (const [k, m] of st.solution.entries()) {
+    const h = solutionHint(st, s);
+    assert.deepEqual([h.orig, h.r, h.x], [m.hand, m.r, m.x], `${k}手目`);
+    s = drop(s, s.hand.findIndex(x => x.orig === m.hand), m.r, m.x).state;
+  }
+  assert.ok(checkSolution(st).cleared);
+  // 手順と違う手を打つと、手順からのヒントは出ない
+  let off = createState(st);
+  const first = st.solution[0];
+  for (const h of off.hand) {
+    if (h.orig === first.hand) continue;
+    for (let x = 0; x < st.W; x++) {
+      const d = drop(off, off.hand.indexOf(h), 0, x);
+      if (d.ok) { off = d.state; break; }
+    }
+    break;
+  }
+  assert.equal(solutionHint(st, off), null);
 });
