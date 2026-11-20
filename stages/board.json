@@ -681,6 +681,19 @@
   "text": "format: 1\nid: job-136\ntitle: 人形師の文鎮\nrequest: 人形師が、文鎮を作ってほしいと言っている。\nterrain:\n  +++##\n  +++##\n  +++++\n  +++++\nhand:\n  slime #\n  horn #\n  lead ###/.#.\n  lead ##/#.\n  slime ##\n  lead ##./.##\n  horn #\nsolution:\n  1 r0 x1\n  2 r0 x0\n  4 r1 x1\n  7 r0 x0\n  6 r1 x1\n  3 r3 x0\n  5 r0 x1\n"
  },
  {
+  "id": "hand-95",
+  "pos": 95,
+  "by": "人",
+  "text": "format: 1\nid: hand-95\ntitle: アイスブレイク\nrequest: アルコール2.4%\nterrain:\n  ......\n  ......\n  ......\n  .x....\n  .x.x..\n  .x.x..\n  .x.x..\n  .x.x..\n  .x....\npieces:\n  ......\n  ......\n  oooooo\n  mmnnnn\n  kktxxp\n  eeuaaq\n  ddvffr\n  ccwhhs\n  bbygji\nlegend:\n  b: ice\n  c: ice\n  d: ice\n  e: ice\n  k: ice\n  m: ice\n  i: water\n  n: water\n  o: water\n  p: water\n  q: water\n  r: water\n  s: water\n  t: ice\n  u: ice\n  v: ice\n  w: ice\n  x: ice\n  a: ice\n  f: ice\n  h: ice\n  j: water\n  y: water\n  g: sand\nhand:\n  fire #\n  vine #\n  horn #\n  horn #\n"
+ },
+ {
+  "id": "hand-96",
+  "pos": 96,
+  "by": "人",
+  "noHint": true,
+  "text": "format: 1\nid: hand-96\ntitle: 初めてのタンク\nrequest: 弾をいっぱい撃てるようにしよう！\nterrain:\n  .....###\n  ......xx\n  .....xxx\n  .....###\n  ......xx\n  .....xxx\n  .....###\n  ++....GG\n  +++.#GGG\npieces:\n  ........\n  ......ac\n  .....ccc\n  bbbbb...\n  ......gd\n  .....ddd\n  hhhhh...\n  ......ei\n  .....iii\nlegend:\n  d: water\n  g: water\n  c: ice\n  a: ice\n  b: water fixed\n  h: ice fixed\n  i: lead\n  e: lead\nhand:\n  fire #\n  fire #\n  fire #/#/#\n  sand #../###\n  horn #\n  stone #\n"
+ },
+ {
   "id": "hand-100",
   "pos": 100,
   "by": "人",
