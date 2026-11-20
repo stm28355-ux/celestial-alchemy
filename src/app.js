@@ -178,7 +178,7 @@ const RULES = {
 };
 
 // noHint：ヒントを出さない（人が作った大きな問題は、今のヒントでは答えを探しきれない）
-function puzzleHTML(st, { heading, back, extra = '', noHint = false }) {
+function puzzleHTML(st, { heading, back, extra = '', noHint = false, face = null }) {
   const rules = [...RULES.base];
   if (st.terrain.some(r => r.includes('.'))) rules.push(RULES.free);
   if (st.terrain.some(r => r.includes('x'))) rules.push(RULES.mark);
@@ -201,7 +201,7 @@ function puzzleHTML(st, { heading, back, extra = '', noHint = false }) {
       <section class="info">
         <p class="back">${back}</p>
         <h2>${heading}</h2>
-        ${st.request ? `<p class="request">${escapeHTML(st.request)}</p>` : ''}
+        ${st.request ? (face ? `<div class="request-say"><span class="face">${PORTRAITS[face] ?? ''}</span><p class="request">${escapeHTML(st.request)}</p></div>` : `<p class="request">${escapeHTML(st.request)}</p>`) : ''}
         <ul class="rules">${rules.map(r => `<li>${r}</li>`).join('')}</ul>
         ${extra}
       </section>
@@ -244,7 +244,7 @@ function showPlay(i, n) {
   const ch = chapters[i];
   const st = ch?.loaded[n - 1];
   if (!st || !chapterOpen(i) || !stageOpen(ch, n - 1)) return (location.hash = '#/story');
-  const game = mountGame(st, { heading: `${chapterLabel(ch)}　${n}. ${escapeHTML(st.title)}`, back: `<a href="#/ch/${i}">← ${chapterLabel(ch)}</a>` }, () => {
+  const game = mountGame(st, { heading: `${chapterLabel(ch)}　${n}. ${escapeHTML(st.title)}`, back: `<a href="#/ch/${i}">← ${chapterLabel(ch)}</a>`, face: ch.master }, () => {
     const was = chapterCleared(ch);
     save.markCleared(st.id);
     const nowDone = !was && chapterCleared(ch);
@@ -255,7 +255,7 @@ function showPlay(i, n) {
     clearDialog(text, [
       { label: 'もう一度', run: () => game.reset() },
       next ? { label: '次の依頼へ', href: next, primary: true } : { label: '章をえらぶ', href: '#/story', primary: true },
-    ]);
+    ], nowDone ? ch.master : 'ノエル');
   });
 }
 
@@ -424,7 +424,7 @@ function showNote() {
       <div class="note-list">${entries
         .map(n => `<figure class="note"><canvas data-note="${n.key}"></canvas><figcaption><b>${n.key}　${n.title}</b><span>${n.text}</span></figcaption></figure>`)
         .join('')}</div>
-      <p class="note-more">お手本は、章を作るときに増やしていく（全部で58個の予定）。</p>
+      <p class="note-more"><a href="portraits.html">登場人物の一覧</a></p>
     </section>`;
   view.querySelectorAll('canvas[data-mat]').forEach(cv => {
     const dpr = window.devicePixelRatio || 1;
@@ -439,8 +439,9 @@ function showNote() {
 }
 
 // ── 共通 ──
-function clearDialog(text, buttons) {
+function clearDialog(text, buttons, face = 'ノエル') {
   const dialog = document.querySelector('#clear');
+  dialog.querySelector('#clear-face').innerHTML = PORTRAITS[face] ?? '';
   dialog.querySelector('#clear-text').textContent = text;
   const box = dialog.querySelector('#clear-buttons');
   box.innerHTML = '';
