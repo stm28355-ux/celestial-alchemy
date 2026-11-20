@@ -227,6 +227,7 @@ function puzzleHTML(st, { heading, back, extra = '', noHint = false, face = null
             <li>キー：← → 列　↑ か R 回す　↓ か Space 落とす　Z 一手戻す　H ヒント　T 透かす　1〜9 ピースを選ぶ</li>
             <li>指：触った列に合わせ、同じ所をもう一度触ると落とす</li>
             <li>動いている途中にクリックすると、最後まで飛ばす</li>
+            <li>ヒントは、決まった手順（作った人の手順）の次の1手。順番の入れ替えや別解もある。手順から外れたら、その盤面から答えを探す</li>
           </ul>
         </details>
       </section>

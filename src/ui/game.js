@@ -150,7 +150,7 @@ export class Game {
     if (this.anim || this.done || !this.state.hand.length) return;
     // 狙いの手順（作った人のクリア手順など）の途中なら、その次の1手をすぐ出す
     const fromSolution = solutionHint(this.stage, this.state);
-    if (fromSolution) return this.showHint(fromSolution);
+    if (fromSolution) return this.showHint(fromSolution, true);
     const token = {};
     this.hintToken = token;
     this.say('ヒントを考えています…', 'hint');
@@ -176,12 +176,18 @@ export class Game {
     this.showHint(res.move);
   }
 
-  showHint(m) {
+  // fixed：決まった手順（作った人の手順）からのヒント。答えはほかにもあることを添える
+  showHint(m, fixed = false) {
     this.select(m.orig, m.r);
     this.x = m.x;
     this.clampX();
     this.render();
-    this.say(`ヒント：${m.orig + 1}番の${material(m.mat).short}を、この向き・この列で落としてみましょう。`, 'hint');
+    this.say(
+      fixed
+        ? `ヒント（決まった手順の次の1手）：${m.orig + 1}番の${material(m.mat).short}を、この向き・この列で落としてみましょう。順番を入れ替えたり、別の解き方をしたりしてもかまいません。`
+        : `ヒント：${m.orig + 1}番の${material(m.mat).short}を、この向き・この列で落としてみましょう。`,
+      'hint',
+    );
   }
 
   // ── 入力 ──
