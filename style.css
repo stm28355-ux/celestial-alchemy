@@ -230,6 +230,9 @@ a.stage-item:hover { border-color: var(--accent); }
 .ed-share[hidden] { display: none; }
 .ed-share input { flex: 1; min-width: 0; font-size: 12px; padding: 4px; }
 .ed-text { margin-top: 12px; font-size: 13px; }
+.ed-text summary { cursor: pointer; font-weight: 600; }
+.ed-text-buttons { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.ed-text-buttons button { font: inherit; font-size: 13px; }
 .ed-text textarea { width: 100%; font-family: ui-monospace, Consolas, monospace; font-size: 13px; margin: 6px 0; }
 
 @media (max-width: 900px) {

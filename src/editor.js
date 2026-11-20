@@ -5,7 +5,7 @@ import { buildStage, parseStageText, stageToText, FORMAT } from './core/stage.js
 import { MATERIALS, material } from './core/materials.js';
 import { createState, initialProblems } from './core/rules.js';
 import { parseShape, shapeText } from './core/shape.js';
-import { encodeStage } from './core/share.js';
+import { encodeStage, decodeStage } from './core/share.js';
 import { draw, drawMini, layout } from './ui/render.js';
 import { askHint } from './ui/hint.js';
 import { save } from './save.js';
@@ -140,11 +140,15 @@ export function openEditor(view) {
           <input id="ed-url" readonly>
           <button id="ed-copy">コピー</button>
         </div>
-        <details class="ed-text">
+        <details class="ed-text" open>
           <summary>テキストで書き出す・読み込む</summary>
+          <p class="ed-note">下の欄はいつも今の下書きです。書き換えるか、別のテキストや共有URLを貼ってから「読み込む」を押すと、エディタに取り込みます。</p>
           <textarea id="ed-textarea" rows="14" spellcheck="false"></textarea>
-          <button id="ed-import">テキストから読み込む</button>
-          <button id="ed-reset" class="linkish">新しく作り直す</button>
+          <div class="ed-text-buttons">
+            <button id="ed-copy-text">テキストをコピー</button>
+            <button id="ed-import">読み込む（テキストか共有URL）</button>
+            <button id="ed-reset" class="linkish">新しく作り直す</button>
+          </div>
         </details>
       </section>
     </main>`;
@@ -333,16 +337,28 @@ export function openEditor(view) {
   }, on);
 
   // ── テキスト ──
-  $('#ed-import').addEventListener('click', () => {
+  $('#ed-copy-text').addEventListener('click', async () => {
+    const text = stageToText(d.raw);
+    $('#ed-textarea').value = text;
     try {
-      const raw = parseStageText($('#ed-textarea').value);
+      await navigator.clipboard.writeText(text);
+      say('テキストをコピーしました。');
+    } catch {
+      $('#ed-textarea').select();
+      say('選んだので、Ctrl+C でコピーしてください。');
+    }
+  }, on);
+  $('#ed-import').addEventListener('click', async () => {
+    try {
+      const raw = await readStageInput($('#ed-textarea').value);
       buildStage(raw);
       loadIntoEditor(raw);
       Object.assign(d, draft());
       $('#ed-title').value = d.raw.title ?? '';
       $('#ed-request').value = d.raw.request ?? '';
       changed();
-      say('テキストから読み込みました。');
+      $('#ed-textarea').value = stageToText(d.raw);
+      say('読み込みました。');
     } catch (e) {
       say(`読み込めません：${e.message}`);
     }
@@ -470,6 +486,15 @@ export function openEditor(view) {
 
   renderAll();
   return () => ac.abort();
+}
+
+// テキスト（ステージの書き方）か、共有URL（または # の後ろの文字だけ）を読む
+export async function readStageInput(input) {
+  const text = input.trim();
+  const url = text.match(/#\/s\/([A-Za-z0-9_-]+)/);
+  if (url) return decodeStage(url[1]);
+  if (/^[A-Za-z0-9_-]{20,}$/.test(text)) return decodeStage(text);
+  return parseStageText(text);
 }
 
 // ── 下書きのあつかい ──
