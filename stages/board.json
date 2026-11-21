@@ -714,6 +714,6 @@
   "id": "hand-100",
   "pos": 100,
   "by": "人",
-  "text": "format: 1\nid: hand-100\ntitle: 覇天\nrequest: 天を統べろ。\nterrain:\n  ........\n  ........\n  ........\n  ........\n  ........\n  ........\n  ........\n  .....###\n  ....GxG.\n  ....G.G.\nopen:\n  floor 3 4\npieces:\n  ........\n  ........\n  ........\n  .......f\n  ........\n  ......ag\n  .......g\n  hhhhh...\n  ........\n  ........\nlegend:\n  f: fire fixed\n  g: vine\n  h: water fixed\n  a: slime\nhand:\n  lead #/#\n  lead #./##/#.\n  fire #\n  ice #\n  water #/#/#\n  water #/#/#\n  vine #/#/#\n  horn #\n  horn #\n  stone #\nsolution:\n  2 r2 x4\n  1 r0 x5\n  3 r0 x5\n  4 r0 x6\n  5 r1 x1\n  7 r0 x4\n  8 r1 x6\n  10 r0 x6\n  6 r0 x3\n  9 r0 x0\n"
+  "text": "format: 1\nid: hand-100\ntitle: 覇天\nrequest: 天を統べろ。\nterrain:\n  ........\n  ........\n  ........\n  ........\n  ........\n  ........\n  ........\n  .....###\n  ....GxG.\n  ....G.Gx\nopen:\n  floor 3 4\npieces:\n  ........\n  ........\n  ........\n  .......f\n  ........\n  ......ag\n  .......g\n  hhhhh...\n  ........\n  ........\nlegend:\n  f: fire fixed\n  g: vine\n  h: water fixed\n  a: slime\nhand:\n  lead #/#\n  lead #./##/#.\n  fire #\n  ice #\n  water #/#/#\n  water #/#/#\n  vine #/#/#\n  horn #\n  horn #\n  stone #\nsolution:\n  2 r2 x4\n  4 r0 x6\n  1 r0 x5\n  3 r0 x5\n  7 r0 x4\n  8 r1 x6\n  10 r0 x6\n  5 r1 x1\n  6 r0 x3\n  9 r0 x0\n"
  }
 ]
