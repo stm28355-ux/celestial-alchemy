@@ -224,7 +224,7 @@ function puzzleHTML(st, { heading, back, extra = '', noHint = false, face = null
           <summary>操作</summary>
           <ul>
             <li id="mouse-help">${mouseHelp()}</li>
-            <li class="controls-pick">マウスの操作タイプ（片手で遊べるように）：
+            <li class="controls-pick">マウスの操作タイプ：
               <label><input type="radio" name="controls" value="1" ${save.controls === 1 ? 'checked' : ''}> 1：右クリックで回す・ホイールでピースを替える</label>
               <label><input type="radio" name="controls" value="2" ${save.controls === 2 ? 'checked' : ''}> 2：右クリックでピースを替える・ホイールで回す</label>
             </li>
